@@ -4,7 +4,7 @@ using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using System;
 using System.Drawing;
-using System.Windows;
+using System.Windows.Forms;
 
 namespace ComponentToolkit
 {
@@ -57,15 +57,15 @@ namespace ComponentToolkit
             GH_DocumentEditor editor = Grasshopper.Instances.DocumentEditor;
             if (editor == null)
             {
-                MessageBox.Show("CategoryIconFix can't find the menu!");
+                MessageBox.Show("ComponentToolkit can't find the menu!");
                 return;
             }
             DoingSomethingFirst(editor);
         }
 
         private void DoingSomethingFirst(GH_DocumentEditor editor)
-        {
-
+        { 
+            GH_ComponentAttributesReplacer.Init();
         }
     }
 }
