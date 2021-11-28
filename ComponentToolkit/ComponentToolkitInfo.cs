@@ -64,7 +64,9 @@ namespace ComponentToolkit
         }
 
         private void DoingSomethingFirst(GH_DocumentEditor editor)
-        { 
+        {
+            ToolStripMenuItem displayItem = (ToolStripMenuItem)editor.MainMenuStrip.Items[3];
+            displayItem.DropDownItems.Insert(3, MenuCreator.CreateMajorMenu());
             GH_ComponentAttributesReplacer.Init();
         }
     }
