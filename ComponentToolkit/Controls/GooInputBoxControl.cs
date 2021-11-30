@@ -15,7 +15,7 @@ namespace ComponentToolkit
 {
     internal abstract class GooInputBoxControl<T> : GooControlBase<T> where T : class, IGH_Goo
     {
-        protected virtual string ShowString => Value.ToString();
+        protected virtual string ShowString => Value?.ToString();
         internal override int Height => 14;
         internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15), 100);
 

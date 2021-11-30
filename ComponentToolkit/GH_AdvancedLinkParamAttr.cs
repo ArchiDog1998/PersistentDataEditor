@@ -1,20 +1,18 @@
 ﻿using Grasshopper.GUI;
+using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
+using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grasshopper.GUI.Canvas;
-using Grasshopper.Kernel.Types;
 
 namespace ComponentToolkit
 {
     internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes
     {
+
         public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
         public int ControlWidth => Control != null && GH_ComponentAttributesReplacer.ComponentUseControl ? Control.Width : 0;
         public int WholeWidth => StringWidth + (ControlWidth == 0 ? 0 : ControlWidth + GH_ComponentAttributesReplacer.ComponentControlNameDistance);
@@ -84,21 +82,69 @@ namespace ComponentToolkit
             return IsPersistentParam(type.BaseType, out dataType);
         }
 
-        public override GH_ObjectResponse RespondToMouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
+        public override GH_ObjectResponse RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            if(e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
-                if(Control != null && Control.Bounds.Contains(e.CanvasLocation))
+                if (Control != null && Control.Bounds.Contains(e.CanvasLocation))
                 {
                     Control.Clicked(sender, e);
-                    return GH_ObjectResponse.Ignore;
+
+                    return GH_ObjectResponse.Release;
                 }
-                else if(StringRect.Contains(e.CanvasLocation))
+                if (StringRect.Contains(e.CanvasLocation))
                 {
-                    // Open a menu.
+                    SortedList<Guid, CreateObjectItem[]> dict = new SortedList<Guid, CreateObjectItem[]>();
+                    if (Owner.Kind == GH_ParamKind.input)
+                    {
+                        dict = GH_ComponentAttributesReplacer.createObjectItems.InputItems;
+                    }
+                    else if (Owner.Kind == GH_ParamKind.output)
+                    {
+                        dict = GH_ComponentAttributesReplacer.createObjectItems.OutputItems;
+                    }
+
+                    CreateObjectItem[] items = new CreateObjectItem[0];
+                    if (dict.ContainsKey(Owner.ComponentGuid))
+                    {
+                        items = dict[Owner.ComponentGuid];
+                    }
+
+                    ToolStripDropDownMenu menu = new ToolStripDropDownMenu();
+                    foreach (CreateObjectItem createItem in items)
+                    {
+                        GH_DocumentObject.Menu_AppendItem(menu, createItem.ShowName, Menu_CreateItemClicked, createItem.Icon).Tag = createItem;
+                    }
+                    GH_DocumentObject.Menu_AppendItem(menu, "Edit", Menu_EditItemClicked).Tag = items;
+
+                    menu.Show(sender, e.ControlLocation);
+
+                    return GH_ObjectResponse.Release;
                 }
             }
-            return base.RespondToMouseDown(sender, e);
+            return base.RespondToMouseDoubleClick(sender, e);
+        }
+
+        private void Menu_CreateItemClicked(object sender, EventArgs e)
+        {
+            ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
+            if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is CreateObjectItem)
+            {
+                CreateObjectItem createItem = (CreateObjectItem)toolStripMenuItem.Tag;
+                createItem.CreateObject(Owner);
+                return;
+            }
+            MessageBox.Show("Something wrong with create object.");
+        }
+
+        private void Menu_EditItemClicked(object sender, EventArgs e)
+        {
+            ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
+            if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is CreateObjectItem[])
+            {
+                bool isInput = Owner.Kind == GH_ParamKind.input;
+                new QuickWireEditor(Owner.ComponentGuid, isInput, Owner.Icon_24x24) { DataContext = new List<CreateObjectItem>((CreateObjectItem[]) toolStripMenuItem.Tag) }.Show();
+            }
         }
     }
 }

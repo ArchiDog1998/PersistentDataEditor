@@ -1,4 +1,5 @@
-﻿using Grasshopper.GUI;
+﻿using Grasshopper;
+using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
@@ -6,11 +7,13 @@ using Grasshopper.Kernel.Components;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows.Forms;
 
 namespace ComponentToolkit
@@ -95,6 +98,10 @@ namespace ComponentToolkit
         }
         #endregion
 
+        private static readonly string _location = Path.Combine(Folders.SettingsFolder, "quickwires.json");
+
+        internal static CreateObjectItems createObjectItems;
+
         private static readonly FieldInfo _tagsInfo = typeof(GH_LinkedParamAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_renderTags")).First();
 
         public GH_ComponentAttributesReplacer(IGH_Component component): base(component)
@@ -102,8 +109,34 @@ namespace ComponentToolkit
 
         }
 
+        internal static void SaveToJson()
+        {
+            JavaScriptSerializer ser = new JavaScriptSerializer();
+            File.WriteAllText(_location, ser.Serialize(new CreateObjectItemsSave(createObjectItems)));
+        }
+
         public static void Init()
         {
+            //Read from json.
+            try
+            {
+                if (File.Exists(_location))
+                {
+                    string jsonStr = File.ReadAllText(_location);
+                    JavaScriptSerializer ser = new JavaScriptSerializer();
+                    createObjectItems = new CreateObjectItems(ser.Deserialize<CreateObjectItemsSave>(jsonStr));
+                }
+                else
+                {
+                    createObjectItems = new CreateObjectItems();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
             ExchangeMethod(
                 typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.RenderComponentParameters))).First(),
                 typeof(GH_ComponentAttributesReplacer).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.RenderComponentParametersNew))).First()
