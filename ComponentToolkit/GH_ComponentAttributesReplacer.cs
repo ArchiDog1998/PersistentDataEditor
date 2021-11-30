@@ -67,7 +67,7 @@ namespace ComponentToolkit
 
         public static bool ComponentInputEdgeLayout
         {
-            get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentInputEdgeLayout), false);
+            get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentInputEdgeLayout), true);
             set
             {
                 Grasshopper.Instances.Settings.SetValue(nameof(ComponentInputEdgeLayout), value);

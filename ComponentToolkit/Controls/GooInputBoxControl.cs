@@ -42,7 +42,8 @@ namespace ComponentToolkit
         {
             graphics.FillPath(new SolidBrush(ControlBackgroundColor), path);
             graphics.DrawPath(new Pen(new SolidBrush(ControlBorderColor)), path);
-            graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, new SolidBrush(ControlTextgroundColor), Bounds, GH_TextRenderingConstants.NearCenter);
+            Color color = IsNull ? Color.DarkRed : ControlTextgroundColor;
+            graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, new SolidBrush(color), Bounds, GH_TextRenderingConstants.NearCenter);
         }
     }
 

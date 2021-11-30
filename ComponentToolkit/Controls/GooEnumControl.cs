@@ -116,7 +116,7 @@ namespace ComponentToolkit
             graphics.DrawPath(new Pen(new SolidBrush(ControlBorderColor)), _roundBounds);
             graphics.DrawString(_showString, GH_FontServer.StandardAdjusted, new SolidBrush(ControlTextgroundColor), _stringBounds, GH_TextRenderingConstants.NearCenter);
 
-            graphics.FillPath(new SolidBrush(Color.Black), _triangle);
+            graphics.FillPath(new SolidBrush(ControlForegroundColor), _triangle);
         }
     }
 }

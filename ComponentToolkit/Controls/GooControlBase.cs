@@ -19,7 +19,9 @@ namespace ComponentToolkit
         {
             get
             {
-                _value = _valueGetter() ?? _value;
+                T value = _valueGetter();
+                IsNull = value == null;
+                if(!IsNull) _value = value;
                 return _value;
             }
             set
@@ -28,6 +30,7 @@ namespace ComponentToolkit
                 _valueChanged(value, SaveUndo);
             }
         }
+        public bool IsNull { get; private set; }
         private Action<T, bool> _valueChanged;
         private Func<T> _valueGetter;
 

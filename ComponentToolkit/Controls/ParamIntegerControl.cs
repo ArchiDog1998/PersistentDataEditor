@@ -45,11 +45,5 @@ namespace ComponentToolkit
             }
 
         }
-
-        protected override void LayoutObject(RectangleF bounds)
-        {
-            ControlItems[0].Bounds = bounds;
-            base.LayoutObject(bounds);
-        }
     }
 }

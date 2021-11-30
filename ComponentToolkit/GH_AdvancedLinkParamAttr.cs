@@ -28,6 +28,7 @@ namespace ComponentToolkit
             if (param.Kind != GH_ParamKind.input) return;
             if(IsPersistentParam(param.GetType(), out Type dataType))
             {
+
                 if (typeof(GH_String).IsAssignableFrom(dataType))
                 {
                     Control = new ParamStringControl((GH_PersistentParam<GH_String>)param);
@@ -47,6 +48,18 @@ namespace ComponentToolkit
                 else if (typeof(GH_Boolean).IsAssignableFrom(dataType))
                 {
                     Control = new ParamBooleanControl((GH_PersistentParam<GH_Boolean>)param);
+                }
+                else if (typeof(GH_Interval).IsAssignableFrom(dataType))
+                {
+                    Control = new ParamIntervalControl((GH_PersistentParam<GH_Interval>)param);
+                }
+                else if (typeof(GH_Point).IsAssignableFrom(dataType))
+                {
+                    Control = new ParamPoint3dControl((GH_PersistentParam<GH_Point>)param);
+                }
+                else if (typeof(GH_Vector).IsAssignableFrom(dataType))
+                {
+                    Control = new ParamVector3dControl((GH_PersistentParam<GH_Vector>)param);
                 }
             }
         }
@@ -80,7 +93,7 @@ namespace ComponentToolkit
                     Control.Clicked(sender, e);
                     return GH_ObjectResponse.Ignore;
                 }
-                else
+                else if(StringRect.Contains(e.CanvasLocation))
                 {
                     // Open a menu.
                 }

@@ -27,10 +27,6 @@ namespace ComponentToolkit
                 {
                     all += control.Width;
                 }
-                foreach (var render in RenderItems)
-                {
-                    all += render.Width;
-                }
                 return all;
             }
         }
@@ -43,17 +39,12 @@ namespace ComponentToolkit
                 {
                     max = Math.Max(max, control.Height);
                 }
-                foreach (var render in RenderItems)
-                {
-                    max = Math.Max(max, render.Height);
-                }
                 return max;
             }
         }
         private bool Valid => Owner.OnPingDocument() == Grasshopper.Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2;
 
         protected BaseControlItem[] ControlItems = new BaseControlItem[0];
-        protected BaseRenderItem[] RenderItems = new BaseRenderItem[0];
 
         public ParamControlBase(GH_PersistentParam<T> owner)
         {
@@ -71,15 +62,22 @@ namespace ComponentToolkit
             Owner.ExpireSolution(true);
         }
 
+        protected sealed override void LayoutObject(RectangleF bounds)
+        {
+            float x = bounds.X;
+            foreach (BaseControlItem item in ControlItems)
+            {
+                item.Bounds = new RectangleF(x, bounds.Y + (bounds.Height - item.Height) /2, item.Width, item.Height);
+                x += item.Width;
+            }
+            base.LayoutObject(bounds);
+        }
+
         internal sealed override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
             foreach (var control in ControlItems)
             {
                 control.RenderObject(canvas, graphics, owner, style);
-            }
-            foreach (var render in RenderItems)
-            {
-                render.RenderObject(canvas, graphics, owner, style);
             }
         }
         internal sealed override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)

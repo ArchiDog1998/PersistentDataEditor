@@ -18,11 +18,5 @@ namespace ComponentToolkit
                 new GooColorControl(()=> Owner.PersistentData.get_FirstItem(true), SetValue),
             };
         }
-
-        protected override void LayoutObject(RectangleF bounds)
-        {
-            ControlItems[0].Bounds = bounds;
-            base.LayoutObject(bounds);
-        }
     }
 }

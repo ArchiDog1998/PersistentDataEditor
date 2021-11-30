@@ -58,9 +58,9 @@ namespace ComponentToolkit
         {
             ToolStripMenuItem major = new ToolStripMenuItem("Foreground Color") { ToolTipText = "Change controls' foreground color." };
 
-            CreateColor(major, "Text Color", BaseRenderItem.ControlTextgroundColor, BaseRenderItem._controlTextgroundColorDefault, (color) => BaseRenderItem.ControlTextgroundColor = color);
+            CreateColor(major, "Text Color", BaseControlItem.ControlTextgroundColor, BaseControlItem._controlTextgroundColorDefault, (color) => BaseControlItem.ControlTextgroundColor = color);
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateColor(major, "Foreground Color", BaseRenderItem.ControlForegroundColor, BaseRenderItem._controlForegroundColorDefault, (color) => BaseRenderItem.ControlForegroundColor = color);
+            CreateColor(major, "Foreground Color", BaseControlItem.ControlForegroundColor, BaseControlItem._controlForegroundColorDefault, (color) => BaseControlItem.ControlForegroundColor = color);
 
 
             return major;
@@ -70,9 +70,9 @@ namespace ComponentToolkit
         {
             ToolStripMenuItem major = new ToolStripMenuItem("Background Color") { ToolTipText = "Change controls' background color." };
 
-            CreateColor(major, "Border Color", BaseRenderItem.ControlBorderColor, BaseRenderItem._controlBorderColorDefault, (color) => BaseRenderItem.ControlBorderColor = color);
+            CreateColor(major, "Border Color", BaseControlItem.ControlBorderColor, BaseControlItem._controlBorderColorDefault, (color) => BaseControlItem.ControlBorderColor = color);
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateColor(major, "Background Color", BaseRenderItem.ControlBackgroundColor, BaseRenderItem._controlBackgroundColorDefault, (color) => BaseRenderItem.ControlBackgroundColor = color);
+            CreateColor(major, "Background Color", BaseControlItem.ControlBackgroundColor, BaseControlItem._controlBackgroundColorDefault, (color) => BaseControlItem.ControlBackgroundColor = color);
 
 
             return major;
