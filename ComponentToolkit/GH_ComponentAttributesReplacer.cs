@@ -39,7 +39,6 @@ namespace ComponentToolkit
                 Grasshopper.Instances.Settings.SetValue(nameof(ComponentToCoreDistance), value);
                 RefreshLayout();
             }
-
         }
 
         public static readonly int _componentControlNameDistanceDefault = 2;
@@ -55,6 +54,16 @@ namespace ComponentToolkit
         }
 
         public static int AdditionWidth => ComponentToEdgeDistance + ComponentToCoreDistance;
+
+        public static bool ComponentUseControl
+        {
+            get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentUseControl), true);
+            set
+            {
+                Grasshopper.Instances.Settings.SetValue(nameof(ComponentUseControl), value);
+                RefreshLayout();
+            }
+        }
 
         public static bool ComponentInputEdgeLayout
         {
@@ -184,12 +193,14 @@ namespace ComponentToolkit
 
             //Layout tags.
             bool flag = false;
+            int tagsCount = 0;
             foreach (IGH_Param param in gH_Params)
             {
                 GH_LinkedParamAttributes paramAttr = (GH_LinkedParamAttributes)param.Attributes;
 
                 GH_StateTagList tags = param.StateTags;
                 if (tags.Count == 0) tags = null;
+                if(tags != null) tagsCount = Math.Max(tagsCount, tags.Count);
                 _tagsInfo.SetValue(paramAttr, tags);
 
 
@@ -247,6 +258,8 @@ namespace ComponentToolkit
 
             }
 
+
+            int additionforTag = tagsCount == 0 ? 0 : tagsCount * 20 - 4;
             //LayoutForRender
             foreach (IGH_Param param in gH_Params)
             {
@@ -257,18 +270,18 @@ namespace ComponentToolkit
 
                 if (isInput)
                 {
-                    attr.StringRect = ComponentInputEdgeLayout ? new RectangleF(param.Attributes.Bounds.X + ComponentToEdgeDistance, param.Attributes.Bounds.Y, stringwidth, param.Attributes.Bounds.Height) :
-                        new RectangleF(param.Attributes.Bounds.Right - wholeWidth, param.Attributes.Bounds.Y, stringwidth, param.Attributes.Bounds.Height);
+                    attr.StringRect = ComponentInputEdgeLayout ? new RectangleF(attr.Bounds.X + additionforTag + ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                        new RectangleF(attr.Bounds.Right - wholeWidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
 
                     if(attr.Control != null)
                     {
-                        attr.Control.Bounds = new RectangleF(attr.StringRect.Right + ComponentControlNameDistance, attr.StringRect.Top + (attr.StringRect.Height - attr.Control.Height)/2, attr.Control.Width, attr.Control.Height);
+                        attr.Control.Bounds = new RectangleF(attr.StringRect.Right + ComponentControlNameDistance, attr.StringRect.Top + (attr.StringRect.Height - attr.Control.Height)/2, attr.ControlWidth, attr.Control.Height);
                     }
                 }
                 else
                 {
-                    attr.StringRect = ComponentOutputEdgeLayout ? new RectangleF(param.Attributes.Bounds.Right - wholeWidth - ComponentToEdgeDistance, param.Attributes.Bounds.Y, stringwidth, param.Attributes.Bounds.Height) :
-                         new RectangleF(param.Attributes.Bounds.X, param.Attributes.Bounds.Y, stringwidth, param.Attributes.Bounds.Height);
+                    attr.StringRect = ComponentOutputEdgeLayout ? new RectangleF(attr.Bounds.Right - additionforTag - wholeWidth - ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                         new RectangleF(attr.Bounds.X, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
 
                 }
             }
@@ -306,7 +319,7 @@ namespace ComponentToolkit
                     graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, attr.StringRect, GH_TextRenderingConstants.CenterCenter);
 
                     //Render Control
-                    IControlItem control = attr.Control;
+                    BaseControlItem control = attr.Control;
                     if(control != null && control.Bounds.Width >= 1f)
                     {
                         attr.Control.RenderObject(canvas, graphics, owner, style);

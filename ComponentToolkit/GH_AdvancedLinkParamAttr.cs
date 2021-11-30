@@ -13,13 +13,13 @@ using Grasshopper.Kernel.Types;
 
 namespace ComponentToolkit
 {
-    public class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes
+    internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes
     {
         public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
-        public int ControlWidth => Control == null ? 0 : Control.Width;
+        public int ControlWidth => Control != null && GH_ComponentAttributesReplacer.ComponentUseControl ? Control.Width : 0;
         public int WholeWidth => StringWidth + (ControlWidth == 0 ? 0 : ControlWidth + GH_ComponentAttributesReplacer.ComponentControlNameDistance);
 
-        public IControlItem Control { get; private set; } = null;
+        public BaseControlItem Control { get; private set; } = null;
 
         public RectangleF StringRect { get; internal set; }
 
@@ -30,15 +30,23 @@ namespace ComponentToolkit
             {
                 if (typeof(GH_String).IsAssignableFrom(dataType))
                 {
-                    Control = new StringControl((GH_PersistentParam<GH_String>)param);
+                    Control = new ParamStringControl((GH_PersistentParam<GH_String>)param);
                 }
                 else if (typeof(GH_Integer).IsAssignableFrom(dataType))
                 {
-                    Control = new IntegerControl((GH_PersistentParam<GH_Integer>)param);
+                    Control = new ParamIntegerControl((GH_PersistentParam<GH_Integer>)param);
                 }
                 else if (typeof(GH_Number).IsAssignableFrom(dataType))
                 {
-                    Control = new NumberControl((GH_PersistentParam<GH_Number>)param);
+                    Control = new ParamNumberControl((GH_PersistentParam<GH_Number>)param);
+                }
+                else if (typeof(GH_Colour).IsAssignableFrom(dataType))
+                {
+                    Control = new ParamColorControl((GH_PersistentParam<GH_Colour>)param);
+                }
+                else if (typeof(GH_Boolean).IsAssignableFrom(dataType))
+                {
+                    Control = new ParamBooleanControl((GH_PersistentParam<GH_Boolean>)param);
                 }
             }
         }
