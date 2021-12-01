@@ -28,35 +28,35 @@ namespace ComponentToolkit
             if(IsPersistentParam(param.GetType(), out Type dataType))
             {
 
-                if (GH_ComponentAttributesReplacer.UseParamStringControl && typeof(GH_String).IsAssignableFrom(dataType))
+                if (typeof(GH_String).IsAssignableFrom(dataType))
                 {
                     Control = new ParamStringControl((GH_PersistentParam<GH_String>)param);
                 }
-                else if (GH_ComponentAttributesReplacer.UseParamIntegerControl && typeof(GH_Integer).IsAssignableFrom(dataType))
+                else if (typeof(GH_Integer).IsAssignableFrom(dataType))
                 {
                     Control = new ParamIntegerControl((GH_PersistentParam<GH_Integer>)param);
                 }
-                else if (GH_ComponentAttributesReplacer.UseParamNumberControl && typeof(GH_Number).IsAssignableFrom(dataType))
+                else if (typeof(GH_Number).IsAssignableFrom(dataType))
                 {
                     Control = new ParamNumberControl((GH_PersistentParam<GH_Number>)param);
                 }
-                else if (GH_ComponentAttributesReplacer.UseParamColourControl && typeof(GH_Colour).IsAssignableFrom(dataType))
+                else if (typeof(GH_Colour).IsAssignableFrom(dataType))
                 {
                     Control = new ParamColorControl((GH_PersistentParam<GH_Colour>)param);
                 }
-                else if (GH_ComponentAttributesReplacer.UseParamBooleanControl && typeof(GH_Boolean).IsAssignableFrom(dataType))
+                else if (typeof(GH_Boolean).IsAssignableFrom(dataType))
                 {
                     Control = new ParamBooleanControl((GH_PersistentParam<GH_Boolean>)param);
                 }
-                else if (GH_ComponentAttributesReplacer.UseParamIntervalControl && typeof(GH_Interval).IsAssignableFrom(dataType))
+                else if (typeof(GH_Interval).IsAssignableFrom(dataType))
                 {
                     Control = new ParamIntervalControl((GH_PersistentParam<GH_Interval>)param);
                 }
-                else if (GH_ComponentAttributesReplacer.UseParamPointControl && typeof(GH_Point).IsAssignableFrom(dataType))
+                else if (typeof(GH_Point).IsAssignableFrom(dataType))
                 {
                     Control = new ParamPoint3dControl((GH_PersistentParam<GH_Point>)param);
                 }
-                else if (GH_ComponentAttributesReplacer.UseParamVectorControl && typeof(GH_Vector).IsAssignableFrom(dataType))
+                else if (typeof(GH_Vector).IsAssignableFrom(dataType))
                 {
                     Control = new ParamVector3dControl((GH_PersistentParam<GH_Vector>)param);
                 }
@@ -114,7 +114,16 @@ namespace ComponentToolkit
                     ToolStripDropDownMenu menu = new ToolStripDropDownMenu();
                     foreach (CreateObjectItem createItem in items)
                     {
-                        GH_DocumentObject.Menu_AppendItem(menu, createItem.ShowName, Menu_CreateItemClicked, createItem.Icon).Tag = createItem;
+                        ToolStripMenuItem item = GH_DocumentObject.Menu_AppendItem(menu, createItem.ShowName, Menu_CreateItemClicked, createItem.Icon);
+                        item.Tag = createItem;
+                        if(!string.IsNullOrEmpty(createItem.InitString))
+                        {
+                            item.ToolTipText = $"Init String:\n{createItem.InitString}";
+                        }
+                        else
+                        {
+                            item.ToolTipText = "No Init String.";
+                        }
                     }
                     GH_DocumentObject.Menu_AppendItem(menu, "Edit", Menu_EditItemClicked).Tag = items;
 

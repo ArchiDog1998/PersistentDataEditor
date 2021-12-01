@@ -77,7 +77,7 @@
                 </DataGrid>
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Border x:Name="AddButton" Padding="3 0 3 0" MouseDown="AddButton_MouseDown">
+                    <Border x:Name="AddButton" Padding="3 0 3 0" MouseDown="AddButton_MouseDown" ToolTip="Press your left mouse and drag to the component's param you want to add, then release your button.">
                         <TextBlock Text="Add" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <Border.Style>
                             <Style TargetType="Border">
@@ -96,9 +96,12 @@
                             </Style>
                         </Border.Style>
                     </Border>
-                    <Button x:Name="RemoveButton" Margin=" 5 0 5 0" Content="Remove" Click="RemoveButton_Click" IsEnabled="{Binding ElementName=dataGrid, Path=SelectedIndex, Converter={StaticResource GridSelectedConverter}}" />
-                    <Button x:Name="UpButton" Content="Up" Click="UpButton_Click" IsEnabled="{Binding ElementName=dataGrid, Path=SelectedIndex, Converter={StaticResource GridSelectedConverter}}" />
-                    <Button x:Name="DownButton" Content="Down" Click="DownButton_Click" IsEnabled="{Binding ElementName=dataGrid, Path=SelectedIndex, Converter={StaticResource GridSelectedConverter}}" />
+                    <Button x:Name="RemoveButton" Margin=" 5 0 5 0" Content="Remove" Click="RemoveButton_Click"  ToolTip="Click to remove the selected item."
+                            IsEnabled="{Binding ElementName=dataGrid, Path=SelectedIndex, Converter={StaticResource GridSelectedConverter}}" />
+                    <Button x:Name="UpButton" Content="Up" Click="UpButton_Click" ToolTip="Click to make selected item up one step."
+                            IsEnabled="{Binding ElementName=dataGrid, Path=SelectedIndex, Converter={StaticResource GridSelectedConverter}}" />
+                    <Button x:Name="DownButton" Content="Down" Click="DownButton_Click"  ToolTip="Click to make selected item down one step."
+                            IsEnabled="{Binding ElementName=dataGrid, Path=SelectedIndex, Converter={StaticResource GridSelectedConverter}}" />
 
                 </StackPanel>
             </Grid>

@@ -26,6 +26,7 @@ namespace ComponentToolkit
             ToolStripMenuItem major = new ToolStripMenuItem("Component Layout") { ToolTipText = "Set some component's layout params." };
 
             ToolStripMenuItem quickClick = new ToolStripMenuItem("Use Quick Wire") { Checked = UseQuickWire };
+            quickClick.ToolTipText = "You can double click the component's param to choose which activeobjec you want to add.";
             quickClick.Click += (sender, e) =>
             {
                 quickClick.Checked = !quickClick.Checked;
@@ -66,6 +67,7 @@ namespace ComponentToolkit
         private static ToolStripMenuItem CreateControlItem()
         {
             ToolStripMenuItem major = CreateCheckBox("Use Control", GH_ComponentAttributesReplacer.ComponentUseControl, (boolean) => GH_ComponentAttributesReplacer.ComponentUseControl = boolean);
+            major.ToolTipText = "It will show you the persistent param's value and you can change the value easily.";
             major.DropDownItems.Add(CreateUseControlItem());
             major.DropDownItems.Add(CreateForeGroundColor());
             major.DropDownItems.Add(CreateBackGroundColor());
@@ -185,7 +187,7 @@ namespace ComponentToolkit
             return click;
         }
 
-            private static void CreateNumberBox(ToolStripMenuItem item, string itemName, double originValue, Action<double> valueChange, double valueDefault, double Max, double Min)
+        private static void CreateNumberBox(ToolStripMenuItem item, string itemName, double originValue, Action<double> valueChange, double valueDefault, double Max, double Min)
         {
             item.DropDown.Closing -= DropDown_Closing;
             item.DropDown.Closing += DropDown_Closing;

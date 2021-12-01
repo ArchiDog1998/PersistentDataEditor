@@ -42,7 +42,7 @@ namespace ComponentToolkit
                 return max;
             }
         }
-        private bool Valid => Owner.OnPingDocument() == Grasshopper.Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2;
+        protected virtual bool Valid => Owner.OnPingDocument() == Grasshopper.Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2;
 
         protected BaseControlItem[] ControlItems = new BaseControlItem[0];
 

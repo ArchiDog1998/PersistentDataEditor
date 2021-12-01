@@ -11,6 +11,8 @@ namespace ComponentToolkit
 {
     internal class ParamIntervalControl : ParamControlBase<GH_Interval>
     {
+        protected override bool Valid => base.Valid && GH_ComponentAttributesReplacer.UseParamIntervalControl;
+
         private GH_Number T0, T1;
         public ParamIntervalControl(GH_PersistentParam<GH_Interval> owner) : base(owner)
         {
