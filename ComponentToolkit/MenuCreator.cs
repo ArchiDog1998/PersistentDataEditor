@@ -23,9 +23,9 @@ namespace ComponentToolkit
         }
         public static ToolStripMenuItem CreateMajorMenu()
         {
-            ToolStripMenuItem major = new ToolStripMenuItem("Component Layout") { ToolTipText = "Set some component's layout params." };
+            ToolStripMenuItem major = new ToolStripMenuItem("Component Toolkit", Properties.Resources.ComponentToolkitIcon_24) { ToolTipText = "Two tools and some component's layout params." };
 
-            ToolStripMenuItem quickClick = new ToolStripMenuItem("Use Quick Wire") { Checked = UseQuickWire };
+            ToolStripMenuItem quickClick = new ToolStripMenuItem("Use Quick Wire", Properties.Resources.QuickwireIcon_24) { Checked = UseQuickWire };
             quickClick.ToolTipText = "You can double click the component's param to choose which activeobjec you want to add.";
             quickClick.Click += (sender, e) =>
             {
@@ -66,7 +66,8 @@ namespace ComponentToolkit
 
         private static ToolStripMenuItem CreateControlItem()
         {
-            ToolStripMenuItem major = CreateCheckBox("Use Control", GH_ComponentAttributesReplacer.ComponentUseControl, (boolean) => GH_ComponentAttributesReplacer.ComponentUseControl = boolean);
+            ToolStripMenuItem major = CreateCheckBox("Param Control", GH_ComponentAttributesReplacer.ComponentUseControl, (boolean) => GH_ComponentAttributesReplacer.ComponentUseControl = boolean);
+            major.Image = Properties.Resources.ParamControlIcon_24;
             major.ToolTipText = "It will show you the persistent param's value and you can change the value easily.";
             major.DropDownItems.Add(CreateUseControlItem());
             major.DropDownItems.Add(CreateForeGroundColor());

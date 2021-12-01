@@ -212,7 +212,6 @@ namespace ComponentToolkit
                 }
                 JavaScriptSerializer ser = new JavaScriptSerializer();
                 StaticCreateObjectItems = new CreateObjectItems(ser.Deserialize<CreateObjectItemsSave>(jsonStr));
-
             }
             catch (Exception ex)
             {

@@ -126,6 +126,7 @@ namespace ComponentToolkit
                         }
                     }
                     ToolStripMenuItem editItem = GH_DocumentObject.Menu_AppendItem(menu, "Edit", Menu_EditItemClicked);
+                    editItem.Image = Properties.Resources.EditIcon_24;
                     editItem.Tag = items;
                     editItem.ForeColor = Color.DimGray;
 
