@@ -88,6 +88,16 @@ namespace ComponentToolkit
             }
         }
 
+        public static bool ControlAlignRightLayout
+        {
+            get => Instances.Settings.GetValue(nameof(ControlAlignRightLayout), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(ControlAlignRightLayout), value);
+                RefreshLayout();
+            }
+        }
+
         private static void RefreshLayout()
         {
             foreach (IGH_DocumentObject @object in Instances.ActiveCanvas.Document.Objects)
@@ -244,6 +254,7 @@ namespace ComponentToolkit
             {
                 ChangeFloatParam(item);
             }
+            e.NewDocument?.DestroyAttributeCache();
         }
 
         private static void ActiveCanvas_Document_ObjectsAdded(GH_Document sender, GH_DocObjectEventArgs e)
@@ -424,7 +435,8 @@ namespace ComponentToolkit
 
                     if(attr.Control != null)
                     {
-                        attr.Control.Bounds = new RectangleF(attr.StringRect.Right + ComponentControlNameDistance, attr.StringRect.Top + (attr.StringRect.Height - attr.Control.Height)/2, attr.ControlWidth, attr.Control.Height);
+                        attr.Control.Bounds = new RectangleF(ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth :attr.StringRect.Right + ComponentControlNameDistance, 
+                            attr.StringRect.Top + (attr.StringRect.Height - attr.Control.Height)/2, attr.ControlWidth, attr.Control.Height);
                     }
                 }
                 else

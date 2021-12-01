@@ -62,6 +62,13 @@ namespace ComponentToolkit
             Owner.ExpireSolution(true);
         }
 
+        protected void OtherClicked(GH_Canvas sender, GH_CanvasMouseEvent e)
+        {
+            new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, Owner.PersistentData.get_FirstItem(true).ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
+        }
+
+        protected virtual void SaveString(string str) { }
+
         protected sealed override void LayoutObject(RectangleF bounds)
         {
             float x = bounds.X;
@@ -90,6 +97,7 @@ namespace ComponentToolkit
                     return;
                 }
             }
+            OtherClicked(sender, e);
         }
     }
 }

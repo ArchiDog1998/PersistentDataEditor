@@ -29,7 +29,7 @@ namespace ComponentToolkit
                     CreateValue(record);
                 }),
 
-                new StringRender("To"),
+                new StringRender("To", OtherClicked),
 
                 new GooNumberControl(()=> {
                     GH_Interval interval = Owner.PersistentData.get_FirstItem(true);
@@ -42,6 +42,17 @@ namespace ComponentToolkit
                     CreateValue(record);
                 }),
             };
+        }
+
+        protected override void SaveString(string str)
+        {
+            Interval interval = default(Interval);
+            if(GH_Convert.ToInterval(str, ref interval, GH_Conversion.Both))
+            {
+                T0 = new GH_Number(interval.T0);
+                T1 = new GH_Number(interval.T1);
+                CreateValue(true);
+            }
         }
 
         private void CreateValue(bool isRecord)

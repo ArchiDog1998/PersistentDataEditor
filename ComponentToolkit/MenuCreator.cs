@@ -69,6 +69,8 @@ namespace ComponentToolkit
             ToolStripMenuItem major = CreateCheckBox("Param Control", GH_ComponentAttributesReplacer.ComponentUseControl, (boolean) => GH_ComponentAttributesReplacer.ComponentUseControl = boolean);
             major.Image = Properties.Resources.ParamControlIcon_24;
             major.ToolTipText = "It will show you the persistent param's value and you can change the value easily.";
+
+            major.DropDownItems.Add(CreateCheckBox("Control Align Right", GH_ComponentAttributesReplacer.ControlAlignRightLayout, (boolean) => GH_ComponentAttributesReplacer.ControlAlignRightLayout = boolean));
             major.DropDownItems.Add(CreateUseControlItem());
             major.DropDownItems.Add(CreateForeGroundColor());
             major.DropDownItems.Add(CreateBackGroundColor());

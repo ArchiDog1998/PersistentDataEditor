@@ -19,7 +19,7 @@ namespace ComponentToolkit
         {
             ControlItems = new BaseControlItem[]
             {
-                new StringRender("X:"),
+                new StringRender("X:", OtherClicked),
 
                 new GooNumberControl(()=> {
                     GH_Vector vector = Owner.PersistentData.get_FirstItem(true);
@@ -32,7 +32,7 @@ namespace ComponentToolkit
                     CreateValue(record);
                 }),
 
-                new StringRender("Y:"),
+                new StringRender("Y:", OtherClicked),
 
                 new GooNumberControl(()=> {
                     GH_Vector vector = Owner.PersistentData.get_FirstItem(true);
@@ -45,7 +45,7 @@ namespace ComponentToolkit
                     CreateValue(record);
                 }),
 
-                new StringRender("Z:"),
+                new StringRender("Z:", OtherClicked),
 
                 new GooNumberControl(()=> {
                     GH_Vector vector = Owner.PersistentData.get_FirstItem(true);
@@ -58,6 +58,18 @@ namespace ComponentToolkit
                     CreateValue(record);
                 }),
             };
+        }
+
+        protected override void SaveString(string str)
+        {
+            Vector3d vector = default(Vector3d);
+            if (GH_Convert.ToVector3d(str, ref vector, GH_Conversion.Both))
+            {
+                X = new GH_Number(vector.X);
+                Y = new GH_Number(vector.Y);
+                Z = new GH_Number(vector.Z);
+                CreateValue(true);
+            }
         }
 
         private void CreateValue(bool isRecord)

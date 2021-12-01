@@ -86,7 +86,7 @@ namespace ComponentToolkit
             return IsPersistentParam(type.BaseType, out dataType);
         }
 
-        public override GH_ObjectResponse RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)
+        public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -102,7 +102,7 @@ namespace ComponentToolkit
                     return GH_ObjectResponse.Release;
                 }
             }
-            return base.RespondToMouseDoubleClick(sender, e);
+            return base.RespondToMouseUp(sender, e);
         }
 
         internal static ToolStripDropDownMenu RespondToQuickWire(IGH_Param param, bool isInput)
