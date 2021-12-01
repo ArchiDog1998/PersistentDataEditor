@@ -61,6 +61,15 @@ namespace ComponentToolkit.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;InputItems&quot;:{&quot;15b7afe5-d0d0-43e1-b894-34fcfe3be384&quot;:[{&quot;ObjectGuid&quot;:&quot;d1a28e95-cf96-4936-bf34-8bf142d731bf&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;ObjectGuid&quot;:&quot;ccfd6ba8-ecb1-44df-a47e-08126a653c51&quot;,&quot;initString&quot;:null,&quot;Index&quot;:1},{&quot;ObjectGuid&quot;:&quot;f44b92b0-3b5b-493a-86f4-fd7408c3daf3&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;ObjectGuid&quot;:&quot;95992b33-89e1-4d36-bd35-2754a11af21e&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0}],&quot;16ef3e75-e315-4899-b531-d3166b42dac9&quot;:[{&quot;ObjectGuid&quot;:&quot;56b92eab-d121-43f7-94d3-6cd8f0ddead8&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;Obje [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string quickwires {
+            get {
+                return ResourceManager.GetString("quickwires", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap ResetIcons_24 {

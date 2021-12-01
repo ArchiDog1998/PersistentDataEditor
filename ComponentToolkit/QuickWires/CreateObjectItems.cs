@@ -36,7 +36,7 @@ namespace ComponentToolkit
                 CreateObjectItem[] outputPairSave = new CreateObjectItem[outputPair.Value.Length];
                 for (int i = 0; i < outputPair.Value.Length; i++)
                 {
-                    outputPairSave[i] = new CreateObjectItem(outputPair.Value[i], true);
+                    outputPairSave[i] = new CreateObjectItem(outputPair.Value[i], false);
                 }
                 OutputItems[new Guid(outputPair.Key)] = outputPairSave;
             }

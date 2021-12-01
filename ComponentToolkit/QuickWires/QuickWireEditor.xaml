@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ComponentToolkit" WindowStyle="ToolWindow" x:Name="Father"
         mc:Ignorable="d" Topmost="True" WindowStartupLocation="CenterScreen" 
-        Title="QuickWireEditor" Height="300" Width="250" MinWidth="220" MinHeight="150">
+        Title="QuickWireEditor" Height="400" Width="300" MinWidth="220" MinHeight="150">
 
     <Window.Resources>
         <local:BitmapConverter x:Key="BitmapConverter"/>

@@ -201,16 +201,17 @@ namespace ComponentToolkit
             //Read from json.
             try
             {
+                string jsonStr;
                 if (File.Exists(_location))
                 {
-                    string jsonStr = File.ReadAllText(_location);
-                    JavaScriptSerializer ser = new JavaScriptSerializer();
-                    StaticCreateObjectItems = new CreateObjectItems(ser.Deserialize<CreateObjectItemsSave>(jsonStr));
+                    jsonStr = File.ReadAllText(_location);
                 }
                 else
                 {
-                    StaticCreateObjectItems = new CreateObjectItems();
+                    jsonStr = Properties.Resources.quickwires;
                 }
+                JavaScriptSerializer ser = new JavaScriptSerializer();
+                StaticCreateObjectItems = new CreateObjectItems(ser.Deserialize<CreateObjectItemsSave>(jsonStr));
 
             }
             catch (Exception ex)

@@ -125,7 +125,9 @@ namespace ComponentToolkit
                             item.ToolTipText = "No Init String.";
                         }
                     }
-                    GH_DocumentObject.Menu_AppendItem(menu, "Edit", Menu_EditItemClicked).Tag = items;
+                    ToolStripMenuItem editItem = GH_DocumentObject.Menu_AppendItem(menu, "Edit", Menu_EditItemClicked);
+                    editItem.Tag = items;
+                    editItem.ForeColor = Color.DimGray;
 
                     menu.Show(sender, e.ControlLocation);
 
@@ -154,7 +156,7 @@ namespace ComponentToolkit
             {
                 bool isInput = Owner.Kind == GH_ParamKind.input;
                 ObservableCollection<CreateObjectItem> structureLists = new ObservableCollection<CreateObjectItem>((CreateObjectItem[])toolStripMenuItem.Tag);
-                new QuickWireEditor(Owner.ComponentGuid, isInput, Owner.Icon_24x24, Owner.Name, structureLists).Show();
+                new QuickWireEditor(Owner.ComponentGuid, isInput, Owner.Icon_24x24, Owner.TypeName, structureLists).Show();
             }
         }
     }
