@@ -34,9 +34,13 @@ namespace ComponentToolkit
 
         private bool _isInput;
         private Guid _componentGuid;
-        public QuickWireEditor(Guid componenguid, bool isInput, Bitmap icon)
+        private CreateObjectItem[] _preList;
+        private bool _cancel = false;
+        public QuickWireEditor(Guid componenguid, bool isInput, Bitmap icon, string name, ObservableCollection<CreateObjectItem> structureLists)
         {
             this._isInput = isInput;
+            this.DataContext = structureLists;
+            this._preList = structureLists.ToArray();
 
             MemoryStream ms = new MemoryStream();
             icon.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
@@ -50,35 +54,84 @@ namespace ComponentToolkit
 
             _componentGuid = componenguid;
             InitializeComponent();
+
+            this.Title += "-" + name + (isInput ? "[In]" : "[Out]");
         }
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void ApplyButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+            int index = dataGrid.SelectedIndex;
+            if (index == -1) return;
+            ((ObservableCollection<CreateObjectItem>)DataContext).RemoveAt(index);
+        }  
 
         private void UpButton_Click(object sender, RoutedEventArgs e)
         {
-
+            int index = dataGrid.SelectedIndex;
+            if (index < 1) return;
+            int changeindex = index - 1;
+            ChangeIndex(index, changeindex);
+            dataGrid.SelectedIndex = changeindex;
         }
-
         private void DownButton_Click(object sender, RoutedEventArgs e)
         {
+            int index = dataGrid.SelectedIndex;
+            if (index < 0) return;
+            if (index == ((ObservableCollection<CreateObjectItem>)DataContext).Count - 1) return;
+            int changeindex = index + 1;
+            ChangeIndex(index, changeindex);
+            dataGrid.SelectedIndex = changeindex;
+        }
 
+        private void ChangeIndex(int a, int b)
+        {
+            ObservableCollection<CreateObjectItem> lt = (ObservableCollection<CreateObjectItem>)DataContext;
+            CreateObjectItem relay = lt[a];
+            lt[a] = lt[b];
+            lt[b] = relay;
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
+            this.Close();
+        }
 
+        private void ApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            Apply();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            _cancel = true;
+            this.Close();
+        }
 
+        private void Apply()
+        {
+            CreateObjectItem[] saveItems = ((ObservableCollection<CreateObjectItem>)DataContext).ToArray();
+            if (_isInput)
+                GH_ComponentAttributesReplacer.StaticCreateObjectItems.InputItems[_componentGuid] = saveItems;
+            else
+                GH_ComponentAttributesReplacer.StaticCreateObjectItems.OutputItems[_componentGuid] = saveItems;
+
+
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            if (_cancel)
+            {
+                if (_isInput)
+                    GH_ComponentAttributesReplacer.StaticCreateObjectItems.InputItems[_componentGuid] = _preList;
+                else
+                    GH_ComponentAttributesReplacer.StaticCreateObjectItems.OutputItems[_componentGuid] = _preList;
+            }
+            else
+            {
+                Apply();
+                GH_ComponentAttributesReplacer.SaveToJson();
+            }
+            base.OnClosed(e);
         }
 
         private void AddButton_MouseDown(object sender, MouseButtonEventArgs e)
@@ -152,12 +205,12 @@ namespace ComponentToolkit
                 if (!(obj is IGH_Component)) return;
                 IGH_Component com = (GH_Component)obj;
 
-                int index = _isInput ? com.Params.Input.IndexOf(param) : com.Params.Output.IndexOf(param);
+                int index = _isInput ? com.Params.Output.IndexOf(param) : com.Params.Input.IndexOf(param);
 
                 item = new CreateObjectItem(com.ComponentGuid, (ushort)index, null, _isInput);
 
             }
-            ((List<CreateObjectItem>)DataContext).Add(item);
+            ((ObservableCollection<CreateObjectItem>)DataContext).Add(item);
         }
 
         private void CanvasPostPaintWidgets(GH_Canvas canvas)
@@ -245,33 +298,6 @@ namespace ComponentToolkit
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
-        }
-    }
-
-    [ValueConversion(typeof(List< CreateObjectItem>), typeof(ObservableCollection<CreateObjectItem>))]
-    public class CreateItemConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null) return null;
-
-            List<CreateObjectItem> structure = (List<CreateObjectItem>)value;
-            if (structure == null) return null;
-
-            ObservableCollection<CreateObjectItem> structureLists = new ObservableCollection<CreateObjectItem>(structure);
-
-            return structureLists;
-
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null) return null;
-
-            ObservableCollection<CreateObjectItem> structure = (ObservableCollection<CreateObjectItem>)value;
-            if (structure == null) return null;
-            List<CreateObjectItem> structureLists = new List<CreateObjectItem>(structure);
-            return structureLists;
         }
     }
 

@@ -13,14 +13,7 @@ namespace ComponentToolkit
 
         public CreateObjectItems()
         {
-            InputItems = new SortedList<Guid, CreateObjectItem[]>()
-            {
-                {new Guid("d5967b9f-e8ee-436b-a8ad-29fdcecf32d5"), new CreateObjectItem[]
-                {
-                    new CreateObjectItem( new Guid("807b86e3-be8d-4970-92b5-f8cdcb45b06b"), 0, "", true),
-                }}
-            };
-
+            InputItems = new SortedList<Guid, CreateObjectItem[]>();
             OutputItems = new SortedList<Guid, CreateObjectItem[]>();
         }
 

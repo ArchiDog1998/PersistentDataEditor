@@ -20,26 +20,26 @@ namespace ComponentToolkit
 {
     public abstract class GH_ComponentAttributesReplacer: GH_ComponentAttributes
     {
-        #region Settings
+        #region Settings For Layout
         public static readonly int MiniWidth = 6;
 
         public static readonly int _componentToEdgeDistanceDefault = 3;
         public static int ComponentToEdgeDistance
         {
-            get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentToEdgeDistance), _componentToEdgeDistanceDefault);
+            get => Instances.Settings.GetValue(nameof(ComponentToEdgeDistance), _componentToEdgeDistanceDefault);
             set
             {
-                Grasshopper.Instances.Settings.SetValue(nameof(ComponentToEdgeDistance), value);
+                Instances.Settings.SetValue(nameof(ComponentToEdgeDistance), value);
                 RefreshLayout();
             }
         }
         public static readonly int _componentToCoreDistanceDefault = 3;
         public static int ComponentToCoreDistance
         {
-            get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentToCoreDistance), _componentToCoreDistanceDefault);
+            get => Instances.Settings.GetValue(nameof(ComponentToCoreDistance), _componentToCoreDistanceDefault);
             set
             {
-                Grasshopper.Instances.Settings.SetValue(nameof(ComponentToCoreDistance), value);
+                Instances.Settings.SetValue(nameof(ComponentToCoreDistance), value);
                 RefreshLayout();
             }
         }
@@ -47,10 +47,10 @@ namespace ComponentToolkit
         public static readonly int _componentControlNameDistanceDefault = 2;
         public static int ComponentControlNameDistance
         {
-            get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentControlNameDistance), _componentControlNameDistanceDefault);
+            get => Instances.Settings.GetValue(nameof(ComponentControlNameDistance), _componentControlNameDistanceDefault);
             set
             {
-                Grasshopper.Instances.Settings.SetValue(nameof(ComponentControlNameDistance), value);
+                Instances.Settings.SetValue(nameof(ComponentControlNameDistance), value);
                 RefreshLayout();
             }
 
@@ -63,44 +63,125 @@ namespace ComponentToolkit
             get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentUseControl), true);
             set
             {
-                Grasshopper.Instances.Settings.SetValue(nameof(ComponentUseControl), value);
+                Instances.Settings.SetValue(nameof(ComponentUseControl), value);
                 RefreshLayout();
             }
         }
 
         public static bool ComponentInputEdgeLayout
         {
-            get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentInputEdgeLayout), true);
+            get => Instances.Settings.GetValue(nameof(ComponentInputEdgeLayout), true);
             set
             {
-                Grasshopper.Instances.Settings.SetValue(nameof(ComponentInputEdgeLayout), value);
+                Instances.Settings.SetValue(nameof(ComponentInputEdgeLayout), value);
                 RefreshLayout();
             }
         }
 
         public static bool ComponentOutputEdgeLayout
         {
-            get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentOutputEdgeLayout), false);
+            get => Instances.Settings.GetValue(nameof(ComponentOutputEdgeLayout), false);
             set
             {
-                Grasshopper.Instances.Settings.SetValue(nameof(ComponentOutputEdgeLayout), value);
+                Instances.Settings.SetValue(nameof(ComponentOutputEdgeLayout), value);
                 RefreshLayout();
             }
         }
 
         private static void RefreshLayout()
         {
-            foreach (IGH_DocumentObject @object in Grasshopper.Instances.ActiveCanvas.Document.Objects)
+            foreach (IGH_DocumentObject @object in Instances.ActiveCanvas.Document.Objects)
             {
                 @object.Attributes.ExpireLayout();
             }
-            Grasshopper.Instances.RedrawCanvas();
+            Instances.RedrawCanvas();
+        }
+        #endregion
+        #region Settings for Using Control Item
+        public static bool UseParamBooleanControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamBooleanControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamBooleanControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamColourControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamColourControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamColourControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamIntegerControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamIntegerControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamIntegerControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamIntervalControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamIntervalControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamIntervalControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamNumberControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamNumberControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamNumberControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamPointControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamPointControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamPointControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamStringControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamStringControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamStringControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamVectorControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamVectorControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamVectorControl), value);
+                RefreshLayout();
+            }
         }
         #endregion
 
         private static readonly string _location = Path.Combine(Folders.SettingsFolder, "quickwires.json");
 
-        internal static CreateObjectItems createObjectItems;
+        internal static CreateObjectItems StaticCreateObjectItems;
 
         private static readonly FieldInfo _tagsInfo = typeof(GH_LinkedParamAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_renderTags")).First();
 
@@ -112,7 +193,7 @@ namespace ComponentToolkit
         internal static void SaveToJson()
         {
             JavaScriptSerializer ser = new JavaScriptSerializer();
-            File.WriteAllText(_location, ser.Serialize(new CreateObjectItemsSave(createObjectItems)));
+            File.WriteAllText(_location, ser.Serialize(new CreateObjectItemsSave(StaticCreateObjectItems)));
         }
 
         public static void Init()
@@ -124,11 +205,11 @@ namespace ComponentToolkit
                 {
                     string jsonStr = File.ReadAllText(_location);
                     JavaScriptSerializer ser = new JavaScriptSerializer();
-                    createObjectItems = new CreateObjectItems(ser.Deserialize<CreateObjectItemsSave>(jsonStr));
+                    StaticCreateObjectItems = new CreateObjectItems(ser.Deserialize<CreateObjectItemsSave>(jsonStr));
                 }
                 else
                 {
-                    createObjectItems = new CreateObjectItems();
+                    StaticCreateObjectItems = new CreateObjectItems();
                 }
 
             }

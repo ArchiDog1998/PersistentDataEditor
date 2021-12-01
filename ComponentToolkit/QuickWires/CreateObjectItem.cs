@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace ComponentToolkit
 {
-    internal class CreateObjectItem
+    public class CreateObjectItem
     {
         public static MethodInfo functions = typeof(GH_Canvas).GetRuntimeMethods().Where(m => m.Name.Contains("InstantiateNewObject") && !m.IsPublic).First();
 
         public ushort Index { get; }
         public Guid ObjectGuid { get; }
-        public string InitString { get; }
+        public string InitString { get; set; }
         public Bitmap Icon { get; }
         public string ShowName { get; }
         public string Name { get; }
@@ -40,7 +40,7 @@ namespace ComponentToolkit
 
         }
 
-        public void CreateObject(IGH_Param param, float move = 100)
+        public void CreateObject(IGH_Param param, float move = 200)
         {
             IGH_DocumentObject obj = Grasshopper.Instances.ComponentServer.EmitObject(ObjectGuid);
             if (obj == null) return;
@@ -89,7 +89,7 @@ namespace ComponentToolkit
         }
     }
 
-    internal struct CreateObjectItemSave
+    public struct CreateObjectItemSave
     {
         public Guid ObjectGuid { get; set; }
         public string initString { get; set; }

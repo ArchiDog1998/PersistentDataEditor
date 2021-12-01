@@ -8,7 +8,6 @@
         Title="QuickWireEditor" Height="300" Width="250" MinWidth="220" MinHeight="150">
 
     <Window.Resources>
-        <local:CreateItemConverter x:Key="CreateItemConverter"/>
         <local:BitmapConverter x:Key="BitmapConverter"/>
         <local:GridSelectedConverter x:Key="GridSelectedConverter"/>
 
@@ -32,6 +31,10 @@
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter TargetName="ButtonBorder" Property="Background" Value="AliceBlue" />
                 </Trigger>
+
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="ButtonBorder" Property="Background" Value="Silver" />
+                </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
@@ -54,11 +57,11 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <DataGrid x:Name="dataGrid" IsReadOnly="True" SelectionMode="Single" CanUserAddRows="False" AutoGenerateColumns="False" BorderThickness="0"
-                          RowBackground="Transparent"
-                   VirtualizingPanel.IsVirtualizing="True" ItemsSource="{Binding ElementName=Father, Path=DataContext, Converter={StaticResource CreateItemConverter}, Mode=TwoWay}">
+                <DataGrid x:Name="dataGrid" IsReadOnly="False" SelectionMode="Single" CanUserAddRows="False" AutoGenerateColumns="False" BorderThickness="0"
+                          RowBackground="Transparent" GridLinesVisibility="None" Background="Transparent"
+                   VirtualizingPanel.IsVirtualizing="True" ItemsSource="{Binding ElementName=Father, Path=DataContext, Mode=TwoWay}">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="Icon">
+                        <DataGridTemplateColumn Header="Icon" IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Image Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -67,8 +70,8 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                        <DataGridTextColumn Header="Index" Binding="{Binding Index}"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Index" Binding="{Binding Index}" IsReadOnly="True"/>
                         <DataGridTextColumn Header="InitString" Binding="{Binding InitString}" IsReadOnly="False"/>
                     </DataGrid.Columns>
                 </DataGrid>

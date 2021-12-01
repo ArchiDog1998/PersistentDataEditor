@@ -1,4 +1,5 @@
-﻿using Grasshopper.GUI;
+﻿using Grasshopper;
+using Grasshopper.GUI;
 using Grasshopper.GUI.Base;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
@@ -9,14 +10,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Grasshopper.Kernel.Parameters;
 
 namespace ComponentToolkit
 {
     public static  class MenuCreator
     {
+        public static bool UseQuickWire
+        {
+            get => Instances.Settings.GetValue(nameof(UseQuickWire), true);
+            set => Instances.Settings.SetValue(nameof(UseQuickWire), value);
+        }
         public static ToolStripMenuItem CreateMajorMenu()
         {
             ToolStripMenuItem major = new ToolStripMenuItem("Component Layout") { ToolTipText = "Set some component's layout params." };
+
+            ToolStripMenuItem quickClick = new ToolStripMenuItem("Use Quick Wire") { Checked = UseQuickWire };
+            quickClick.Click += (sender, e) =>
+            {
+                quickClick.Checked = !quickClick.Checked;
+                UseQuickWire = quickClick.Checked;
+            };
+            major.DropDownItems.Add(quickClick);
+
             major.DropDownItems.Add(CreateControlItem());
 
             ToolStripMenuItem inputClick = new ToolStripMenuItem("Component Input Align Edge") { Checked = GH_ComponentAttributesReplacer.ComponentInputEdgeLayout };
@@ -50,10 +66,88 @@ namespace ComponentToolkit
         private static ToolStripMenuItem CreateControlItem()
         {
             ToolStripMenuItem major = CreateCheckBox("Use Control", GH_ComponentAttributesReplacer.ComponentUseControl, (boolean) => GH_ComponentAttributesReplacer.ComponentUseControl = boolean);
+            major.DropDownItems.Add(CreateUseControlItem());
             major.DropDownItems.Add(CreateForeGroundColor());
             major.DropDownItems.Add(CreateBackGroundColor());
             return major;
         }
+
+        private static ToolStripMenuItem CreateUseControlItem()
+        {
+            ToolStripMenuItem major = new ToolStripMenuItem("Choose Controls") { ToolTipText = "Choose which control should be used." };
+
+            major.DropDown.Closing += DropDown_Closing;
+
+            ToolStripMenuItem booleanClick = new ToolStripMenuItem("Boolean Control", new Param_Boolean().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamBooleanControl };
+            booleanClick.Click += (sender, e) =>
+            {
+                booleanClick.Checked = !booleanClick.Checked;
+                GH_ComponentAttributesReplacer.UseParamBooleanControl = booleanClick.Checked;
+            };
+            major.DropDownItems.Add(booleanClick);
+
+            ToolStripMenuItem stringClick = new ToolStripMenuItem("String Control", new Param_String().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamStringControl };
+            stringClick.Click += (sender, e) =>
+            {
+                stringClick.Checked = !stringClick.Checked;
+                GH_ComponentAttributesReplacer.UseParamStringControl = stringClick.Checked;
+            };
+            major.DropDownItems.Add(stringClick);
+
+            ToolStripMenuItem integerClick = new ToolStripMenuItem("Integer Control", new Param_Integer().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamIntegerControl };
+            integerClick.Click += (sender, e) =>
+            {
+                integerClick.Checked = !integerClick.Checked;
+                GH_ComponentAttributesReplacer.UseParamIntegerControl = integerClick.Checked;
+            };
+            major.DropDownItems.Add(integerClick);
+
+            ToolStripMenuItem NumberClick = new ToolStripMenuItem("Number Control", new Param_Number().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamNumberControl };
+            NumberClick.Click += (sender, e) =>
+            {
+                NumberClick.Checked = !NumberClick.Checked;
+                GH_ComponentAttributesReplacer.UseParamNumberControl = NumberClick.Checked;
+            };
+            major.DropDownItems.Add(NumberClick);
+
+            ToolStripMenuItem colorClick = new ToolStripMenuItem("Colour Control", new Param_Colour().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamColourControl };
+            colorClick.Click += (sender, e) =>
+            {
+                colorClick.Checked = !colorClick.Checked;
+                GH_ComponentAttributesReplacer.UseParamColourControl = colorClick.Checked;
+            };
+            major.DropDownItems.Add(colorClick);
+
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+
+            ToolStripMenuItem intervalClick = new ToolStripMenuItem("Interval Control", new Param_Interval().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamIntervalControl };
+            intervalClick.Click += (sender, e) =>
+            {
+                intervalClick.Checked = !intervalClick.Checked;
+                GH_ComponentAttributesReplacer.UseParamIntervalControl = intervalClick.Checked;
+            };
+            major.DropDownItems.Add(intervalClick);
+
+            ToolStripMenuItem pointClick = new ToolStripMenuItem("Point Control", new Param_Point().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamPointControl };
+            pointClick.Click += (sender, e) =>
+            {
+                pointClick.Checked = !pointClick.Checked;
+                GH_ComponentAttributesReplacer.UseParamPointControl = pointClick.Checked;
+            };
+            major.DropDownItems.Add(pointClick);
+
+
+            ToolStripMenuItem vectorClick = new ToolStripMenuItem("Vector Control", new Param_Vector().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamVectorControl };
+            vectorClick.Click += (sender, e) =>
+            {
+                vectorClick.Checked = !vectorClick.Checked;
+                GH_ComponentAttributesReplacer.UseParamVectorControl = vectorClick.Checked;
+            };
+            major.DropDownItems.Add(vectorClick);
+
+            return major;
+        }
+
         private static ToolStripMenuItem CreateForeGroundColor()
         {
             ToolStripMenuItem major = new ToolStripMenuItem("Foreground Color") { ToolTipText = "Change controls' foreground color." };

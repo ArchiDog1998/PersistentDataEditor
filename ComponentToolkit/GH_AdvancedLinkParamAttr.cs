@@ -5,6 +5,7 @@ using Grasshopper.Kernel.Attributes;
 using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -27,35 +28,35 @@ namespace ComponentToolkit
             if(IsPersistentParam(param.GetType(), out Type dataType))
             {
 
-                if (typeof(GH_String).IsAssignableFrom(dataType))
+                if (GH_ComponentAttributesReplacer.UseParamStringControl && typeof(GH_String).IsAssignableFrom(dataType))
                 {
                     Control = new ParamStringControl((GH_PersistentParam<GH_String>)param);
                 }
-                else if (typeof(GH_Integer).IsAssignableFrom(dataType))
+                else if (GH_ComponentAttributesReplacer.UseParamIntegerControl && typeof(GH_Integer).IsAssignableFrom(dataType))
                 {
                     Control = new ParamIntegerControl((GH_PersistentParam<GH_Integer>)param);
                 }
-                else if (typeof(GH_Number).IsAssignableFrom(dataType))
+                else if (GH_ComponentAttributesReplacer.UseParamNumberControl && typeof(GH_Number).IsAssignableFrom(dataType))
                 {
                     Control = new ParamNumberControl((GH_PersistentParam<GH_Number>)param);
                 }
-                else if (typeof(GH_Colour).IsAssignableFrom(dataType))
+                else if (GH_ComponentAttributesReplacer.UseParamColourControl && typeof(GH_Colour).IsAssignableFrom(dataType))
                 {
                     Control = new ParamColorControl((GH_PersistentParam<GH_Colour>)param);
                 }
-                else if (typeof(GH_Boolean).IsAssignableFrom(dataType))
+                else if (GH_ComponentAttributesReplacer.UseParamBooleanControl && typeof(GH_Boolean).IsAssignableFrom(dataType))
                 {
                     Control = new ParamBooleanControl((GH_PersistentParam<GH_Boolean>)param);
                 }
-                else if (typeof(GH_Interval).IsAssignableFrom(dataType))
+                else if (GH_ComponentAttributesReplacer.UseParamIntervalControl && typeof(GH_Interval).IsAssignableFrom(dataType))
                 {
                     Control = new ParamIntervalControl((GH_PersistentParam<GH_Interval>)param);
                 }
-                else if (typeof(GH_Point).IsAssignableFrom(dataType))
+                else if (GH_ComponentAttributesReplacer.UseParamPointControl && typeof(GH_Point).IsAssignableFrom(dataType))
                 {
                     Control = new ParamPoint3dControl((GH_PersistentParam<GH_Point>)param);
                 }
-                else if (typeof(GH_Vector).IsAssignableFrom(dataType))
+                else if (GH_ComponentAttributesReplacer.UseParamVectorControl && typeof(GH_Vector).IsAssignableFrom(dataType))
                 {
                     Control = new ParamVector3dControl((GH_PersistentParam<GH_Vector>)param);
                 }
@@ -92,16 +93,16 @@ namespace ComponentToolkit
 
                     return GH_ObjectResponse.Release;
                 }
-                if (StringRect.Contains(e.CanvasLocation))
+                if (MenuCreator.UseQuickWire && StringRect.Contains(e.CanvasLocation))
                 {
                     SortedList<Guid, CreateObjectItem[]> dict = new SortedList<Guid, CreateObjectItem[]>();
                     if (Owner.Kind == GH_ParamKind.input)
                     {
-                        dict = GH_ComponentAttributesReplacer.createObjectItems.InputItems;
+                        dict = GH_ComponentAttributesReplacer.StaticCreateObjectItems.InputItems;
                     }
                     else if (Owner.Kind == GH_ParamKind.output)
                     {
-                        dict = GH_ComponentAttributesReplacer.createObjectItems.OutputItems;
+                        dict = GH_ComponentAttributesReplacer.StaticCreateObjectItems.OutputItems;
                     }
 
                     CreateObjectItem[] items = new CreateObjectItem[0];
@@ -143,7 +144,8 @@ namespace ComponentToolkit
             if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is CreateObjectItem[])
             {
                 bool isInput = Owner.Kind == GH_ParamKind.input;
-                new QuickWireEditor(Owner.ComponentGuid, isInput, Owner.Icon_24x24) { DataContext = new List<CreateObjectItem>((CreateObjectItem[]) toolStripMenuItem.Tag) }.Show();
+                ObservableCollection<CreateObjectItem> structureLists = new ObservableCollection<CreateObjectItem>((CreateObjectItem[])toolStripMenuItem.Tag);
+                new QuickWireEditor(Owner.ComponentGuid, isInput, Owner.Icon_24x24, Owner.Name, structureLists).Show();
             }
         }
     }
