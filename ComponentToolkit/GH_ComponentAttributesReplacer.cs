@@ -218,6 +218,9 @@ namespace ComponentToolkit
                 MessageBox.Show(ex.Message);
             }
 
+            Instances.ActiveCanvas.Document_ObjectsAdded += ActiveCanvas_Document_ObjectsAdded;
+            Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
+
             ExchangeMethod(
                 typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.RenderComponentParameters))).First(),
                 typeof(GH_ComponentAttributesReplacer).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.RenderComponentParametersNew))).First()
@@ -232,6 +235,38 @@ namespace ComponentToolkit
                 typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.LayoutOutputParams))).First(),
                 typeof(GH_ComponentAttributesReplacer).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.LayoutOutputParamsNew))).First()
             );
+        }
+
+        private static void ActiveCanvas_DocumentChanged(GH_Canvas sender, GH_CanvasDocumentChangedEventArgs e)
+        {
+            if (e.NewDocument == null) return;
+            foreach (var item in e.NewDocument.Objects)
+            {
+                ChangeFloatParam(item);
+            }
+        }
+
+        private static void ActiveCanvas_Document_ObjectsAdded(GH_Document sender, GH_DocObjectEventArgs e)
+        {
+            foreach (var item in e.Objects)
+            {
+                ChangeFloatParam(item);
+            }
+        }
+
+        private static void ChangeFloatParam(IGH_DocumentObject item)
+        {
+            if (item is IGH_Param)
+            {
+                var param = (IGH_Param)item;
+                if (param.Kind == GH_ParamKind.floating && param.Attributes is GH_FloatingParamAttributes && !(param.Attributes is GH_AdvancedFloatingParamAttr))
+                {
+                    PointF point = param.Attributes.Pivot;
+                    param.Attributes = new GH_AdvancedFloatingParamAttr(param);
+                    param.Attributes.Pivot = point;
+                    param.Attributes.ExpireLayout();
+                }
+            }
         }
 
         internal static bool ExchangeMethod(MethodInfo targetMethod, MethodInfo injectMethod)

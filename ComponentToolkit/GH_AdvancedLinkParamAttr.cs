@@ -25,45 +25,48 @@ namespace ComponentToolkit
         public GH_AdvancedLinkParamAttr(IGH_Param param, IGH_Attributes parent) : base(param, parent)
         {
             if (param.Kind != GH_ParamKind.input) return;
-            if(IsPersistentParam(param.GetType(), out Type dataType))
+            Control = SetControl(param);
+        }
+        internal static BaseControlItem SetControl(IGH_Param param)
+        {
+            if (IsPersistentParam(param.GetType(), out _))
             {
-
-                if (typeof(GH_String).IsAssignableFrom(dataType))
+                if (param is GH_PersistentParam<GH_String>)
                 {
-                    Control = new ParamStringControl((GH_PersistentParam<GH_String>)param);
+                    return new ParamStringControl((GH_PersistentParam<GH_String>)param);
                 }
-                else if (typeof(GH_Integer).IsAssignableFrom(dataType))
+                else if (param is GH_PersistentParam<GH_Integer>)
                 {
-                    Control = new ParamIntegerControl((GH_PersistentParam<GH_Integer>)param);
+                    return new ParamIntegerControl((GH_PersistentParam<GH_Integer>)param);
                 }
-                else if (typeof(GH_Number).IsAssignableFrom(dataType))
+                else if (param is GH_PersistentParam<GH_Number>)
                 {
-                    Control = new ParamNumberControl((GH_PersistentParam<GH_Number>)param);
+                    return new ParamNumberControl((GH_PersistentParam<GH_Number>)param);
                 }
-                else if (typeof(GH_Colour).IsAssignableFrom(dataType))
+                else if (param is GH_PersistentParam<GH_Colour>)
                 {
-                    Control = new ParamColorControl((GH_PersistentParam<GH_Colour>)param);
+                    return new ParamColorControl((GH_PersistentParam<GH_Colour>)param);
                 }
-                else if (typeof(GH_Boolean).IsAssignableFrom(dataType))
+                else if (param is GH_PersistentParam<GH_Boolean>)
                 {
-                    Control = new ParamBooleanControl((GH_PersistentParam<GH_Boolean>)param);
+                    return new ParamBooleanControl((GH_PersistentParam<GH_Boolean>)param);
                 }
-                else if (typeof(GH_Interval).IsAssignableFrom(dataType))
+                else if (param is GH_PersistentParam<GH_Interval>)
                 {
-                    Control = new ParamIntervalControl((GH_PersistentParam<GH_Interval>)param);
+                    return new ParamIntervalControl((GH_PersistentParam<GH_Interval>)param);
                 }
-                else if (typeof(GH_Point).IsAssignableFrom(dataType))
+                else if (param is GH_PersistentParam<GH_Point>)
                 {
-                    Control = new ParamPoint3dControl((GH_PersistentParam<GH_Point>)param);
+                    return new ParamPoint3dControl((GH_PersistentParam<GH_Point>)param);
                 }
-                else if (typeof(GH_Vector).IsAssignableFrom(dataType))
+                else if (param is GH_PersistentParam<GH_Vector>)
                 {
-                    Control = new ParamVector3dControl((GH_PersistentParam<GH_Vector>)param);
+                    return new ParamVector3dControl((GH_PersistentParam<GH_Vector>)param);
                 }
             }
+            return null;
         }
-
-        public bool IsPersistentParam(Type type, out Type dataType)
+        private static bool IsPersistentParam(Type type, out Type dataType)
         {
             dataType = default(Type);
             if (type == null)
@@ -95,69 +98,73 @@ namespace ComponentToolkit
                 }
                 if (MenuCreator.UseQuickWire && StringRect.Contains(e.CanvasLocation))
                 {
-                    SortedList<Guid, CreateObjectItem[]> dict = new SortedList<Guid, CreateObjectItem[]>();
-                    if (Owner.Kind == GH_ParamKind.input)
-                    {
-                        dict = GH_ComponentAttributesReplacer.StaticCreateObjectItems.InputItems;
-                    }
-                    else if (Owner.Kind == GH_ParamKind.output)
-                    {
-                        dict = GH_ComponentAttributesReplacer.StaticCreateObjectItems.OutputItems;
-                    }
-
-                    CreateObjectItem[] items = new CreateObjectItem[0];
-                    if (dict.ContainsKey(Owner.ComponentGuid))
-                    {
-                        items = dict[Owner.ComponentGuid];
-                    }
-
-                    ToolStripDropDownMenu menu = new ToolStripDropDownMenu();
-                    foreach (CreateObjectItem createItem in items)
-                    {
-                        ToolStripMenuItem item = GH_DocumentObject.Menu_AppendItem(menu, createItem.ShowName, Menu_CreateItemClicked, createItem.Icon);
-                        item.Tag = createItem;
-                        if(!string.IsNullOrEmpty(createItem.InitString))
-                        {
-                            item.ToolTipText = $"Init String:\n{createItem.InitString}";
-                        }
-                        else
-                        {
-                            item.ToolTipText = "No Init String.";
-                        }
-                    }
-                    ToolStripMenuItem editItem = GH_DocumentObject.Menu_AppendItem(menu, "Edit", Menu_EditItemClicked);
-                    editItem.Image = Properties.Resources.EditIcon_24;
-                    editItem.Tag = items;
-                    editItem.ForeColor = Color.DimGray;
-
-                    menu.Show(sender, e.ControlLocation);
-
+                    RespondToQuickWire(Owner, Owner.Kind == GH_ParamKind.input).Show(sender, e.ControlLocation);
                     return GH_ObjectResponse.Release;
                 }
             }
             return base.RespondToMouseDoubleClick(sender, e);
         }
 
-        private void Menu_CreateItemClicked(object sender, EventArgs e)
+        internal static ToolStripDropDownMenu RespondToQuickWire(IGH_Param param, bool isInput)
+        {
+            SortedList<Guid, CreateObjectItem[]> dict = new SortedList<Guid, CreateObjectItem[]>();
+            if (isInput)
+            {
+                dict = GH_ComponentAttributesReplacer.StaticCreateObjectItems.InputItems;
+            }
+            else
+            {
+                dict = GH_ComponentAttributesReplacer.StaticCreateObjectItems.OutputItems;
+            }
+
+            CreateObjectItem[] items = new CreateObjectItem[0];
+            if (dict.ContainsKey(param.ComponentGuid))
+            {
+                items = dict[param.ComponentGuid];
+            }
+
+            ToolStripDropDownMenu menu = new ToolStripDropDownMenu();
+            foreach (CreateObjectItem createItem in items)
+            {
+                ToolStripMenuItem item = GH_DocumentObject.Menu_AppendItem(menu, createItem.ShowName, (sender, e) => Menu_CreateItemClicked(sender, param), createItem.Icon);
+                item.Tag = createItem;
+                if (!string.IsNullOrEmpty(createItem.InitString))
+                {
+                    item.ToolTipText = $"Init String:\n{createItem.InitString}";
+                }
+                else
+                {
+                    item.ToolTipText = "No Init String.";
+                }
+            }
+            ToolStripMenuItem editItem = GH_DocumentObject.Menu_AppendItem(menu, "Edit", (sender, e) => Menu_EditItemClicked(sender, param));
+            editItem.Image = Properties.Resources.EditIcon_24;
+            editItem.Tag = items;
+            editItem.ForeColor = Color.DimGray;
+
+            return menu;
+        }
+
+        private static void Menu_CreateItemClicked(object sender, IGH_Param param)
         {
             ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
             if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is CreateObjectItem)
             {
                 CreateObjectItem createItem = (CreateObjectItem)toolStripMenuItem.Tag;
-                createItem.CreateObject(Owner);
+                createItem.CreateObject(param);
                 return;
             }
             MessageBox.Show("Something wrong with create object.");
         }
 
-        private void Menu_EditItemClicked(object sender, EventArgs e)
+        private static void Menu_EditItemClicked(object sender, IGH_Param param)
         {
             ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
             if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is CreateObjectItem[])
             {
-                bool isInput = Owner.Kind == GH_ParamKind.input;
+                bool isInput = param.Kind == GH_ParamKind.input;
                 ObservableCollection<CreateObjectItem> structureLists = new ObservableCollection<CreateObjectItem>((CreateObjectItem[])toolStripMenuItem.Tag);
-                new QuickWireEditor(Owner.ComponentGuid, isInput, Owner.Icon_24x24, Owner.TypeName, structureLists).Show();
+                new QuickWireEditor(param.ComponentGuid, isInput, param.Icon_24x24, param.TypeName, structureLists).Show();
             }
         }
     }
