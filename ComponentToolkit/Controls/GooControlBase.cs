@@ -11,35 +11,40 @@ using System.Threading.Tasks;
 
 namespace ComponentToolkit
 {
-    internal abstract class GooControlBase<T> : BaseControlItem where T : class, IGH_Goo
+    internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T : class, IGH_Goo
     {
+        public IGH_Goo SaveGoo => _savedValue;
 
-        private T _value;
-        internal T Value 
+        private T _savedValue;
+        protected T ShowValue 
         {
             get
             {
                 T value = _valueGetter();
                 IsNull = value == null;
-                if(!IsNull) _value = value;
-                return _value;
+                if(!IsNull) _savedValue = value;
+                return _savedValue;
             }
             set
             {
-                _value = value;
-                _valueChanged(value, SaveUndo);
+                _savedValue = value;
+                if (ValueChange != null)
+                    ValueChange();
             }
         }
         public bool IsNull { get; private set; }
-        private Action<T, bool> _valueChanged;
+        public Action ValueChange { private get; set; }
         private Func<T> _valueGetter;
 
-        internal bool SaveUndo { private get; set; } = true;
-
-        internal GooControlBase(Func<T> valueGetter, Action<T, bool> valueChanged)
+        internal GooControlBase(Func<T> valueGetter)
         {
             _valueGetter = valueGetter;
-            _valueChanged = valueChanged;
         }
+    }
+
+    internal interface IGooValue
+    {
+        IGH_Goo SaveGoo { get; }
+        Action ValueChange { set; }
     }
 }

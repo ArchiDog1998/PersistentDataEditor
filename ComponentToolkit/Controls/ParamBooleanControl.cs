@@ -15,9 +15,13 @@ namespace ComponentToolkit
 
         internal ParamBooleanControl(GH_PersistentParam<GH_Boolean> owner) : base(owner)
         {
-            ControlItems = new BaseControlItem[]
+        }
+
+        protected override BaseControlItem[] SetControlItems(GH_PersistentParam<GH_Boolean> owner)
+        {
+            return new BaseControlItem[]
             {
-                new GooBooleanControl(()=> Owner.PersistentData.get_FirstItem(true), SetValue),
+                new GooBooleanControl(()=> OwnerGooData),
             };
         }
     }

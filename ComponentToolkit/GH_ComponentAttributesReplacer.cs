@@ -53,7 +53,17 @@ namespace ComponentToolkit
                 Instances.Settings.SetValue(nameof(ComponentControlNameDistance), value);
                 RefreshLayout();
             }
+        }
 
+        public static readonly int _inputBoxControlMaxWidthDefault = 100;
+        public static int InputBoxControlMaxWidth
+        {
+            get => Instances.Settings.GetValue(nameof(InputBoxControlMaxWidth), _inputBoxControlMaxWidthDefault);
+            set
+            {
+                Instances.Settings.SetValue(nameof(InputBoxControlMaxWidth), value);
+                RefreshLayout();
+            }
         }
 
         public static int AdditionWidth => ComponentToEdgeDistance + ComponentToCoreDistance;
@@ -70,7 +80,7 @@ namespace ComponentToolkit
 
         public static bool ComponentInputEdgeLayout
         {
-            get => Instances.Settings.GetValue(nameof(ComponentInputEdgeLayout), true);
+            get => Instances.Settings.GetValue(nameof(ComponentInputEdgeLayout), false);
             set
             {
                 Instances.Settings.SetValue(nameof(ComponentInputEdgeLayout), value);
@@ -90,10 +100,20 @@ namespace ComponentToolkit
 
         public static bool ControlAlignRightLayout
         {
-            get => Instances.Settings.GetValue(nameof(ControlAlignRightLayout), true);
+            get => Instances.Settings.GetValue(nameof(ControlAlignRightLayout), false);
             set
             {
                 Instances.Settings.SetValue(nameof(ControlAlignRightLayout), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool SeperateCalculateWidthControl
+        {
+            get => Instances.Settings.GetValue(nameof(SeperateCalculateWidthControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(SeperateCalculateWidthControl), value);
                 RefreshLayout();
             }
         }
@@ -107,6 +127,7 @@ namespace ComponentToolkit
             Instances.RedrawCanvas();
         }
         #endregion
+
         #region Settings for Using Control Item
         public static bool UseParamBooleanControl
         {
@@ -184,6 +205,36 @@ namespace ComponentToolkit
             set
             {
                 Instances.Settings.SetValue(nameof(UseParamVectorControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamComplexControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamComplexControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamComplexControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamInterval2DControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamInterval2DControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamInterval2DControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamGeneralControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamGeneralControl), false);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamGeneralControl), value);
                 RefreshLayout();
             }
         }
@@ -321,7 +372,9 @@ namespace ComponentToolkit
             if (count == 0) return;
 
             //Get width and Init the Attributes.
-            int singleParamBoxWidth = 0;
+            int singleParamBoxMaxWidth = 0;
+            int nameMaxWidth = 0;
+            int controlMaxWidth = 0;
             foreach (IGH_Param param in gH_Params)
             {
                 if (param.Attributes == null || !(param.Attributes is GH_AdvancedLinkParamAttr))
@@ -332,9 +385,19 @@ namespace ComponentToolkit
                     owner.OnPingDocument()?.DestroyAttributeCache();
                 }
                 GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
-                singleParamBoxWidth = Math.Max(singleParamBoxWidth, attr.WholeWidth);
+
+                singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth, attr.WholeWidth);
+                nameMaxWidth = Math.Max(nameMaxWidth, attr.StringWidth);
+                controlMaxWidth = Math.Max(controlMaxWidth, attr.ControlWidth);
             }
-            singleParamBoxWidth = Math.Max(singleParamBoxWidth + AdditionWidth, AdditionWidth + MiniWidth);
+
+            if (SeperateCalculateWidthControl)
+            {
+                int controlAddition = controlMaxWidth == 0? 0 : controlMaxWidth + ComponentControlNameDistance;
+                singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + AdditionWidth, AdditionWidth + MiniWidth);
+            }
+            else singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth + AdditionWidth, AdditionWidth + MiniWidth);
+
 
             //Layout every param.
             float singleParamBoxHeight = componentBox.Height / count;
@@ -342,11 +405,11 @@ namespace ComponentToolkit
             {
                 IGH_Param param = gH_Params[i];
 
-                float rectX = isInput ? componentBox.X - singleParamBoxWidth : componentBox.Right + ComponentToCoreDistance;
+                float rectX = isInput ? componentBox.X - singleParamBoxMaxWidth : componentBox.Right + ComponentToCoreDistance;
                 float rectY = componentBox.Y + i * singleParamBoxHeight;
-                float width = singleParamBoxWidth - ComponentToCoreDistance;
+                float width = singleParamBoxMaxWidth - ComponentToCoreDistance;
                 float height = singleParamBoxHeight;
-                param.Attributes.Pivot = new PointF(rectX + 0.5f * singleParamBoxWidth, rectY + 0.5f * singleParamBoxHeight);
+                param.Attributes.Pivot = new PointF(rectX + 0.5f * singleParamBoxMaxWidth, rectY + 0.5f * singleParamBoxHeight);
                 param.Attributes.Bounds = GH_Convert.ToRectangle(new RectangleF(rectX, rectY, width, height));
 
             }
@@ -430,13 +493,29 @@ namespace ComponentToolkit
 
                 if (isInput)
                 {
-                    attr.StringRect = ComponentInputEdgeLayout ? new RectangleF(attr.Bounds.X + additionforTag + ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
-                        new RectangleF(attr.Bounds.Right - wholeWidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
-
-                    if(attr.Control != null)
+                    if (SeperateCalculateWidthControl)
                     {
-                        attr.Control.Bounds = new RectangleF(ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth :attr.StringRect.Right + ComponentControlNameDistance, 
-                            attr.StringRect.Top + (attr.StringRect.Height - attr.Control.Height)/2, attr.ControlWidth, attr.Control.Height);
+                        float maxStringRight = attr.Bounds.X + additionforTag + ComponentToEdgeDistance + nameMaxWidth;
+                        attr.StringRect = ComponentInputEdgeLayout ? new RectangleF(attr.Bounds.X + additionforTag + ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                            new RectangleF(maxStringRight - stringwidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
+
+
+                        if (attr.Control != null)
+                        {
+                            attr.Control.Bounds = new RectangleF(ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth : maxStringRight + ComponentControlNameDistance,
+                                attr.StringRect.Top + (attr.StringRect.Height - attr.Control.Height) / 2, attr.ControlWidth, attr.Control.Height);
+                        }
+                    }
+                    else
+                    {
+                        attr.StringRect = ComponentInputEdgeLayout ? new RectangleF(attr.Bounds.X + additionforTag + ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                            new RectangleF(attr.Bounds.Right - wholeWidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
+                        if (attr.Control != null)
+                        {
+                            attr.Control.Bounds = new RectangleF(ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth : attr.StringRect.Right + ComponentControlNameDistance,
+                                attr.StringRect.Top + (attr.StringRect.Height - attr.Control.Height) / 2, attr.ControlWidth, attr.Control.Height);
+                        }
+
                     }
                 }
                 else

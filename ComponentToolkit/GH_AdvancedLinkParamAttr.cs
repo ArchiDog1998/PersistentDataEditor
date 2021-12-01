@@ -29,7 +29,7 @@ namespace ComponentToolkit
         }
         internal static BaseControlItem SetControl(IGH_Param param)
         {
-            if (IsPersistentParam(param.GetType(), out _))
+            if (IsPersistentParam(param.GetType(), out Type storedData))
             {
                 if (param is GH_PersistentParam<GH_String>)
                 {
@@ -63,9 +63,24 @@ namespace ComponentToolkit
                 {
                     return new ParamVector3dControl((GH_PersistentParam<GH_Vector>)param);
                 }
+                else if (param is GH_PersistentParam<GH_Interval2D>)
+                {
+                    return new ParamInterval2DControl((GH_PersistentParam<GH_Interval2D>)param);
+                }
+                else if (param is GH_PersistentParam<GH_ComplexNumber>)
+                {
+                    return new ParamComplexControl((GH_PersistentParam<GH_ComplexNumber>)param);
+                }
+
+                else
+                {
+                    Type controlType = typeof(ParamGeneralControl<>).MakeGenericType(storedData);
+                    return (BaseControlItem)Activator.CreateInstance(controlType, param);
+                }
             }
             return null;
         }
+
         private static bool IsPersistentParam(Type type, out Type dataType)
         {
             dataType = default(Type);

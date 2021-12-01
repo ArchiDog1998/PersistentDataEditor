@@ -24,8 +24,7 @@ namespace ComponentToolkit
         private GraphicsPath _path;
 
 
-        public GooColorControl(Func<GH_Colour> valueGetter, Action<GH_Colour, bool> valueChanged)
-            :base(valueGetter, valueChanged)
+        public GooColorControl(Func<GH_Colour> valueGetter):base(valueGetter)
         {
         }
 
@@ -33,17 +32,15 @@ namespace ComponentToolkit
         internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             ToolStripDropDownMenu menu = new ToolStripDropDownMenu() { ShowImageMargin = false };
-            SaveUndo = true;
 
-            Color color = Value?.Value ?? Color.Transparent;
+            Color color = ShowValue?.Value ?? Color.Transparent;
             GH_DocumentObject.Menu_AppendColourPicker(menu, color, ColourChanged);
             menu.Show(sender, e.ControlLocation);
 
 
             void ColourChanged(GH_ColourPicker sender1, GH_ColourPickerEventArgs e1)
             {
-                Value = new GH_Colour(e1.Colour);
-                SaveUndo = false;
+                ShowValue = new GH_Colour(e1.Colour);
             }
         }
 
@@ -58,8 +55,8 @@ namespace ComponentToolkit
 
             graphics.FillPath(_background, _path);
 
-            if (Value != null)
-                graphics.FillPath(new SolidBrush(Value.Value), _path);
+            if (ShowValue != null)
+                graphics.FillPath(new SolidBrush(ShowValue.Value), _path);
 
             graphics.DrawPath(new Pen(new SolidBrush(ControlBorderColor)), _path);
         }

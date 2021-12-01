@@ -6,7 +6,7 @@ using System.Drawing.Drawing2D;
 
 namespace ComponentToolkit
 {
-    internal abstract class BaseControlItem
+    public abstract class BaseControlItem
     {
         public static readonly Color _controlForegroundColorDefault = Color.FromArgb(40, 40, 40);
         public static Color ControlForegroundColor

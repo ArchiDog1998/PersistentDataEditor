@@ -19,13 +19,13 @@ namespace ComponentToolkit
         {
             get
             {
-                if(Value == null)
+                if(ShowValue == null)
                 {
                     return null;
                 }
                 else
                 {
-                    int index = Value.Value;
+                    int index = ShowValue.Value;
                     if (_namedValues.ContainsKey(index))
                     {
                         return _namedValues[index];
@@ -49,8 +49,7 @@ namespace ComponentToolkit
         private RectangleF _stringBounds;
         private GraphicsPath _triangle;
 
-        public GooEnumControl(Func<GH_Integer> valueGetter, Action<GH_Integer, bool> valueChanged, SortedList<int, string> namedValues) : 
-            base(valueGetter, valueChanged)
+        public GooEnumControl(Func<GH_Integer> valueGetter, SortedList<int, string> namedValues) : base(valueGetter)
         {
             _namedValues = namedValues;
         }
@@ -58,7 +57,7 @@ namespace ComponentToolkit
         internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             ToolStripDropDownMenu menu = new ToolStripDropDownMenu();
-            int? num = Value?.Value;
+            int? num = ShowValue?.Value;
             foreach (var namedValue in _namedValues)
             {
                 GH_DocumentObject.Menu_AppendItem(menu, namedValue.Value, Menu_NamedValueClicked, true, namedValue.Key == num).Tag = namedValue.Key;
@@ -71,7 +70,7 @@ namespace ComponentToolkit
             ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
             if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is int)
             {
-                Value = new GH_Integer((int)toolStripMenuItem.Tag);
+                ShowValue = new GH_Integer((int)toolStripMenuItem.Tag);
             }
         }
 

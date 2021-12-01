@@ -21,6 +21,10 @@ namespace ComponentToolkit
         private static FieldInfo valueInfo = null;
         internal ParamIntegerControl(GH_PersistentParam<GH_Integer> owner) : base(owner)
         {
+        }
+
+        protected override BaseControlItem[] SetControlItems(GH_PersistentParam<GH_Integer> owner)
+        {
             if (owner is Param_Integer && ((Param_Integer)owner).HasNamedValues)
             {
                 IList list = (IList)namedValueListInfo.GetValue(owner);
@@ -30,22 +34,22 @@ namespace ComponentToolkit
                 {
                     nameInfo = nameInfo ?? item.GetType().GetRuntimeFields().Where(m => m.Name.Contains("Name")).First();
                     valueInfo = valueInfo ?? item.GetType().GetRuntimeFields().Where(m => m.Name.Contains("Value")).First();
+
                     keyValues[(int)valueInfo.GetValue(item)] = (string)nameInfo.GetValue(item);
                 }
 
-                ControlItems = new BaseControlItem[]
+                return new BaseControlItem[]
                 {
-                    new GooEnumControl(()=> Owner.PersistentData.get_FirstItem(true), SetValue, keyValues),
+                    new GooEnumControl(()=> OwnerGooData, keyValues),
                 };
             }
             else
             {
-                ControlItems = new BaseControlItem[]
+                return  new BaseControlItem[]
                 {
-                new GooIntegerControl(()=> Owner.PersistentData.get_FirstItem(true), SetValue),
+                    new GooInputBoxControl<GH_Integer>(()=> OwnerGooData),
                 };
             }
-
         }
     }
 }

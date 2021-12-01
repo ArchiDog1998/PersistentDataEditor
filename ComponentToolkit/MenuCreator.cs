@@ -26,7 +26,7 @@ namespace ComponentToolkit
             ToolStripMenuItem major = new ToolStripMenuItem("Component Toolkit", Properties.Resources.ComponentToolkitIcon_24) { ToolTipText = "Two tools and some component's layout params." };
 
             ToolStripMenuItem quickClick = new ToolStripMenuItem("Use Quick Wire", Properties.Resources.QuickwireIcon_24) { Checked = UseQuickWire };
-            quickClick.ToolTipText = "You can double click the component's param to choose which activeobjec you want to add.";
+            quickClick.ToolTipText = "You can left click the component's param to choose which activeobjec you want to add.";
             quickClick.Click += (sender, e) =>
             {
                 quickClick.Checked = !quickClick.Checked;
@@ -35,6 +35,8 @@ namespace ComponentToolkit
             major.DropDownItems.Add(quickClick);
 
             major.DropDownItems.Add(CreateControlItem());
+
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
             ToolStripMenuItem inputClick = new ToolStripMenuItem("Component Input Align Edge") { Checked = GH_ComponentAttributesReplacer.ComponentInputEdgeLayout };
             inputClick.Click += (sender, e) =>
@@ -56,8 +58,6 @@ namespace ComponentToolkit
             CreateNumberBox(major, "Params to Edge", GH_ComponentAttributesReplacer.ComponentToEdgeDistance, (v) => GH_ComponentAttributesReplacer.ComponentToEdgeDistance = (int)v, GH_ComponentAttributesReplacer._componentToEdgeDistanceDefault, 20, 0);
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
             CreateNumberBox(major, "Params to Core", GH_ComponentAttributesReplacer.ComponentToCoreDistance, (v) => GH_ComponentAttributesReplacer.ComponentToCoreDistance = (int)v, GH_ComponentAttributesReplacer._componentToCoreDistanceDefault, 20, 0);
-            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateNumberBox(major, "Params to Control", GH_ComponentAttributesReplacer.ComponentControlNameDistance, (v) => GH_ComponentAttributesReplacer.ComponentControlNameDistance = (int)v, GH_ComponentAttributesReplacer._componentControlNameDistanceDefault, 20, 0);
 
 
 
@@ -70,8 +70,23 @@ namespace ComponentToolkit
             major.Image = Properties.Resources.ParamControlIcon_24;
             major.ToolTipText = "It will show you the persistent param's value and you can change the value easily.";
 
-            major.DropDownItems.Add(CreateCheckBox("Control Align Right", GH_ComponentAttributesReplacer.ControlAlignRightLayout, (boolean) => GH_ComponentAttributesReplacer.ControlAlignRightLayout = boolean));
             major.DropDownItems.Add(CreateUseControlItem());
+
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+
+            major.DropDownItems.Add(CreateCheckBox("Independent Width", GH_ComponentAttributesReplacer.SeperateCalculateWidthControl, 
+                (boolean) => GH_ComponentAttributesReplacer.SeperateCalculateWidthControl = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Control Align Right", GH_ComponentAttributesReplacer.ControlAlignRightLayout, 
+                (boolean) => GH_ComponentAttributesReplacer.ControlAlignRightLayout = boolean));
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+            CreateNumberBox(major, "Params to Control", GH_ComponentAttributesReplacer.ComponentControlNameDistance, 
+                (v) => GH_ComponentAttributesReplacer.ComponentControlNameDistance = (int)v, GH_ComponentAttributesReplacer._componentControlNameDistanceDefault, 20, 0);
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+            CreateNumberBox(major, "Max InputBox Width", GH_ComponentAttributesReplacer.InputBoxControlMaxWidth,
+                (v) => GH_ComponentAttributesReplacer.InputBoxControlMaxWidth = (int)v, GH_ComponentAttributesReplacer._inputBoxControlMaxWidthDefault, 500, 20);
+
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+
             major.DropDownItems.Add(CreateForeGroundColor());
             major.DropDownItems.Add(CreateBackGroundColor());
             return major;
@@ -80,75 +95,46 @@ namespace ComponentToolkit
         private static ToolStripMenuItem CreateUseControlItem()
         {
             ToolStripMenuItem major = new ToolStripMenuItem("Choose Controls") { ToolTipText = "Choose which control should be used." };
+            major.Font = new Font(major.Font, FontStyle.Bold);
 
             major.DropDown.Closing += DropDown_Closing;
 
-            ToolStripMenuItem booleanClick = new ToolStripMenuItem("Boolean Control", new Param_Boolean().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamBooleanControl };
-            booleanClick.Click += (sender, e) =>
-            {
-                booleanClick.Checked = !booleanClick.Checked;
-                GH_ComponentAttributesReplacer.UseParamBooleanControl = booleanClick.Checked;
-            };
-            major.DropDownItems.Add(booleanClick);
+            major.DropDownItems.Add(CreateCheckBox("Boolean Control", GH_ComponentAttributesReplacer.UseParamBooleanControl, new Param_Boolean().Icon_24x24,
+                (boolean) => GH_ComponentAttributesReplacer.UseParamBooleanControl = boolean));
 
-            ToolStripMenuItem stringClick = new ToolStripMenuItem("String Control", new Param_String().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamStringControl };
-            stringClick.Click += (sender, e) =>
-            {
-                stringClick.Checked = !stringClick.Checked;
-                GH_ComponentAttributesReplacer.UseParamStringControl = stringClick.Checked;
-            };
-            major.DropDownItems.Add(stringClick);
+            major.DropDownItems.Add(CreateCheckBox("String Control", GH_ComponentAttributesReplacer.UseParamStringControl, new Param_String().Icon_24x24,
+                (boolean) => GH_ComponentAttributesReplacer.UseParamStringControl = boolean));
 
-            ToolStripMenuItem integerClick = new ToolStripMenuItem("Integer Control", new Param_Integer().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamIntegerControl };
-            integerClick.Click += (sender, e) =>
-            {
-                integerClick.Checked = !integerClick.Checked;
-                GH_ComponentAttributesReplacer.UseParamIntegerControl = integerClick.Checked;
-            };
-            major.DropDownItems.Add(integerClick);
+            major.DropDownItems.Add(CreateCheckBox("Integer Control", GH_ComponentAttributesReplacer.UseParamIntegerControl, new Param_Integer().Icon_24x24,
+                (boolean) => GH_ComponentAttributesReplacer.UseParamIntegerControl = boolean));
 
-            ToolStripMenuItem NumberClick = new ToolStripMenuItem("Number Control", new Param_Number().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamNumberControl };
-            NumberClick.Click += (sender, e) =>
-            {
-                NumberClick.Checked = !NumberClick.Checked;
-                GH_ComponentAttributesReplacer.UseParamNumberControl = NumberClick.Checked;
-            };
-            major.DropDownItems.Add(NumberClick);
+            major.DropDownItems.Add(CreateCheckBox("Number Control", GH_ComponentAttributesReplacer.UseParamNumberControl, new Param_Number().Icon_24x24,
+                (boolean) => GH_ComponentAttributesReplacer.UseParamNumberControl = boolean));
 
-            ToolStripMenuItem colorClick = new ToolStripMenuItem("Colour Control", new Param_Colour().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamColourControl };
-            colorClick.Click += (sender, e) =>
-            {
-                colorClick.Checked = !colorClick.Checked;
-                GH_ComponentAttributesReplacer.UseParamColourControl = colorClick.Checked;
-            };
-            major.DropDownItems.Add(colorClick);
+            major.DropDownItems.Add(CreateCheckBox("Colour Control", GH_ComponentAttributesReplacer.UseParamColourControl, new Param_Colour().Icon_24x24,
+                (boolean) => GH_ComponentAttributesReplacer.UseParamColourControl = boolean));
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
-            ToolStripMenuItem intervalClick = new ToolStripMenuItem("Interval Control", new Param_Interval().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamIntervalControl };
-            intervalClick.Click += (sender, e) =>
-            {
-                intervalClick.Checked = !intervalClick.Checked;
-                GH_ComponentAttributesReplacer.UseParamIntervalControl = intervalClick.Checked;
-            };
-            major.DropDownItems.Add(intervalClick);
+            major.DropDownItems.Add(CreateCheckBox("Interval Control", GH_ComponentAttributesReplacer.UseParamIntervalControl, new Param_Interval().Icon_24x24,
+                (boolean) => GH_ComponentAttributesReplacer.UseParamIntervalControl = boolean));
 
-            ToolStripMenuItem pointClick = new ToolStripMenuItem("Point Control", new Param_Point().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamPointControl };
-            pointClick.Click += (sender, e) =>
-            {
-                pointClick.Checked = !pointClick.Checked;
-                GH_ComponentAttributesReplacer.UseParamPointControl = pointClick.Checked;
-            };
-            major.DropDownItems.Add(pointClick);
+            major.DropDownItems.Add(CreateCheckBox("Interval2d Control", GH_ComponentAttributesReplacer.UseParamInterval2DControl, new Param_Interval2D().Icon_24x24,
+                (boolean) => GH_ComponentAttributesReplacer.UseParamInterval2DControl = boolean));
 
+            major.DropDownItems.Add(CreateCheckBox("Point Control", GH_ComponentAttributesReplacer.UseParamPointControl, new Param_Point().Icon_24x24,
+                (boolean) => GH_ComponentAttributesReplacer.UseParamPointControl = boolean));
 
-            ToolStripMenuItem vectorClick = new ToolStripMenuItem("Vector Control", new Param_Vector().Icon_24x24) { Checked = GH_ComponentAttributesReplacer.UseParamVectorControl };
-            vectorClick.Click += (sender, e) =>
-            {
-                vectorClick.Checked = !vectorClick.Checked;
-                GH_ComponentAttributesReplacer.UseParamVectorControl = vectorClick.Checked;
-            };
-            major.DropDownItems.Add(vectorClick);
+            major.DropDownItems.Add(CreateCheckBox("Vector Control", GH_ComponentAttributesReplacer.UseParamVectorControl, new Param_Vector().Icon_24x24,
+                (boolean) => GH_ComponentAttributesReplacer.UseParamVectorControl = boolean));
+
+            major.DropDownItems.Add(CreateCheckBox("Complex Control", GH_ComponentAttributesReplacer.UseParamComplexControl, new Param_Complex().Icon_24x24,
+                (boolean) => GH_ComponentAttributesReplacer.UseParamComplexControl = boolean));
+
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+
+            major.DropDownItems.Add(CreateCheckBox("General Control", GH_ComponentAttributesReplacer.UseParamGeneralControl, new Param_GenericObject().Icon_24x24,
+                (boolean) => GH_ComponentAttributesReplacer.UseParamGeneralControl = boolean));
 
             return major;
         }
@@ -176,19 +162,31 @@ namespace ComponentToolkit
 
             return major;
         }
-
+        private static ToolStripMenuItem CreateCheckBox(string itemName, bool valueDefault, Bitmap icon, Action<bool> valueChange)
+        {
+            ToolStripMenuItem click = new ToolStripMenuItem(itemName, icon) { Checked = valueDefault };
+            CreateCheckBox(ref click, valueChange);
+            return click;
+        }
         private static ToolStripMenuItem CreateCheckBox(string itemName, bool valueDefault, Action<bool> valueChange)
         {
 
             ToolStripMenuItem click = new ToolStripMenuItem(itemName) { Checked = valueDefault };
-            click.Click += (sender, e) =>
-            {
-                click.Checked = !click.Checked;
-                valueChange.Invoke(click.Checked);
-            };
-
+            CreateCheckBox(ref click, valueChange);
             return click;
         }
+
+        private static void CreateCheckBox(ref ToolStripMenuItem click, Action<bool> valueChange)
+        {
+            click.Click += (sender, e) =>
+            {
+                ToolStripMenuItem item = (ToolStripMenuItem)sender;
+                item.Checked = !item.Checked;
+                valueChange.Invoke(item.Checked);
+            };
+
+        }
+
 
         private static void CreateNumberBox(ToolStripMenuItem item, string itemName, double originValue, Action<double> valueChange, double valueDefault, double Max, double Min)
         {
@@ -200,7 +198,7 @@ namespace ComponentToolkit
             textBox.ToolTipText = $"Value from {Min} to {Max}";
             item.DropDownItems.Add(textBox);
 
-            int decimalPlace = 3;
+            int decimalPlace = 0;
 
             GH_DigitScroller slider = new GH_DigitScroller
             {

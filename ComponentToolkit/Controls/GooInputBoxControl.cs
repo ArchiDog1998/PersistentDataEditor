@@ -10,18 +10,20 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ComponentToolkit
 {
-    internal abstract class GooInputBoxControl<T> : GooControlBase<T> where T : class, IGH_Goo
+    internal class GooInputBoxControl<T> : GooControlBase<T> where T : class, IGH_Goo
     {
-        protected virtual string ShowString => Value?.ToString();
+        protected virtual string ShowString => ShowValue?.ToString();
         internal override int Height => 14;
-        internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15), 100);
+        internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15), 
+            GH_ComponentAttributesReplacer.InputBoxControlMaxWidth);
 
         private GraphicsPath path;
 
-        public GooInputBoxControl(Func<T> valueGetter, Action<T, bool> valueChanged) : base(valueGetter, valueChanged)
+        public GooInputBoxControl(Func<T> valueGetter) : base(valueGetter)
         {
         }
 
@@ -30,7 +32,18 @@ namespace ComponentToolkit
             new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowString, true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
         }
 
-        protected abstract void SaveString(string str);
+        private void SaveString(string str)
+        {
+            T value = (T)Activator.CreateInstance(typeof(T));
+            if (value.CastFrom(str))
+            {
+                ShowValue = value;
+            }
+            else
+            {
+                MessageBox.Show($"Can't cast a {typeof(T).Name} from \"{str}\".");
+            }
+        }
 
         protected override void LayoutObject(RectangleF bounds)
         {

@@ -13,57 +13,33 @@ namespace ComponentToolkit
     {
         protected override bool Valid => base.Valid && GH_ComponentAttributesReplacer.UseParamIntervalControl;
 
-        private GH_Number T0, T1;
         public ParamIntervalControl(GH_PersistentParam<GH_Interval> owner) : base(owner)
         {
-            ControlItems = new BaseControlItem[]
+        }
+
+        protected override BaseControlItem[] SetControlItems(GH_PersistentParam<GH_Interval> owner)
+        {
+            return new BaseControlItem[]
             {
-                new GooNumberControl(()=> {
-                    GH_Interval interval = Owner.PersistentData.get_FirstItem(true);
-                    if(interval == null) return null;
-                    T0 = new GH_Number(interval.Value.T0);
-                    return T0;
-                }, (number, record) =>
+                new GooInputBoxControl<GH_Number>(()=>
                 {
-                    T0 = number;
-                    CreateValue(record);
+                    if(OwnerGooData == null) return null;
+                    return new GH_Number(OwnerGooData.Value.T0);
                 }),
 
-                new StringRender("To", OtherClicked),
+                new StringRender("To"),
 
-                new GooNumberControl(()=> {
-                    GH_Interval interval = Owner.PersistentData.get_FirstItem(true);
-                    if(interval == null) return null;
-                    T1 = new GH_Number(interval.Value.T1);
-                    return T1;
-                }, (number, record) =>
+                new GooInputBoxControl<GH_Number>(()=>
                 {
-                    T1 = number;
-                    CreateValue(record);
+                    if(OwnerGooData == null) return null;
+                    return new GH_Number(OwnerGooData.Value.T1);
                 }),
             };
         }
 
-        protected override void SaveString(string str)
+        protected override GH_Interval SetValue(IGH_Goo[] values)
         {
-            Interval interval = default(Interval);
-            if(GH_Convert.ToInterval(str, ref interval, GH_Conversion.Both))
-            {
-                T0 = new GH_Number(interval.T0);
-                T1 = new GH_Number(interval.T1);
-                CreateValue(true);
-            }
-        }
-
-        private void CreateValue(bool isRecord)
-        {
-            Owner.Attributes.ExpireLayout();
-
-            if (T0 == null || T1 == null) return;
-
-            GH_Interval value = new GH_Interval(new Interval(T0.Value, T1.Value));
-            
-            SetValue(value, isRecord);
+            return new GH_Interval(new Interval (((GH_Number)values[0]).Value, ((GH_Number)values[1]).Value));
         }
     }
 }

@@ -13,74 +13,47 @@ namespace ComponentToolkit
     {
         protected override bool Valid => base.Valid && GH_ComponentAttributesReplacer.UseParamPointControl;
 
-        private GH_Number X, Y, Z;
-
         public ParamPoint3dControl(GH_PersistentParam<GH_Point> owner) : base(owner)
         {
-            ControlItems = new BaseControlItem[]
+        }
+
+
+        protected override BaseControlItem[] SetControlItems(GH_PersistentParam<GH_Point> owner)
+        {
+            return new BaseControlItem[]
             {
-                new StringRender("X:", OtherClicked),
+                new StringRender("X:"),
 
-                new GooNumberControl(()=> {
-                    GH_Point point = Owner.PersistentData.get_FirstItem(true);
-                    if(point == null) return null;
-                    X = new GH_Number(point.Value.X);
-                    return X;
-                }, (number, record) =>
+                new GooInputBoxControl<GH_Number>(()=>
                 {
-                    X = number;
-                    CreateValue(record);
+                    if(OwnerGooData == null) return null;
+                    return new GH_Number(OwnerGooData.Value.X);
                 }),
 
-                new StringRender("Y:", OtherClicked),
+                new StringRender("Y:"),
 
-                new GooNumberControl(()=> {
-                    GH_Point point = Owner.PersistentData.get_FirstItem(true);
-                    if(point == null) return null;
-                    Y = new GH_Number(point.Value.Y);
-                    return Y;
-                }, (number, record) =>
+                new GooInputBoxControl<GH_Number>(()=>
                 {
-                    Y = number;
-                    CreateValue(record);
+                    if(OwnerGooData == null) return null;
+                    return new GH_Number(OwnerGooData.Value.Y);
                 }),
 
-                new StringRender("Z:", OtherClicked),
+                new StringRender("Z:"),
 
-                new GooNumberControl(()=> {
-                    GH_Point point = Owner.PersistentData.get_FirstItem(true);
-                    if(point == null) return null;
-                    Z = new GH_Number(point.Value.Z);
-                    return Z;
-                }, (number, record) =>
+                new GooInputBoxControl<GH_Number>(()=>
                 {
-                    Z = number;
-                    CreateValue(record);
+                    if(OwnerGooData == null) return null;
+                    return new GH_Number(OwnerGooData.Value.Z);
                 }),
             };
         }
 
-        protected override void SaveString(string str)
+        protected override GH_Point SetValue(IGH_Goo[] values)
         {
-            Point3d point = default(Point3d);
-            if (GH_Convert.ToPoint3d(str, ref point, GH_Conversion.Both))
-            {
-                X = new GH_Number(point.X);
-                Y = new GH_Number(point.Y);
-                Z = new GH_Number(point.Z);
-                CreateValue(true);
-            }
-        }
-
-        private void CreateValue(bool isRecord)
-        {
-            Owner.Attributes.ExpireLayout();
-
-            if (Z == null || Y == null || Z == null) return;
-
-            GH_Point value = new GH_Point(new Point3d(X.Value, Y.Value, Z.Value));
-
-            SetValue(value, isRecord);
+            return new GH_Point(new Point3d(
+                ((GH_Number)values[0]).Value, 
+                ((GH_Number)values[1]).Value,
+                ((GH_Number)values[2]).Value));
         }
     }
 }

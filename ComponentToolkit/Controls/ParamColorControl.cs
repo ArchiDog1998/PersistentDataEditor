@@ -15,9 +15,13 @@ namespace ComponentToolkit
 
         internal ParamColorControl(GH_PersistentParam<GH_Colour> owner) : base(owner)
         {
-            ControlItems = new BaseControlItem[]
+        }
+
+        protected override BaseControlItem[] SetControlItems(GH_PersistentParam<GH_Colour> owner)
+        {
+            return new BaseControlItem[]
             {
-                new GooColorControl(()=> Owner.PersistentData.get_FirstItem(true), SetValue),
+                new GooColorControl(() => OwnerGooData),
             };
         }
     }
