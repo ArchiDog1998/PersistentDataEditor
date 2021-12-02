@@ -20,225 +20,7 @@ namespace ComponentToolkit
 {
     public abstract class GH_ComponentAttributesReplacer: GH_ComponentAttributes
     {
-        #region Settings For Layout
-        public static readonly int MiniWidth = 6;
 
-        public static readonly int _componentToEdgeDistanceDefault = 3;
-        public static int ComponentToEdgeDistance
-        {
-            get => Instances.Settings.GetValue(nameof(ComponentToEdgeDistance), _componentToEdgeDistanceDefault);
-            set
-            {
-                Instances.Settings.SetValue(nameof(ComponentToEdgeDistance), value);
-                RefreshLayout();
-            }
-        }
-        public static readonly int _componentToCoreDistanceDefault = 3;
-        public static int ComponentToCoreDistance
-        {
-            get => Instances.Settings.GetValue(nameof(ComponentToCoreDistance), _componentToCoreDistanceDefault);
-            set
-            {
-                Instances.Settings.SetValue(nameof(ComponentToCoreDistance), value);
-                RefreshLayout();
-            }
-        }
-
-        public static readonly int _componentControlNameDistanceDefault = 2;
-        public static int ComponentControlNameDistance
-        {
-            get => Instances.Settings.GetValue(nameof(ComponentControlNameDistance), _componentControlNameDistanceDefault);
-            set
-            {
-                Instances.Settings.SetValue(nameof(ComponentControlNameDistance), value);
-                RefreshLayout();
-            }
-        }
-
-        public static readonly int _inputBoxControlMaxWidthDefault = 100;
-        public static int InputBoxControlMaxWidth
-        {
-            get => Instances.Settings.GetValue(nameof(InputBoxControlMaxWidth), _inputBoxControlMaxWidthDefault);
-            set
-            {
-                Instances.Settings.SetValue(nameof(InputBoxControlMaxWidth), value);
-                RefreshLayout();
-            }
-        }
-
-        public static int AdditionWidth => ComponentToEdgeDistance + ComponentToCoreDistance;
-
-        public static bool ComponentUseControl
-        {
-            get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentUseControl), true);
-            set
-            {
-                Instances.Settings.SetValue(nameof(ComponentUseControl), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool ComponentInputEdgeLayout
-        {
-            get => Instances.Settings.GetValue(nameof(ComponentInputEdgeLayout), false);
-            set
-            {
-                Instances.Settings.SetValue(nameof(ComponentInputEdgeLayout), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool ComponentOutputEdgeLayout
-        {
-            get => Instances.Settings.GetValue(nameof(ComponentOutputEdgeLayout), false);
-            set
-            {
-                Instances.Settings.SetValue(nameof(ComponentOutputEdgeLayout), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool ControlAlignRightLayout
-        {
-            get => Instances.Settings.GetValue(nameof(ControlAlignRightLayout), false);
-            set
-            {
-                Instances.Settings.SetValue(nameof(ControlAlignRightLayout), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool SeperateCalculateWidthControl
-        {
-            get => Instances.Settings.GetValue(nameof(SeperateCalculateWidthControl), true);
-            set
-            {
-                Instances.Settings.SetValue(nameof(SeperateCalculateWidthControl), value);
-                RefreshLayout();
-            }
-        }
-
-        private static void RefreshLayout()
-        {
-            foreach (IGH_DocumentObject @object in Instances.ActiveCanvas.Document.Objects)
-            {
-                @object.Attributes.ExpireLayout();
-            }
-            Instances.RedrawCanvas();
-        }
-        #endregion
-
-        #region Settings for Using Control Item
-        public static bool UseParamBooleanControl
-        {
-            get => Instances.Settings.GetValue(nameof(UseParamBooleanControl), true);
-            set
-            {
-                Instances.Settings.SetValue(nameof(UseParamBooleanControl), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool UseParamColourControl
-        {
-            get => Instances.Settings.GetValue(nameof(UseParamColourControl), true);
-            set
-            {
-                Instances.Settings.SetValue(nameof(UseParamColourControl), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool UseParamIntegerControl
-        {
-            get => Instances.Settings.GetValue(nameof(UseParamIntegerControl), true);
-            set
-            {
-                Instances.Settings.SetValue(nameof(UseParamIntegerControl), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool UseParamIntervalControl
-        {
-            get => Instances.Settings.GetValue(nameof(UseParamIntervalControl), true);
-            set
-            {
-                Instances.Settings.SetValue(nameof(UseParamIntervalControl), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool UseParamNumberControl
-        {
-            get => Instances.Settings.GetValue(nameof(UseParamNumberControl), true);
-            set
-            {
-                Instances.Settings.SetValue(nameof(UseParamNumberControl), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool UseParamPointControl
-        {
-            get => Instances.Settings.GetValue(nameof(UseParamPointControl), true);
-            set
-            {
-                Instances.Settings.SetValue(nameof(UseParamPointControl), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool UseParamStringControl
-        {
-            get => Instances.Settings.GetValue(nameof(UseParamStringControl), true);
-            set
-            {
-                Instances.Settings.SetValue(nameof(UseParamStringControl), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool UseParamVectorControl
-        {
-            get => Instances.Settings.GetValue(nameof(UseParamVectorControl), true);
-            set
-            {
-                Instances.Settings.SetValue(nameof(UseParamVectorControl), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool UseParamComplexControl
-        {
-            get => Instances.Settings.GetValue(nameof(UseParamComplexControl), true);
-            set
-            {
-                Instances.Settings.SetValue(nameof(UseParamComplexControl), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool UseParamInterval2DControl
-        {
-            get => Instances.Settings.GetValue(nameof(UseParamInterval2DControl), true);
-            set
-            {
-                Instances.Settings.SetValue(nameof(UseParamInterval2DControl), value);
-                RefreshLayout();
-            }
-        }
-
-        public static bool UseParamGeneralControl
-        {
-            get => Instances.Settings.GetValue(nameof(UseParamGeneralControl), false);
-            set
-            {
-                Instances.Settings.SetValue(nameof(UseParamGeneralControl), value);
-                RefreshLayout();
-            }
-        }
-        #endregion
 
         private static readonly string _location = Path.Combine(Folders.SettingsFolder, "quickwires.json");
 
@@ -391,12 +173,12 @@ namespace ComponentToolkit
                 controlMaxWidth = Math.Max(controlMaxWidth, attr.ControlWidth);
             }
 
-            if (SeperateCalculateWidthControl)
+            if (Datas.SeperateCalculateWidthControl)
             {
-                int controlAddition = controlMaxWidth == 0? 0 : controlMaxWidth + ComponentControlNameDistance;
-                singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + AdditionWidth, AdditionWidth + MiniWidth);
+                int controlAddition = controlMaxWidth == 0? 0 : controlMaxWidth + Datas.ComponentControlNameDistance;
+                singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + Datas.AdditionWidth, Datas.AdditionWidth + Datas.MiniWidth);
             }
-            else singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth + AdditionWidth, AdditionWidth + MiniWidth);
+            else singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth + Datas.AdditionWidth, Datas.AdditionWidth + Datas.MiniWidth);
 
 
             //Layout every param.
@@ -405,9 +187,9 @@ namespace ComponentToolkit
             {
                 IGH_Param param = gH_Params[i];
 
-                float rectX = isInput ? componentBox.X - singleParamBoxMaxWidth : componentBox.Right + ComponentToCoreDistance;
+                float rectX = isInput ? componentBox.X - singleParamBoxMaxWidth : componentBox.Right + Datas.ComponentToCoreDistance;
                 float rectY = componentBox.Y + i * singleParamBoxHeight;
-                float width = singleParamBoxMaxWidth - ComponentToCoreDistance;
+                float width = singleParamBoxMaxWidth - Datas.ComponentToCoreDistance;
                 float height = singleParamBoxHeight;
                 param.Attributes.Pivot = new PointF(rectX + 0.5f * singleParamBoxMaxWidth, rectY + 0.5f * singleParamBoxHeight);
                 param.Attributes.Bounds = GH_Convert.ToRectangle(new RectangleF(rectX, rectY, width, height));
@@ -493,26 +275,26 @@ namespace ComponentToolkit
 
                 if (isInput)
                 {
-                    if (SeperateCalculateWidthControl)
+                    if (Datas.SeperateCalculateWidthControl)
                     {
-                        float maxStringRight = attr.Bounds.X + additionforTag + ComponentToEdgeDistance + nameMaxWidth;
-                        attr.StringRect = ComponentInputEdgeLayout ? new RectangleF(attr.Bounds.X + additionforTag + ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                        float maxStringRight = attr.Bounds.X + additionforTag + Datas.ComponentToEdgeDistance + nameMaxWidth;
+                        attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(attr.Bounds.X + additionforTag + Datas.ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
                             new RectangleF(maxStringRight - stringwidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
 
 
                         if (attr.Control != null)
                         {
-                            attr.Control.Bounds = new RectangleF(ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth : maxStringRight + ComponentControlNameDistance,
+                            attr.Control.Bounds = new RectangleF(Datas.ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth : maxStringRight + Datas.ComponentControlNameDistance,
                                 attr.StringRect.Top + (attr.StringRect.Height - attr.Control.Height) / 2, attr.ControlWidth, attr.Control.Height);
                         }
                     }
                     else
                     {
-                        attr.StringRect = ComponentInputEdgeLayout ? new RectangleF(attr.Bounds.X + additionforTag + ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                        attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(attr.Bounds.X + additionforTag + Datas.ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
                             new RectangleF(attr.Bounds.Right - wholeWidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
                         if (attr.Control != null)
                         {
-                            attr.Control.Bounds = new RectangleF(ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth : attr.StringRect.Right + ComponentControlNameDistance,
+                            attr.Control.Bounds = new RectangleF(Datas.ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth : attr.StringRect.Right + Datas.ComponentControlNameDistance,
                                 attr.StringRect.Top + (attr.StringRect.Height - attr.Control.Height) / 2, attr.ControlWidth, attr.Control.Height);
                         }
 
@@ -520,7 +302,7 @@ namespace ComponentToolkit
                 }
                 else
                 {
-                    attr.StringRect = ComponentOutputEdgeLayout ? new RectangleF(attr.Bounds.Right - additionforTag - wholeWidth - ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                    attr.StringRect = Datas.ComponentOutputEdgeLayout ? new RectangleF(attr.Bounds.Right - additionforTag - wholeWidth - Datas.ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
                          new RectangleF(attr.Bounds.X, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
 
                 }

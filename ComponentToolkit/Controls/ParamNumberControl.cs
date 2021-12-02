@@ -11,7 +11,7 @@ namespace ComponentToolkit
 {
     internal class ParamNumberControl : ParamInputBoxControl<GH_Number>
     {
-        protected override bool Valid => base.Valid && GH_ComponentAttributesReplacer.UseParamNumberControl;
+        protected override bool Valid => base.Valid && Datas.UseParamNumberControl;
         internal ParamNumberControl(GH_PersistentParam<GH_Number> owner) : base(owner)
         {
         }

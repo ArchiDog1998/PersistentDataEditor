@@ -8,65 +8,6 @@ namespace ComponentToolkit
 {
     public abstract class BaseControlItem
     {
-        public static readonly Color _controlForegroundColorDefault = Color.FromArgb(40, 40, 40);
-        public static Color ControlForegroundColor
-        {
-            get
-            {
-                Color color = Grasshopper.Instances.Settings.GetValue(nameof(ControlForegroundColor), _controlForegroundColorDefault);
-                return Color.FromArgb((int)(GH_Canvas.ZoomFadeLow / 255f * color.A), color);
-            }
-            set
-            {
-                Grasshopper.Instances.Settings.SetValue(nameof(ControlForegroundColor), value);
-                Grasshopper.Instances.RedrawCanvas();
-            }
-        }
-
-        public static readonly Color _controlTextgroundColorDefault = Color.FromArgb(40, 40, 40);
-        public static Color ControlTextgroundColor
-        {
-            get
-            {
-                Color color = Grasshopper.Instances.Settings.GetValue(nameof(ControlTextgroundColor), _controlTextgroundColorDefault);
-                return Color.FromArgb((int)(GH_Canvas.ZoomFadeLow / 255f * color.A), color);
-            }
-            set
-            {
-                Grasshopper.Instances.Settings.SetValue(nameof(ControlTextgroundColor), value);
-                Grasshopper.Instances.RedrawCanvas();
-            }
-        }
-
-        public static readonly Color _controlBackgroundColorDefault = Color.FromArgb(150, Color.WhiteSmoke);
-        public static Color ControlBackgroundColor
-        {
-            get
-            {
-                Color color = Grasshopper.Instances.Settings.GetValue(nameof(ControlBackgroundColor), _controlBackgroundColorDefault);
-                return Color.FromArgb((int)(GH_Canvas.ZoomFadeLow / 255f * color.A), color);
-            }
-            set
-            {
-                Grasshopper.Instances.Settings.SetValue(nameof(ControlBackgroundColor), value);
-                Grasshopper.Instances.RedrawCanvas();
-            }
-        }
-
-        public static readonly Color _controlBorderColorDefault = Color.FromArgb(40, 40, 40);
-        public static Color ControlBorderColor
-        {
-            get
-            {
-                Color color = Grasshopper.Instances.Settings.GetValue(nameof(ControlBorderColor), _controlBorderColorDefault);
-                return Color.FromArgb((int)(GH_Canvas.ZoomFadeLow / 255f * color.A), color);
-            }
-            set
-            {
-                Grasshopper.Instances.Settings.SetValue(nameof(ControlBorderColor), value);
-                Grasshopper.Instances.RedrawCanvas();
-            }
-        }
 
         private RectangleF _bounds;
         internal RectangleF Bounds

@@ -11,7 +11,7 @@ namespace ComponentToolkit
 {
     internal class ParamPoint3dControl : ParamControlBase<GH_Point>
     {
-        protected override bool Valid => base.Valid && GH_ComponentAttributesReplacer.UseParamPointControl;
+        protected override bool Valid => base.Valid && Datas.UseParamPointControl;
 
         public ParamPoint3dControl(GH_PersistentParam<GH_Point> owner) : base(owner)
         {

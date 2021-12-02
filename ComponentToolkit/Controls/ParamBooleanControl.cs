@@ -11,7 +11,7 @@ namespace ComponentToolkit
 {
     internal class ParamBooleanControl : ParamControlBase<GH_Boolean>
     {
-        protected override bool Valid => base.Valid && GH_ComponentAttributesReplacer.UseParamBooleanControl;
+        protected override bool Valid => base.Valid && Datas.UseParamBooleanControl;
 
         internal ParamBooleanControl(GH_PersistentParam<GH_Boolean> owner) : base(owner)
         {

@@ -11,7 +11,7 @@ namespace ComponentToolkit
 {
     internal class ParamComplexControl : ParamControlBase<GH_ComplexNumber>
     {
-        protected override bool Valid => base.Valid && GH_ComponentAttributesReplacer.UseParamComplexControl;
+        protected override bool Valid => base.Valid && Datas.UseParamComplexControl;
 
         public ParamComplexControl(GH_PersistentParam<GH_ComplexNumber> owner) : base(owner)
         {

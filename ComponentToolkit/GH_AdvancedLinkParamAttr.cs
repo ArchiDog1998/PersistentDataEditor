@@ -15,8 +15,8 @@ namespace ComponentToolkit
     {
 
         public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
-        public int ControlWidth => Control != null && GH_ComponentAttributesReplacer.ComponentUseControl ? Control.Width : 0;
-        public int WholeWidth => StringWidth + (ControlWidth == 0 ? 0 : ControlWidth + GH_ComponentAttributesReplacer.ComponentControlNameDistance);
+        public int ControlWidth => Control != null && Datas.ComponentUseControl ? Control.Width : 0;
+        public int WholeWidth => StringWidth + (ControlWidth == 0 ? 0 : ControlWidth + Datas.ComponentControlNameDistance);
 
         public BaseControlItem Control { get; private set; } = null;
 

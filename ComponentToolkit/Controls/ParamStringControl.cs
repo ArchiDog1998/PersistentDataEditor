@@ -15,7 +15,7 @@ namespace ComponentToolkit
 {
     internal class ParamStringControl : ParamInputBoxControl<GH_String>
     {
-        protected override bool Valid => base.Valid && GH_ComponentAttributesReplacer.UseParamStringControl;
+        protected override bool Valid => base.Valid && Datas.UseParamStringControl;
         internal ParamStringControl(GH_PersistentParam<GH_String> owner):base(owner)
         {
         }

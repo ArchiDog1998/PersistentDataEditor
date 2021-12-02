@@ -11,7 +11,7 @@ namespace ComponentToolkit
 {
     internal class ParamColorControl : ParamControlBase<GH_Colour>
     {
-        protected override bool Valid => base.Valid && GH_ComponentAttributesReplacer.UseParamColourControl;
+        protected override bool Valid => base.Valid && Datas.UseParamColourControl;
 
         internal ParamColorControl(GH_PersistentParam<GH_Colour> owner) : base(owner)
         {

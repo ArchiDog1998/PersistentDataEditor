@@ -11,7 +11,7 @@ namespace ComponentToolkit
 {
     internal class ParamVector3dControl : ParamControlBase<GH_Vector>
     {
-        protected override bool Valid => base.Valid && GH_ComponentAttributesReplacer.UseParamVectorControl;
+        protected override bool Valid => base.Valid && Datas.UseParamVectorControl;
 
         public ParamVector3dControl(GH_PersistentParam<GH_Vector> owner) : base(owner)
         {

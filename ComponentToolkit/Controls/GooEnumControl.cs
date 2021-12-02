@@ -111,11 +111,11 @@ namespace ComponentToolkit
 
         internal override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
-            graphics.FillPath(new SolidBrush(ControlBackgroundColor), _roundBounds);
-            graphics.DrawPath(new Pen(new SolidBrush(ControlBorderColor)), _roundBounds);
-            graphics.DrawString(_showString, GH_FontServer.StandardAdjusted, new SolidBrush(ControlTextgroundColor), _stringBounds, GH_TextRenderingConstants.NearCenter);
+            graphics.FillPath(new SolidBrush(Datas.ControlBackgroundColor), _roundBounds);
+            graphics.DrawPath(new Pen(new SolidBrush(Datas.ControlBorderColor)), _roundBounds);
+            graphics.DrawString(_showString, GH_FontServer.StandardAdjusted, new SolidBrush(Datas.ControlTextgroundColor), _stringBounds, GH_TextRenderingConstants.NearCenter);
 
-            graphics.FillPath(new SolidBrush(ControlForegroundColor), _triangle);
+            graphics.FillPath(new SolidBrush(Datas.ControlForegroundColor), _triangle);
         }
     }
 }

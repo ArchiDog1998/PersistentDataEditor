@@ -38,26 +38,26 @@ namespace ComponentToolkit
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
-            ToolStripMenuItem inputClick = new ToolStripMenuItem("Component Input Align Edge") { Checked = GH_ComponentAttributesReplacer.ComponentInputEdgeLayout };
+            ToolStripMenuItem inputClick = new ToolStripMenuItem("Component Input Align Edge") { Checked = Datas.ComponentInputEdgeLayout };
             inputClick.Click += (sender, e) =>
             {
                 inputClick.Checked = !inputClick.Checked;
-                GH_ComponentAttributesReplacer.ComponentInputEdgeLayout = inputClick.Checked;
+                Datas.ComponentInputEdgeLayout = inputClick.Checked;
             };
             major.DropDownItems.Add(inputClick);
 
-            ToolStripMenuItem outputClick = new ToolStripMenuItem("Component Output Align Edge") { Checked = GH_ComponentAttributesReplacer.ComponentOutputEdgeLayout };
+            ToolStripMenuItem outputClick = new ToolStripMenuItem("Component Output Align Edge") { Checked = Datas.ComponentOutputEdgeLayout };
             outputClick.Click += (sender, e) =>
             {
                 outputClick.Checked = !outputClick.Checked;
-                GH_ComponentAttributesReplacer.ComponentOutputEdgeLayout = outputClick.Checked;
+                Datas.ComponentOutputEdgeLayout = outputClick.Checked;
             };
             major.DropDownItems.Add(outputClick);
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateNumberBox(major, "Params to Edge", GH_ComponentAttributesReplacer.ComponentToEdgeDistance, (v) => GH_ComponentAttributesReplacer.ComponentToEdgeDistance = (int)v, GH_ComponentAttributesReplacer._componentToEdgeDistanceDefault, 20, 0);
+            CreateNumberBox(major, "Params to Edge", Datas.ComponentToEdgeDistance, (v) => Datas.ComponentToEdgeDistance = (int)v, Datas._componentToEdgeDistanceDefault, 20, 0);
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateNumberBox(major, "Params to Core", GH_ComponentAttributesReplacer.ComponentToCoreDistance, (v) => GH_ComponentAttributesReplacer.ComponentToCoreDistance = (int)v, GH_ComponentAttributesReplacer._componentToCoreDistanceDefault, 20, 0);
+            CreateNumberBox(major, "Params to Core", Datas.ComponentToCoreDistance, (v) => Datas.ComponentToCoreDistance = (int)v, Datas._componentToCoreDistanceDefault, 20, 0);
 
 
 
@@ -66,7 +66,7 @@ namespace ComponentToolkit
 
         private static ToolStripMenuItem CreateControlItem()
         {
-            ToolStripMenuItem major = CreateCheckBox("Param Control", GH_ComponentAttributesReplacer.ComponentUseControl, (boolean) => GH_ComponentAttributesReplacer.ComponentUseControl = boolean);
+            ToolStripMenuItem major = CreateCheckBox("Param Control", Datas.ComponentUseControl, (boolean) => Datas.ComponentUseControl = boolean);
             major.Image = Properties.Resources.ParamControlIcon_24;
             major.ToolTipText = "It will show you the persistent param's value and you can change the value easily.";
 
@@ -74,16 +74,12 @@ namespace ComponentToolkit
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
-            major.DropDownItems.Add(CreateCheckBox("Independent Width", GH_ComponentAttributesReplacer.SeperateCalculateWidthControl, 
-                (boolean) => GH_ComponentAttributesReplacer.SeperateCalculateWidthControl = boolean));
-            major.DropDownItems.Add(CreateCheckBox("Control Align Right", GH_ComponentAttributesReplacer.ControlAlignRightLayout, 
-                (boolean) => GH_ComponentAttributesReplacer.ControlAlignRightLayout = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Independent Width", Datas.SeperateCalculateWidthControl, (boolean) => Datas.SeperateCalculateWidthControl = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Control Align Right", Datas.ControlAlignRightLayout, (boolean) => Datas.ControlAlignRightLayout = boolean));
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateNumberBox(major, "Params to Control", GH_ComponentAttributesReplacer.ComponentControlNameDistance, 
-                (v) => GH_ComponentAttributesReplacer.ComponentControlNameDistance = (int)v, GH_ComponentAttributesReplacer._componentControlNameDistanceDefault, 20, 0);
+            CreateNumberBox(major, "Params to Control", Datas.ComponentControlNameDistance, (v) => Datas.ComponentControlNameDistance = (int)v, Datas._componentControlNameDistanceDefault, 20, 0);
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateNumberBox(major, "Max InputBox Width", GH_ComponentAttributesReplacer.InputBoxControlMaxWidth,
-                (v) => GH_ComponentAttributesReplacer.InputBoxControlMaxWidth = (int)v, GH_ComponentAttributesReplacer._inputBoxControlMaxWidthDefault, 500, 20);
+            CreateNumberBox(major, "Max InputBox Width", Datas.InputBoxControlMaxWidth, (v) => Datas.InputBoxControlMaxWidth = (int)v, Datas._inputBoxControlMaxWidthDefault, 500, 20);
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
@@ -99,42 +95,42 @@ namespace ComponentToolkit
 
             major.DropDown.Closing += DropDown_Closing;
 
-            major.DropDownItems.Add(CreateCheckBox("Boolean Control", GH_ComponentAttributesReplacer.UseParamBooleanControl, new Param_Boolean().Icon_24x24,
-                (boolean) => GH_ComponentAttributesReplacer.UseParamBooleanControl = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Boolean Control", Datas.UseParamBooleanControl, new Param_Boolean().Icon_24x24,
+                (boolean) => Datas.UseParamBooleanControl = boolean));
 
-            major.DropDownItems.Add(CreateCheckBox("String Control", GH_ComponentAttributesReplacer.UseParamStringControl, new Param_String().Icon_24x24,
-                (boolean) => GH_ComponentAttributesReplacer.UseParamStringControl = boolean));
+            major.DropDownItems.Add(CreateCheckBox("String Control", Datas.UseParamStringControl, new Param_String().Icon_24x24,
+                (boolean) => Datas.UseParamStringControl = boolean));
 
-            major.DropDownItems.Add(CreateCheckBox("Integer Control", GH_ComponentAttributesReplacer.UseParamIntegerControl, new Param_Integer().Icon_24x24,
-                (boolean) => GH_ComponentAttributesReplacer.UseParamIntegerControl = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Integer Control", Datas.UseParamIntegerControl, new Param_Integer().Icon_24x24,
+                (boolean) => Datas.UseParamIntegerControl = boolean));
 
-            major.DropDownItems.Add(CreateCheckBox("Number Control", GH_ComponentAttributesReplacer.UseParamNumberControl, new Param_Number().Icon_24x24,
-                (boolean) => GH_ComponentAttributesReplacer.UseParamNumberControl = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Number Control", Datas.UseParamNumberControl, new Param_Number().Icon_24x24,
+                (boolean) => Datas.UseParamNumberControl = boolean));
 
-            major.DropDownItems.Add(CreateCheckBox("Colour Control", GH_ComponentAttributesReplacer.UseParamColourControl, new Param_Colour().Icon_24x24,
-                (boolean) => GH_ComponentAttributesReplacer.UseParamColourControl = boolean));
-
-            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-
-            major.DropDownItems.Add(CreateCheckBox("Interval Control", GH_ComponentAttributesReplacer.UseParamIntervalControl, new Param_Interval().Icon_24x24,
-                (boolean) => GH_ComponentAttributesReplacer.UseParamIntervalControl = boolean));
-
-            major.DropDownItems.Add(CreateCheckBox("Interval2d Control", GH_ComponentAttributesReplacer.UseParamInterval2DControl, new Param_Interval2D().Icon_24x24,
-                (boolean) => GH_ComponentAttributesReplacer.UseParamInterval2DControl = boolean));
-
-            major.DropDownItems.Add(CreateCheckBox("Point Control", GH_ComponentAttributesReplacer.UseParamPointControl, new Param_Point().Icon_24x24,
-                (boolean) => GH_ComponentAttributesReplacer.UseParamPointControl = boolean));
-
-            major.DropDownItems.Add(CreateCheckBox("Vector Control", GH_ComponentAttributesReplacer.UseParamVectorControl, new Param_Vector().Icon_24x24,
-                (boolean) => GH_ComponentAttributesReplacer.UseParamVectorControl = boolean));
-
-            major.DropDownItems.Add(CreateCheckBox("Complex Control", GH_ComponentAttributesReplacer.UseParamComplexControl, new Param_Complex().Icon_24x24,
-                (boolean) => GH_ComponentAttributesReplacer.UseParamComplexControl = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Colour Control", Datas.UseParamColourControl, new Param_Colour().Icon_24x24,
+                (boolean) => Datas.UseParamColourControl = boolean));
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
-            major.DropDownItems.Add(CreateCheckBox("General Control", GH_ComponentAttributesReplacer.UseParamGeneralControl, new Param_GenericObject().Icon_24x24,
-                (boolean) => GH_ComponentAttributesReplacer.UseParamGeneralControl = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Interval Control", Datas.UseParamIntervalControl, new Param_Interval().Icon_24x24,
+                (boolean) => Datas.UseParamIntervalControl = boolean));
+
+            major.DropDownItems.Add(CreateCheckBox("Interval2d Control", Datas.UseParamInterval2DControl, new Param_Interval2D().Icon_24x24,
+                (boolean) => Datas.UseParamInterval2DControl = boolean));
+
+            major.DropDownItems.Add(CreateCheckBox("Point Control", Datas.UseParamPointControl, new Param_Point().Icon_24x24,
+                (boolean) => Datas.UseParamPointControl = boolean));
+
+            major.DropDownItems.Add(CreateCheckBox("Vector Control", Datas.UseParamVectorControl, new Param_Vector().Icon_24x24,
+                (boolean) => Datas.UseParamVectorControl = boolean));
+
+            major.DropDownItems.Add(CreateCheckBox("Complex Control", Datas.UseParamComplexControl, new Param_Complex().Icon_24x24,
+                (boolean) => Datas.UseParamComplexControl = boolean));
+
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+
+            major.DropDownItems.Add(CreateCheckBox("General Control", Datas.UseParamGeneralControl, new Param_GenericObject().Icon_24x24,
+                (boolean) => Datas.UseParamGeneralControl = boolean));
 
             return major;
         }
@@ -143,9 +139,9 @@ namespace ComponentToolkit
         {
             ToolStripMenuItem major = new ToolStripMenuItem("Foreground Color") { ToolTipText = "Change controls' foreground color." };
 
-            CreateColor(major, "Text Color", BaseControlItem.ControlTextgroundColor, BaseControlItem._controlTextgroundColorDefault, (color) => BaseControlItem.ControlTextgroundColor = color);
+            CreateColor(major, "Text Color", Datas.ControlTextgroundColor, Datas._controlTextgroundColorDefault, (color) => Datas.ControlTextgroundColor = color);
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateColor(major, "Foreground Color", BaseControlItem.ControlForegroundColor, BaseControlItem._controlForegroundColorDefault, (color) => BaseControlItem.ControlForegroundColor = color);
+            CreateColor(major, "Foreground Color", Datas.ControlForegroundColor, Datas._controlForegroundColorDefault, (color) => Datas.ControlForegroundColor = color);
 
 
             return major;
@@ -155,9 +151,9 @@ namespace ComponentToolkit
         {
             ToolStripMenuItem major = new ToolStripMenuItem("Background Color") { ToolTipText = "Change controls' background color." };
 
-            CreateColor(major, "Border Color", BaseControlItem.ControlBorderColor, BaseControlItem._controlBorderColorDefault, (color) => BaseControlItem.ControlBorderColor = color);
+            CreateColor(major, "Border Color", Datas.ControlBorderColor, Datas._controlBorderColorDefault, (color) => Datas.ControlBorderColor = color);
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateColor(major, "Background Color", BaseControlItem.ControlBackgroundColor, BaseControlItem._controlBackgroundColorDefault, (color) => BaseControlItem.ControlBackgroundColor = color);
+            CreateColor(major, "Background Color", Datas.ControlBackgroundColor, Datas._controlBackgroundColorDefault, (color) => Datas.ControlBackgroundColor = color);
 
 
             return major;

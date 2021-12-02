@@ -11,7 +11,7 @@ namespace ComponentToolkit
 {
     internal class ParamInterval2DControl : ParamControlBase<GH_Interval2D>
     {
-        protected override bool Valid => base.Valid && GH_ComponentAttributesReplacer.UseParamInterval2DControl;
+        protected override bool Valid => base.Valid && Datas.UseParamInterval2DControl;
 
         public ParamInterval2DControl(GH_PersistentParam<GH_Interval2D> owner) : base(owner)
         {

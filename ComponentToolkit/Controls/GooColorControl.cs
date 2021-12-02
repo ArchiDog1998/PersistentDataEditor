@@ -58,7 +58,7 @@ namespace ComponentToolkit
             if (ShowValue != null)
                 graphics.FillPath(new SolidBrush(ShowValue.Value), _path);
 
-            graphics.DrawPath(new Pen(new SolidBrush(ControlBorderColor)), _path);
+            graphics.DrawPath(new Pen(new SolidBrush(Datas.ControlBorderColor)), _path);
         }
     }
 }

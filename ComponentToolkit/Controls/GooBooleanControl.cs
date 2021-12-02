@@ -29,15 +29,15 @@ namespace ComponentToolkit
 
         internal override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
-            graphics.FillEllipse(new SolidBrush(ControlBackgroundColor), Bounds);
-            graphics.DrawEllipse(new Pen(new SolidBrush(ControlBorderColor), 1.5f), Bounds);
+            graphics.FillEllipse(new SolidBrush(Datas.ControlBackgroundColor), Bounds);
+            graphics.DrawEllipse(new Pen(new SolidBrush(Datas.ControlBorderColor), 1.5f), Bounds);
 
             if (ShowValue != null && ShowValue.Value)
             {
                 RectangleF bound = this.Bounds;
                 bound.Inflate(-2, -2);
 
-                graphics.FillEllipse(new SolidBrush(ControlForegroundColor), bound);
+                graphics.FillEllipse(new SolidBrush(Datas.ControlForegroundColor), bound);
             }
         }
     }

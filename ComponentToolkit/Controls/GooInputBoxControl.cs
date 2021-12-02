@@ -18,8 +18,8 @@ namespace ComponentToolkit
     {
         protected virtual string ShowString => ShowValue?.ToString();
         internal override int Height => 14;
-        internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15), 
-            GH_ComponentAttributesReplacer.InputBoxControlMaxWidth);
+        internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15),
+            Datas.InputBoxControlMaxWidth);
 
         private GraphicsPath path;
 
@@ -53,9 +53,9 @@ namespace ComponentToolkit
 
         internal override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
-            graphics.FillPath(new SolidBrush(ControlBackgroundColor), path);
-            graphics.DrawPath(new Pen(new SolidBrush(ControlBorderColor)), path);
-            Color color = IsNull ? Color.DarkRed : ControlTextgroundColor;
+            graphics.FillPath(new SolidBrush(Datas.ControlBackgroundColor), path);
+            graphics.DrawPath(new Pen(new SolidBrush(Datas.ControlBorderColor)), path);
+            Color color = IsNull ? Color.DarkRed : Datas.ControlTextgroundColor;
             graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, new SolidBrush(color), Bounds, GH_TextRenderingConstants.NearCenter);
         }
     }
