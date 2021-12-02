@@ -26,7 +26,7 @@ namespace ComponentToolkit
         }
         internal override int Width => GH_FontServer.StringWidth(_showString, Font);
 
-        internal override int Height => 20;
+        internal override int Height => 17;
 
         private string _showString;
 

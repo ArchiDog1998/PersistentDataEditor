@@ -18,9 +18,9 @@ namespace ComponentToolkit
         public ushort Index { get; }
         public Guid ObjectGuid { get; }
         public string InitString { get; set; }
-        public Bitmap Icon { get; }
-        public string ShowName { get; }
-        public string Name { get; }
+        public Bitmap Icon { get; } = null;
+        public string ShowName { get; } = "";
+        public string Name { get; } = "";
         public bool IsInput { get; }
         public CreateObjectItem(Guid guid, ushort index, string init, bool isInput)
         {
@@ -30,6 +30,8 @@ namespace ComponentToolkit
             IsInput = isInput;
 
             IGH_ObjectProxy proxy = Grasshopper.Instances.ComponentServer.EmitObjectProxy(guid);
+            if(proxy == null) return;
+
             Icon = proxy.Icon;
             Name = proxy.Desc.Name;
             ShowName = $"{proxy.Desc.Name}[{index}]";
@@ -40,14 +42,20 @@ namespace ComponentToolkit
 
         }
 
-        public void CreateObject(IGH_Param param, float move = 150)
+        public IGH_DocumentObject CreateObject(IGH_Param param, Action<IGH_DocumentObject> action = null)
         {
+            float move = 100;
+
             IGH_DocumentObject obj = Grasshopper.Instances.ComponentServer.EmitObject(ObjectGuid);
-            if (obj == null) return;
+            if (obj == null) return null;
+
+            if(action != null) action(obj);
 
             RectangleF outBound = param.Attributes.GetTopLevel.Bounds;
             RectangleF thisBound = param.Attributes.Bounds;
-            PointF objCenter = new PointF(outBound.Left + (IsInput ? -move : (move + outBound.Width)), thisBound.Top + thisBound.Height / 2);
+
+            PointF objCenter = new PointF(outBound.Left + (IsInput ? - move : (move + outBound.Width)),
+                thisBound.Top + thisBound.Height / 2);
 
             if (obj is IGH_Component)
             {
@@ -81,6 +89,8 @@ namespace ComponentToolkit
 
                 Grasshopper.Instances.ActiveCanvas.Document.NewSolution(false);
             }
+
+            return obj;
         }
 
         public static void AddAObjectToCanvas(IGH_DocumentObject obj, PointF pivot, string init, bool update = false)

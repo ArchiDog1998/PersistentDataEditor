@@ -33,7 +33,7 @@ namespace ComponentToolkit
             }
         }
         public bool IsNull { get; private set; }
-        public Action ValueChange { private get; set; }
+        public Action ValueChange { protected get; set; }
         private Func<T> _valueGetter;
 
         internal GooControlBase(Func<T> valueGetter)

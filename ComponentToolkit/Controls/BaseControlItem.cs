@@ -11,6 +11,7 @@ namespace ComponentToolkit
 {
     public abstract class BaseControlItem
     {
+        internal static bool ShouldRespond = true;
 
         private RectangleF _bounds;
         internal RectangleF Bounds
@@ -18,11 +19,18 @@ namespace ComponentToolkit
             get { return _bounds; }
             set
             {
-                _bounds = value;
-                LayoutObject(value);
+                if (Valid)
+                {
+                    _bounds = value;
+                    LayoutObject(value);
+                }
+                else
+                {
+                    _bounds = RectangleF.Empty;
+                }
             }
         }
-
+        protected virtual bool Valid => true;
         internal abstract int Width { get; }
         internal abstract int Height { get; }
         protected virtual void LayoutObject(RectangleF bounds) { }

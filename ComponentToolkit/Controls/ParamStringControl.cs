@@ -20,5 +20,10 @@ namespace ComponentToolkit
         internal ParamStringControl(GH_PersistentParam<GH_String> owner):base(owner)
         {
         }
+
+        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        {
+            obj.Name = obj.NickName = Owner.Name;
+        }
     }
 }

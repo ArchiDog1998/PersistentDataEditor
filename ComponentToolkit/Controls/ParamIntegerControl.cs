@@ -17,6 +17,7 @@ namespace ComponentToolkit
         protected override Guid AddCompnentGuid => new Guid("57da07bd-ecab-415d-9d86-af36d7073abc");
 
         protected override bool Valid => base.Valid && Datas.UseParamIntegerControl;
+        protected override string AddCompnentInit => base.AddCompnentInit ?? "0..100";
 
         private static readonly FieldInfo namedValueListInfo = typeof(Param_Integer).GetRuntimeFields().Where(m => m.Name.Contains("m_namedValues")).First();
         private static FieldInfo nameInfo = null;

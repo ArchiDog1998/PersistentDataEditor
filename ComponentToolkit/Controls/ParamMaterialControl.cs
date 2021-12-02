@@ -1,4 +1,5 @@
 ﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,14 @@ namespace ComponentToolkit
         protected override GH_Material SetValue(IGH_Goo[] values)
         {
             return new GH_Material(((GH_Colour)values[0]).Value);
+        }
+
+        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        {
+            GH_ColourSwatch swatch = (GH_ColourSwatch)obj;
+            if (swatch == null) return;
+            if (OwnerGooData != null)
+                ParamColorControl.SwatchColorInfo.SetValue(swatch, OwnerGooData.Value);
         }
     }
 }

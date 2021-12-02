@@ -2,6 +2,7 @@
 using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -62,6 +63,7 @@ namespace ComponentToolkit
             int index = dataGrid.SelectedIndex;
             if (index == -1) return;
             ((ObservableCollection<CreateObjectItem>)DataContext).RemoveAt(index);
+            dataGrid.SelectedIndex = Math.Min(index, ((ObservableCollection<CreateObjectItem>)DataContext).Count - 1);
         }  
 
         private void UpButton_Click(object sender, RoutedEventArgs e)
@@ -140,44 +142,46 @@ namespace ComponentToolkit
             _canvas.MouseMove += _canvas_MouseMove;
             _canvas.MouseLeave += _canvas_MouseLeave;
             _canvas.CanvasPostPaintWidgets += CanvasPostPaintWidgets;
+            BaseControlItem.ShouldRespond = false;
             _canvas.Refresh();
         }
 
         private void _canvas_MouseLeave(object sender, EventArgs e)
         {
-            _canvas.MouseUp -= _canvas_MouseUp;
-            _canvas.MouseLeave -= _canvas_MouseLeave;
-            _canvas.MouseMove -= _canvas_MouseMove;
-            _canvas.CanvasPostPaintWidgets -= CanvasPostPaintWidgets;
-            Instances.CursorServer.ResetCursor(_canvas);
-            _canvas.Refresh();
+            finish();
             _param = null;
         }
 
         private void _canvas_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
         {
+            finish();
+            if (_param != null) SaveOne(_param);
+            _param = null;
+        }
+
+        private void finish()
+        {
             _canvas.MouseUp -= _canvas_MouseUp;
             _canvas.MouseLeave -= _canvas_MouseLeave;
             _canvas.MouseMove -= _canvas_MouseMove;
             _canvas.CanvasPostPaintWidgets -= CanvasPostPaintWidgets;
             Instances.CursorServer.ResetCursor(_canvas);
+            BaseControlItem.ShouldRespond = true;
             _canvas.Refresh();
-
-            if (_param != null) SaveOne(_param);
-            _param = null;
         }
 
         private void _canvas_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             Instances.CursorServer.AttachCursor(_canvas, "GH_Target");
-            System.Drawing.PointF pt = _canvas.Viewport.UnprojectPoint(e.Location);
+            PointF pt = _canvas.Viewport.UnprojectPoint(e.Location);
             GH_RelevantObjectData gH_RelevantObjectData = _canvas.Document.RelevantObjectAtPoint(pt, GH_RelevantObjectFilter.Attributes);
             IGH_Param param = null;
-            if (gH_RelevantObjectData != null && gH_RelevantObjectData.Parameter != null)
+            if (gH_RelevantObjectData != null)
             {
-                param = gH_RelevantObjectData.Parameter;
-                if (_param != param)
+                if(gH_RelevantObjectData.Parameter != null)
                 {
+                    param = gH_RelevantObjectData.Parameter;
+                    if (_param == param) return;
                     if (_isInput && param.Kind != GH_ParamKind.input)
                     {
                         _param = param;
@@ -188,6 +192,48 @@ namespace ComponentToolkit
                         _param = param;
                         _canvas.Refresh();
                     }
+                }
+                else
+                {
+                    IGH_DocumentObject obj = gH_RelevantObjectData.Object;
+                    if (obj == null) return;
+                    IGH_Component component = (IGH_Component)obj;
+                    if(component == null) return;
+
+                    List<IGH_Param> paramLt = null;
+                    if (_isInput)
+                    {
+                        if(component.Params.Output.Count == 0) return;
+                        paramLt = component.Params.Output;
+
+                    }
+                    else if (!_isInput)
+                    {
+                        if (component.Params.Input.Count == 0) return;
+                        paramLt = component.Params.Input;
+                    }
+
+                    if (paramLt == null) return;
+                    float minDis = float.MaxValue;
+                    foreach (var item in paramLt)
+                    {
+                        PointF pt2 = item.Attributes.Pivot;
+                        float distance = (float)Math.Sqrt(Math.Pow(pt.X - pt2.X, 2) + Math.Pow(pt.Y - pt2.Y, 2));
+                        if(distance < minDis)
+                        {
+                            minDis = distance;
+                            param = item;
+                        }
+                    }
+
+                    if (param == _param) return;
+                    _param = param;
+                    _canvas.Refresh();
+
+                }
+                if (_param != param)
+                {
+
                 }
             }
         }

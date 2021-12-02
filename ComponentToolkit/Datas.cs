@@ -74,6 +74,12 @@ namespace ComponentToolkit
         }
         #endregion
 
+        public static bool UseQuickWire
+        {
+            get => Instances.Settings.GetValue(nameof(UseQuickWire), true);
+            set => Instances.Settings.SetValue(nameof(UseQuickWire), value);
+        }
+
         #region Settings For Layout
         public static readonly int MiniWidth = 6;
 
@@ -109,6 +115,28 @@ namespace ComponentToolkit
             }
         }
 
+        public static readonly int _paramsEdgeDistanceDefault = 5;
+        public static int ParamsEdgeDistance
+        {
+            get => Instances.Settings.GetValue(nameof(ParamsEdgeDistance), _paramsEdgeDistanceDefault);
+            set
+            {
+                Instances.Settings.SetValue(nameof(ParamsEdgeDistance), value);
+                RefreshLayout();
+            }
+        }
+
+        public static readonly int _paramsCoreDistanceDefault = 3;
+        public static int ParamsCoreDistance
+        {
+            get => Instances.Settings.GetValue(nameof(ParamsCoreDistance), _paramsCoreDistanceDefault);
+            set
+            {
+                Instances.Settings.SetValue(nameof(ParamsCoreDistance), value);
+                RefreshLayout();
+            }
+        }
+
         public static readonly int _inputBoxControlMaxWidthDefault = 100;
         public static int InputBoxControlMaxWidth
         {
@@ -122,12 +150,32 @@ namespace ComponentToolkit
 
         public static int AdditionWidth => ComponentToEdgeDistance + ComponentToCoreDistance;
 
+        public static bool UseParamControl
+        {
+            get => Grasshopper.Instances.Settings.GetValue(nameof(UseParamControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamControl), value);
+                RefreshLayout();
+            }
+        }
+
         public static bool ComponentUseControl
         {
             get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentUseControl), true);
             set
             {
                 Instances.Settings.SetValue(nameof(ComponentUseControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool ParamUseControl
+        {
+            get => Grasshopper.Instances.Settings.GetValue(nameof(ParamUseControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(ParamUseControl), value);
                 RefreshLayout();
             }
         }
@@ -315,7 +363,7 @@ namespace ComponentToolkit
 
         public static bool UseParamMaterialControl
         {
-            get => Instances.Settings.GetValue(nameof(UseParamMaterialControl), false);
+            get => Instances.Settings.GetValue(nameof(UseParamMaterialControl), true);
             set
             {
                 Instances.Settings.SetValue(nameof(UseParamMaterialControl), value);

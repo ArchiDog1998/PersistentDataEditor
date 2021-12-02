@@ -21,7 +21,7 @@
         </Style>
 
         <ControlTemplate TargetType="Button" x:Key="CornerButtonTemplate">
-            <Border x:Name="ButtonBorder" Style="{StaticResource ContentBorder}"
+            <Border x:Name="ButtonBorder" Style="{StaticResource ContentBorder}" Width="50"
                 HorizontalAlignment="Center" VerticalAlignment="Center" Padding="3">
                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
                               Content="{TemplateBinding ContentControl.Content}"/>
@@ -77,7 +77,8 @@
                 </DataGrid>
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Border x:Name="AddButton" Padding="3 0 3 0" MouseDown="AddButton_MouseDown" ToolTip="Press your left mouse and drag to the component's param you want to add, then release your button.">
+                    <Border x:Name="AddButton" Padding="3 0 3 0" MouseDown="AddButton_MouseDown" Width="50"
+                            ToolTip="Press your left mouse and drag to the component's param you want to add, then release your button.">
                         <TextBlock Text="Add" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <Border.Style>
                             <Style TargetType="Border">

@@ -16,6 +16,7 @@ namespace ComponentToolkit
 {
     public abstract class ParamControlBase<T>:BaseControlItem where T : class, IGH_Goo
     {
+        
         protected abstract Guid AddCompnentGuid { get; }
         protected virtual ushort AddCompnentIndex => 0;
         protected virtual string AddCompnentInit => OwnerGooData?.ToString();
@@ -39,33 +40,57 @@ namespace ComponentToolkit
                 Owner.ExpireSolution(true);
             }
         }
-        internal sealed override int Width => Valid? ActualWidth : 0;
-        protected int ActualWidth 
+        internal sealed override int Width
         {
             get
             {
-                int max = int.MinValue;
-                foreach (var control in _controlItems)
+                if (Valid)
                 {
-                    max = Math.Max(max, control.Width);
+                    int max = int.MinValue;
+                    foreach (var control in _controlItems)
+                    {
+                        max = Math.Max(max, control.Width);
+                    }
+                    return max;
                 }
-                return max;
+                else
+                {
+                    ClearLayout();
+                    return 0;
+                }
+
             }
         }
         internal sealed override int Height 
         {
             get
             {
-                int all = 0;
-                foreach (var control in _controlItems)
+                if (Valid)
                 {
-                    all += control.Height;
+                    int all = 0;
+                    foreach (var control in _controlItems)
+                    {
+                        all += control.Height;
+                    }
+                    return all;
                 }
-                return all;
+                else
+                {
+                    ClearLayout();
+                    return 0;
+                }
 
             }
         }
-        protected virtual bool Valid => Owner.OnPingDocument() == Grasshopper.Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2;
+        protected override bool Valid
+        {
+            get
+            {
+                bool isActive = Owner.OnPingDocument() == Grasshopper.Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2;
+                bool isUse = Datas.UseParamControl && ( Owner.Attributes.IsTopLevel ? Datas.ParamUseControl : Datas.ComponentUseControl);
+                return isActive && isUse;
+            }
+        }
 
         private BaseControlItem[] _controlItems;
         private IGooValue[] _Values;
@@ -85,14 +110,19 @@ namespace ComponentToolkit
             Owner = owner;
         }
 
+
         private void SetValue()
         {
             IGH_Goo[] goos = new IGH_Goo[_Values.Length];
             for (int i = 0; i < _Values.Length; i++)
             {
                 goos[i] = _Values[i].SaveGoo;
-                if (goos[i] == null) return;
-                if(! goos[i].IsValid) return;
+                if (goos[i] == null || !goos[i].IsValid)
+                {
+                    Owner.Attributes.GetTopLevel.ExpireLayout();
+                    Grasshopper.Instances.ActiveCanvas.Refresh();
+                    return;
+                }
             }
             OwnerGooData = SetValue(goos);
         }
@@ -104,28 +134,42 @@ namespace ComponentToolkit
         protected sealed override void LayoutObject(RectangleF bounds)
         {
             float y = bounds.Y;
-            //Datas.ControlAlignRightLayout
             foreach (BaseControlItem item in _controlItems)
             {
-                item.Bounds = new RectangleF(Datas.ControlAlignRightLayout ? bounds.Right - item.Width : bounds.X, 
+                item.Bounds = new RectangleF(Datas.ControlAlignRightLayout ? bounds.Right - item.Width : bounds.X,
                     y, item.Width, item.Height);
                 y += item.Height;
             }
             base.LayoutObject(bounds);
         }
 
+        private void ClearLayout()
+        {
+            foreach (var control in _controlItems)
+            {
+                control.Bounds = RectangleF.Empty;
+            }
+        }
+
+
         internal sealed override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
+            if (!Valid) return;
             foreach (var control in _controlItems)
             {
                 control.RenderObject(canvas, graphics, owner, style);
             }
         }
+
+        protected virtual void DosomethingWhenCreate(IGH_DocumentObject obj) { }
+
         internal sealed override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            if(e.Button == MouseButtons.Right)
+            if (!Valid) return;
+
+            if (e.Button == MouseButtons.Right && AddCompnentGuid != default(Guid))
             {
-                new CreateObjectItem(AddCompnentGuid, AddCompnentIndex, AddCompnentInit, true).CreateObject(Owner);
+                new CreateObjectItem(AddCompnentGuid, AddCompnentIndex, AddCompnentInit, true).CreateObject(Owner, DosomethingWhenCreate);
             }
             else if (e.Button == MouseButtons.Left)
             {

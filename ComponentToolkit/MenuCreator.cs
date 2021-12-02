@@ -16,61 +16,66 @@ namespace ComponentToolkit
 {
     public static  class MenuCreator
     {
-        public static bool UseQuickWire
-        {
-            get => Instances.Settings.GetValue(nameof(UseQuickWire), true);
-            set => Instances.Settings.SetValue(nameof(UseQuickWire), value);
-        }
+
         public static ToolStripMenuItem CreateMajorMenu()
         {
             ToolStripMenuItem major = new ToolStripMenuItem("Component Toolkit", Properties.Resources.ComponentToolkitIcon_24) { ToolTipText = "Two tools and some component's layout params." };
 
-            ToolStripMenuItem quickClick = new ToolStripMenuItem("Use Quick Wire", Properties.Resources.QuickwireIcon_24) { Checked = UseQuickWire };
-            quickClick.ToolTipText = "You can left click the component's param or double click floating param to choose which activeobjec you want to add.";
-            quickClick.Click += (sender, e) =>
-            {
-                quickClick.Checked = !quickClick.Checked;
-                UseQuickWire = quickClick.Checked;
-            };
-            major.DropDownItems.Add(quickClick);
+
+            major.DropDownItems.Add(CreateQuickWireItem());
 
             major.DropDownItems.Add(CreateControlItem());
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
-            ToolStripMenuItem inputClick = new ToolStripMenuItem("Component Input Align Edge") { Checked = Datas.ComponentInputEdgeLayout };
-            inputClick.Click += (sender, e) =>
-            {
-                inputClick.Checked = !inputClick.Checked;
-                Datas.ComponentInputEdgeLayout = inputClick.Checked;
-            };
-            major.DropDownItems.Add(inputClick);
-
-            ToolStripMenuItem outputClick = new ToolStripMenuItem("Component Output Align Edge") { Checked = Datas.ComponentOutputEdgeLayout };
-            outputClick.Click += (sender, e) =>
-            {
-                outputClick.Checked = !outputClick.Checked;
-                Datas.ComponentOutputEdgeLayout = outputClick.Checked;
-            };
-            major.DropDownItems.Add(outputClick);
+            major.DropDownItems.Add(CreateCheckBox("Component Input Align Edge", Datas.ComponentInputEdgeLayout, (boolean) => Datas.ComponentInputEdgeLayout = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Component Output Align Edge", Datas.ComponentOutputEdgeLayout, (boolean) => Datas.ComponentOutputEdgeLayout = boolean));
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateNumberBox(major, "Params to Edge", Datas.ComponentToEdgeDistance, (v) => Datas.ComponentToEdgeDistance = (int)v, Datas._componentToEdgeDistanceDefault, 20, 0);
+            CreateNumberBox(major, "Component's Params to Edge", Datas.ComponentToEdgeDistance, (v) => Datas.ComponentToEdgeDistance = (int)v, Datas._componentToEdgeDistanceDefault, 20, 0);
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateNumberBox(major, "Params to Core", Datas.ComponentToCoreDistance, (v) => Datas.ComponentToCoreDistance = (int)v, Datas._componentToCoreDistanceDefault, 20, 0);
+            CreateNumberBox(major, "Component's Params to Core", Datas.ComponentToCoreDistance, (v) => Datas.ComponentToCoreDistance = (int)v, Datas._componentToCoreDistanceDefault, 20, 0);
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+            CreateNumberBox(major, "Params to Edge", Datas.ParamsEdgeDistance, (v) => Datas.ParamsEdgeDistance = (int)v, Datas._paramsEdgeDistanceDefault, 20, 0);
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+            CreateNumberBox(major, "Params to Core", Datas.ParamsCoreDistance, (v) => Datas.ParamsCoreDistance = (int)v, Datas._paramsCoreDistanceDefault, 20, 0);
 
 
+            return major;
+        }
+
+        private static ToolStripMenuItem CreateQuickWireItem()
+        {
+            ToolStripMenuItem major = CreateCheckBox("Use Quick Wire", Datas.UseQuickWire, Properties.Resources.QuickwireIcon_24, (boolean) => Datas.UseQuickWire = boolean);
+            major.ToolTipText = "You can left click the component's param or double click floating param to choose which activeobjec you want to add.";
+
+            ToolStripMenuItem click = new ToolStripMenuItem("Clear all quickwire settings");
+            click.Click += (sender, e) =>
+            {
+               if( MessageBox.Show("Are you sure to remove all quickwire settings, and delete the quickwires.json file?", "Remove All?", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    GH_ComponentAttributesReplacer.RemoveAllQuickwireSettings();
+                    MessageBox.Show("Succeed!");
+                }
+            };
+
+            major.DropDownItems.Add(click);
 
             return major;
         }
 
         private static ToolStripMenuItem CreateControlItem()
         {
-            ToolStripMenuItem major = CreateCheckBox("Param Control", Datas.ComponentUseControl, (boolean) => Datas.ComponentUseControl = boolean);
-            major.Image = Properties.Resources.ParamControlIcon_24;
+            ToolStripMenuItem major = CreateCheckBox("Param Control", Datas.UseParamControl, Properties.Resources.ParamControlIcon_24, 
+                (boolean) => Datas.UseParamControl = boolean);
             major.ToolTipText = "It will show you the persistent param's value and you can change the value easily.";
 
             major.DropDownItems.Add(CreateUseControlItem());
+
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+            major.DropDownItems.Add(CreateCheckBox("Use on Components", Datas.ComponentUseControl, (boolean) => Datas.ComponentUseControl = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Use on Parameters", Datas.ParamUseControl, (boolean) => Datas.ParamUseControl = boolean));
+
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 

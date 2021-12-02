@@ -39,6 +39,13 @@ namespace ComponentToolkit
             File.WriteAllText(_location, ser.Serialize(new CreateObjectItemsSave(StaticCreateObjectItems)));
         }
 
+        internal static void RemoveAllQuickwireSettings()
+        {
+            if (File.Exists(_location))
+                File.Delete(_location);
+            StaticCreateObjectItems = new CreateObjectItems();
+        }
+
         public static void Init()
         {
             //Read from json.
@@ -196,6 +203,13 @@ namespace ComponentToolkit
             int heightCalculate = 0;
             foreach (IGH_Param param in gH_Params)
             {
+                if (param.Attributes == null || !(param.Attributes is GH_AdvancedLinkParamAttr))
+                {
+                    param.Attributes = new GH_AdvancedLinkParamAttr(param, owner.Attributes);
+
+                    //Refresh the attributes.
+                    owner.OnPingDocument()?.DestroyAttributeCache();
+                }
                 GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
 
                 singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth, attr.WholeWidth);
@@ -355,7 +369,7 @@ namespace ComponentToolkit
         public static void RenderComponentParametersNew(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
 
-			int zoomFadeLow = GH_Canvas.ZoomFadeLow;
+            int zoomFadeLow = GH_Canvas.ZoomFadeLow;
 			if (zoomFadeLow < 5)
 			{
 				return;

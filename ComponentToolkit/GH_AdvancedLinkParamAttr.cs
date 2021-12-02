@@ -15,9 +15,9 @@ namespace ComponentToolkit
     {
 
         public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
-        public int ControlWidth => Control != null && Datas.ComponentUseControl ? Control.Width : 0;
+        public int ControlWidth => Control?.Width ?? 0;
         public int WholeWidth => StringWidth + (ControlWidth == 0 ? 0 : ControlWidth + Datas.ComponentControlNameDistance);
-        public int ParamHeight => Math.Max(20, ControlWidth == 0 ? 0 : Control.Height);
+        public int ParamHeight => Math.Max(20, (Control?.Height ?? 0) + 3);
 
         public BaseControlItem Control { get; private set; } = null;
 
@@ -119,6 +119,7 @@ namespace ComponentToolkit
 
         public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
+            if (!BaseControlItem.ShouldRespond) return GH_ObjectResponse.Ignore;
             if (Control != null && Control.Bounds.Contains(e.CanvasLocation))
             {
                 Control.Clicked(sender, e);
@@ -126,7 +127,7 @@ namespace ComponentToolkit
                 return GH_ObjectResponse.Release;
             }
 
-            if (MenuCreator.UseQuickWire && e.Button == MouseButtons.Left && StringRect.Contains(e.CanvasLocation))
+            if (Datas.UseQuickWire && e.Button == MouseButtons.Left && StringRect.Contains(e.CanvasLocation))
             {
                 RespondToQuickWire(Owner, Owner.Kind == GH_ParamKind.input).Show(sender, e.ControlLocation);
                 return GH_ObjectResponse.Release;
@@ -166,7 +167,7 @@ namespace ComponentToolkit
                     item.ToolTipText = "No Init String.";
                 }
             }
-            ToolStripMenuItem editItem = GH_DocumentObject.Menu_AppendItem(menu, "Edit", (sender, e) => Menu_EditItemClicked(sender, param));
+            ToolStripMenuItem editItem = GH_DocumentObject.Menu_AppendItem(menu, "Edit", (sender, e) => Menu_EditItemClicked(sender, param, isInput));
             editItem.Image = Properties.Resources.EditIcon_24;
             editItem.Tag = items;
             editItem.ForeColor = Color.DimGray;
@@ -186,12 +187,11 @@ namespace ComponentToolkit
             MessageBox.Show("Something wrong with create object.");
         }
 
-        private static void Menu_EditItemClicked(object sender, IGH_Param param)
+        private static void Menu_EditItemClicked(object sender, IGH_Param param, bool isInput)
         {
             ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
             if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is CreateObjectItem[])
             {
-                bool isInput = param.Kind == GH_ParamKind.input;
                 ObservableCollection<CreateObjectItem> structureLists = new ObservableCollection<CreateObjectItem>((CreateObjectItem[])toolStripMenuItem.Tag);
                 new QuickWireEditor(param.ComponentGuid, isInput, param.Icon_24x24, param.TypeName, structureLists).Show();
             }

@@ -71,8 +71,11 @@ namespace ComponentToolkit
             for (int i = 0; i < _Values.Length; i++)
             {
                 goos[i] = _Values[i].SaveGoo;
-                if (goos[i] == null) return;
-                if (!goos[i].IsValid) return;
+                if (goos[i] == null || !goos[i].IsValid)
+                {
+                    base.ValueChange();
+                    return;
+                }
             }
             ShowValue = SetValue(goos);
         }
@@ -82,12 +85,20 @@ namespace ComponentToolkit
 
         protected sealed override void LayoutObject(RectangleF bounds)
         {
-            float x = bounds.X;
-            foreach (BaseControlItem item in _controlItems)
+            if (bounds == RectangleF.Empty)
             {
-                item.Bounds = new RectangleF(x, bounds.Y + (bounds.Height - item.Height) / 2, item.Width, item.Height);
-                x += item.Width;
+                foreach (BaseControlItem item in _controlItems) item.Bounds = RectangleF.Empty;
             }
+            else
+            {
+                float x = bounds.X;
+                foreach (BaseControlItem item in _controlItems)
+                {
+                    item.Bounds = new RectangleF(x, bounds.Y + (bounds.Height - item.Height) / 2, item.Width, item.Height);
+                    x += item.Width;
+                }
+            }
+
             base.LayoutObject(bounds);
         }
 
