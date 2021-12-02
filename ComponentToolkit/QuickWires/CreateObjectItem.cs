@@ -44,8 +44,6 @@ namespace ComponentToolkit
 
         public IGH_DocumentObject CreateObject(IGH_Param param, Action<IGH_DocumentObject> action = null)
         {
-            float move = 100;
-
             IGH_DocumentObject obj = Grasshopper.Instances.ComponentServer.EmitObject(ObjectGuid);
             if (obj == null) return null;
 
@@ -54,7 +52,7 @@ namespace ComponentToolkit
             RectangleF outBound = param.Attributes.GetTopLevel.Bounds;
             RectangleF thisBound = param.Attributes.Bounds;
 
-            PointF objCenter = new PointF(outBound.Left + (IsInput ? - move : (move + outBound.Width)),
+            PointF objCenter = new PointF(outBound.Left + (IsInput ? - 100 : (140 + outBound.Width)),
                 thisBound.Top + thisBound.Height / 2);
 
             if (obj is IGH_Component)

@@ -14,11 +14,10 @@ namespace ComponentToolkit
 {
     internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes
     {
-        internal static readonly int IconSize = 18;
         public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
         public int ControlWidth => Control?.Width ?? 0;
         public int WholeWidth => StringWidth + (ControlWidth == 0 ? 0 : ControlWidth + Datas.ComponentControlNameDistance) + 
-            (Datas.ShowLinkParamIcon ? IconSize + Datas.ComponentIconDistance : 0);
+            (Datas.ShowLinkParamIcon ? Datas.ComponentParamIconSize + Datas.ComponentIconDistance : 0);
         public int ParamHeight => Math.Max(20, (Control?.Height ?? 0) + 3);
 
         public BaseControlItem Control { get; private set; } = null;
@@ -123,6 +122,7 @@ namespace ComponentToolkit
         public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             if (!BaseControlItem.ShouldRespond) return GH_ObjectResponse.Ignore;
+
             if (Control != null && Control.Bounds.Contains(e.CanvasLocation))
             {
                 Control.Clicked(sender, e);

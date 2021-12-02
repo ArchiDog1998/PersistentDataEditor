@@ -80,6 +80,18 @@ namespace ComponentToolkit
             set => Instances.Settings.SetValue(nameof(UseQuickWire), value);
         }
 
+        public static readonly int _componentParamIconSizeDefault = 18;
+        public static int ComponentParamIconSize
+        {
+            get => Instances.Settings.GetValue(nameof(ComponentParamIconSize), _componentParamIconSizeDefault);
+            set
+            {
+                Instances.Settings.SetValue(nameof(ComponentParamIconSize), value);
+                //GH_ComponentAttributesReplacer.ChangeIconOpacityValue();
+                RefreshLayout();
+            }
+        }
+
         public static readonly double _componentIconOpacityDefault = 0.6;
         public static double ComponentIconOpacity
         {
@@ -225,7 +237,7 @@ namespace ComponentToolkit
 
         public static bool ControlAlignRightLayout
         {
-            get => Instances.Settings.GetValue(nameof(ControlAlignRightLayout), false);
+            get => Instances.Settings.GetValue(nameof(ControlAlignRightLayout), true);
             set
             {
                 Instances.Settings.SetValue(nameof(ControlAlignRightLayout), value);

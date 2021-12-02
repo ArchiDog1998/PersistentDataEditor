@@ -54,6 +54,8 @@ namespace ComponentToolkit
             CreateNumberBox(major, "Distance From Icon To String", Datas.ComponentIconDistance, (v) => Datas.ComponentIconDistance = (int)v, Datas._componentIconDistanceDefault, 20, 0);
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
             CreateNumberBox(major, "Icon's Opacity", Datas.ComponentIconOpacity, (v) => Datas.ComponentIconOpacity = (int)v, Datas._componentIconOpacityDefault, 1, 0, 3);
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+            CreateNumberBox(major, "Icon Size", Datas.ComponentParamIconSize, (v) => Datas.ComponentParamIconSize = (int)v, Datas._componentParamIconSizeDefault, 20, 4);
 
             return major;
         }

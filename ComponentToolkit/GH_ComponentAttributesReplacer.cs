@@ -251,7 +251,7 @@ namespace ComponentToolkit
 
                 if (Datas.ShowLinkParamIcon)
                 {
-                    singleParamBoxMaxWidth += GH_AdvancedLinkParamAttr.IconSize + Datas.ComponentIconDistance;
+                    singleParamBoxMaxWidth += Datas.ComponentParamIconSize + Datas.ComponentIconDistance;
                 }
             }
             else singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth + Datas.AdditionWidth, Datas.AdditionWidth + Datas.MiniWidth);
@@ -357,7 +357,7 @@ namespace ComponentToolkit
 
                     if (Datas.ShowLinkParamIcon)
                     {
-                        float size = GH_AdvancedLinkParamAttr.IconSize;
+                        float size = Datas.ComponentParamIconSize;
                         attr.IconRegion = new RectangleF(x, attr.Bounds.Y + attr.Bounds.Height /2 - size/2, size, size);
                         x += size + Datas.ComponentIconDistance;
                     }
@@ -398,7 +398,7 @@ namespace ComponentToolkit
 
                     if (Datas.ShowLinkParamIcon)
                     {
-                        float size = GH_AdvancedLinkParamAttr.IconSize;
+                        float size = Datas.ComponentParamIconSize;
                         attr.IconRegion = new RectangleF(attr.StringRect.Right + Datas.ComponentIconDistance, attr.Bounds.Y + attr.Bounds.Height / 2 - size / 2, size, size);
                     }
                     else

@@ -49,6 +49,8 @@ namespace ComponentToolkit
 
         public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
+            if (!BaseControlItem.ShouldRespond) return GH_ObjectResponse.Ignore;
+
             if (Control != null && Control.Bounds.Contains(e.CanvasLocation))
             {
                 Control.Clicked(sender, e);
