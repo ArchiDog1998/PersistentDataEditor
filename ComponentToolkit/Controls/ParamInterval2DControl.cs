@@ -21,44 +21,23 @@ namespace ComponentToolkit
         {
             return new BaseControlItem[]
             {
-                new StringRender("U0:"),
-
-                new GooInputBoxControl<GH_Number>(()=>
+                new GooIntervalControl(()=>
                 {
                     if(OwnerGooData == null) return null;
-                    return new GH_Number(OwnerGooData.Value.U0);
-                }),
+                    return new GH_Interval(OwnerGooData.Value.U);
+                }, "U:"),
 
-                new StringRender("U1:"),
-
-                new GooInputBoxControl<GH_Number>(()=>
+                new GooIntervalControl(()=>
                 {
                     if(OwnerGooData == null) return null;
-                    return new GH_Number(OwnerGooData.Value.U1);
-                }),
-
-                new StringRender("V0:"),
-
-                new GooInputBoxControl<GH_Number>(()=>
-                {
-                    if(OwnerGooData == null) return null;
-                    return new GH_Number(OwnerGooData.Value.V0);
-                }),
-
-                new StringRender("V1:"),
-
-                new GooInputBoxControl<GH_Number>(()=>
-                {
-                    if(OwnerGooData == null) return null;
-                    return new GH_Number(OwnerGooData.Value.V1);
-                }),
+                    return new GH_Interval(OwnerGooData.Value.V);
+                }, "V:"),
             };
         }
 
         protected override GH_Interval2D SetValue(IGH_Goo[] values)
         {
-            return new GH_Interval2D(new UVInterval(new Interval( ((GH_Number)values[0]).Value, ((GH_Number)values[1]).Value),
-                new Interval(((GH_Number)values[2]).Value, ((GH_Number)values[3]).Value)));
+            return new GH_Interval2D(new UVInterval(((GH_Interval)values[0]).Value, ((GH_Interval)values[1]).Value));
 
         }
     }

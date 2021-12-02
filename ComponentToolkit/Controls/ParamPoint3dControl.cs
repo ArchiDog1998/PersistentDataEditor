@@ -22,38 +22,8 @@ namespace ComponentToolkit
         {
             return new BaseControlItem[]
             {
-                new StringRender("X:"),
-
-                new GooInputBoxControl<GH_Number>(()=>
-                {
-                    if(OwnerGooData == null) return null;
-                    return new GH_Number(OwnerGooData.Value.X);
-                }),
-
-                new StringRender("Y:"),
-
-                new GooInputBoxControl<GH_Number>(()=>
-                {
-                    if(OwnerGooData == null) return null;
-                    return new GH_Number(OwnerGooData.Value.Y);
-                }),
-
-                new StringRender("Z:"),
-
-                new GooInputBoxControl<GH_Number>(()=>
-                {
-                    if(OwnerGooData == null) return null;
-                    return new GH_Number(OwnerGooData.Value.Z);
-                }),
+                new GooPointControl(()=> OwnerGooData, null),
             };
-        }
-
-        protected override GH_Point SetValue(IGH_Goo[] values)
-        {
-            return new GH_Point(new Point3d(
-                ((GH_Number)values[0]).Value, 
-                ((GH_Number)values[1]).Value,
-                ((GH_Number)values[2]).Value));
         }
     }
 }

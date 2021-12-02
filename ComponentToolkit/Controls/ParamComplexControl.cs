@@ -21,27 +21,8 @@ namespace ComponentToolkit
         {
             return new BaseControlItem[]
             {
-                new StringRender("R:"),
-
-                new GooInputBoxControl<GH_Number>(()=>
-                {
-                    if(OwnerGooData == null) return null;
-                    return new GH_Number(OwnerGooData.Value.Real);
-                }),
-
-                new StringRender("i:"),
-
-                new GooInputBoxControl<GH_Number>(()=>
-                {
-                    if(OwnerGooData == null) return null;
-                    return new GH_Number(OwnerGooData.Value.Imaginary);
-                }),
+                new GooComplexControl(()=> OwnerGooData, null),
             };
-        }
-
-        protected override GH_ComplexNumber SetValue(IGH_Goo[] values)
-        {
-            return new GH_ComplexNumber(new Complex(((GH_Number)values[0]).Value, ((GH_Number)values[1]).Value));
         }
     }
 }

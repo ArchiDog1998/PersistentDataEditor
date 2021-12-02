@@ -21,25 +21,8 @@ namespace ComponentToolkit
         {
             return new BaseControlItem[]
             {
-                new GooInputBoxControl<GH_Number>(()=>
-                {
-                    if(OwnerGooData == null) return null;
-                    return new GH_Number(OwnerGooData.Value.T0);
-                }),
-
-                new StringRender("To"),
-
-                new GooInputBoxControl<GH_Number>(()=>
-                {
-                    if(OwnerGooData == null) return null;
-                    return new GH_Number(OwnerGooData.Value.T1);
-                }),
+                new GooIntervalControl(()=> OwnerGooData, null),
             };
-        }
-
-        protected override GH_Interval SetValue(IGH_Goo[] values)
-        {
-            return new GH_Interval(new Interval (((GH_Number)values[0]).Value, ((GH_Number)values[1]).Value));
         }
     }
 }

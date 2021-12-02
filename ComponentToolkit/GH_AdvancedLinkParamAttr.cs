@@ -17,6 +17,7 @@ namespace ComponentToolkit
         public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
         public int ControlWidth => Control != null && Datas.ComponentUseControl ? Control.Width : 0;
         public int WholeWidth => StringWidth + (ControlWidth == 0 ? 0 : ControlWidth + Datas.ComponentControlNameDistance);
+        public int ParamHeight => Math.Max(20, ControlWidth == 0 ? 0 : Control.Height);
 
         public BaseControlItem Control { get; private set; } = null;
 
@@ -70,6 +71,18 @@ namespace ComponentToolkit
                 else if (param is GH_PersistentParam<GH_ComplexNumber>)
                 {
                     return new ParamComplexControl((GH_PersistentParam<GH_ComplexNumber>)param);
+                }
+                else if (param is GH_PersistentParam<GH_Line>)
+                {
+                    return new ParamLineControl((GH_PersistentParam<GH_Line>)param);
+                }
+                else if (param is GH_PersistentParam<GH_Plane>)
+                {
+                    return new ParamPlaneControl((GH_PersistentParam<GH_Plane>)param);
+                }
+                else if (param is GH_PersistentParam<GH_Circle>)
+                {
+                    return new ParamCircleControl((GH_PersistentParam<GH_Circle>)param);
                 }
 
                 else

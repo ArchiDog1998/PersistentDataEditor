@@ -65,17 +65,22 @@ namespace ComponentToolkit
             Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
 
             ExchangeMethod(
-                typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.RenderComponentParameters))).First(),
+                typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributes.RenderComponentParameters))).First(),
                 typeof(GH_ComponentAttributesReplacer).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.RenderComponentParametersNew))).First()
             );
 
             ExchangeMethod(
-                typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.LayoutInputParams))).First(),
+                typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributes.LayoutComponentBox))).First(),
+                typeof(GH_ComponentAttributesReplacer).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.LayoutComponentBoxNew))).First()
+            );
+
+            ExchangeMethod(
+                typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributes.LayoutInputParams))).First(),
                 typeof(GH_ComponentAttributesReplacer).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.LayoutInputParamsNew))).First()
             );
 
             ExchangeMethod(
-                typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.LayoutOutputParams))).First(),
+                typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributes.LayoutOutputParams))).First(),
                 typeof(GH_ComponentAttributesReplacer).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.LayoutOutputParamsNew))).First()
             );
         }
@@ -96,6 +101,7 @@ namespace ComponentToolkit
             {
                 ChangeFloatParam(item);
             }
+            sender?.DestroyAttributeCache();
         }
 
         private static void ChangeFloatParam(IGH_DocumentObject item)
@@ -143,8 +149,38 @@ namespace ComponentToolkit
             return true;
         }
 
+        public static RectangleF LayoutComponentBoxNew(IGH_Component owner)
+        {
+            int inputHeight = GetParamsWholeHeight(owner.Params.Input, owner);
+            int outputHeight = GetParamsWholeHeight(owner.Params.Output, owner);
 
+            int val = Math.Max(inputHeight, outputHeight);
+            val = Math.Max(val, 24);
+            int num = 24;
+            if (!IsIconMode(owner.IconDisplayMode))
+            {
+                val = Math.Max(val, GH_Convert.ToSize(GH_FontServer.MeasureString(owner.NickName, GH_FontServer.LargeAdjusted)).Width + 6);
+            }
+            return GH_Convert.ToRectangle(new RectangleF(owner.Attributes.Pivot.X - 0.5f * (float)num, owner.Attributes.Pivot.Y - 0.5f * (float)val, num, val));
+        }
 
+        private static int GetParamsWholeHeight(List<IGH_Param> gH_Params, IGH_Component owner)
+        {
+            int wholeHeight = 0;
+            foreach (IGH_Param param in gH_Params)
+            {
+                if (param.Attributes == null || !(param.Attributes is GH_AdvancedLinkParamAttr))
+                {
+                    param.Attributes = new GH_AdvancedLinkParamAttr(param, owner.Attributes);
+
+                    //Refresh the attributes.
+                    owner.OnPingDocument()?.DestroyAttributeCache();
+                }
+                GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
+                wholeHeight += attr.ParamHeight;
+            }
+            return wholeHeight;
+        }
 
         private static void ParamsLayout(IGH_Component owner, RectangleF componentBox, bool isInput)
         {
@@ -157,20 +193,15 @@ namespace ComponentToolkit
             int singleParamBoxMaxWidth = 0;
             int nameMaxWidth = 0;
             int controlMaxWidth = 0;
+            int heightCalculate = 0;
             foreach (IGH_Param param in gH_Params)
             {
-                if (param.Attributes == null || !(param.Attributes is GH_AdvancedLinkParamAttr))
-                {
-                    param.Attributes = new GH_AdvancedLinkParamAttr(param, owner.Attributes);
-
-                    //Refresh the attributes.
-                    owner.OnPingDocument()?.DestroyAttributeCache();
-                }
                 GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
 
                 singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth, attr.WholeWidth);
                 nameMaxWidth = Math.Max(nameMaxWidth, attr.StringWidth);
                 controlMaxWidth = Math.Max(controlMaxWidth, attr.ControlWidth);
+                heightCalculate += attr.ParamHeight;
             }
 
             if (Datas.SeperateCalculateWidthControl)
@@ -182,18 +213,20 @@ namespace ComponentToolkit
 
 
             //Layout every param.
-            float singleParamBoxHeight = componentBox.Height / count;
-            for (int i = 0; i < count; i++)
+            float heightFloat = componentBox.Height / heightCalculate;
+            float movementY = 0;
+            foreach (IGH_Param param in gH_Params)
             {
-                IGH_Param param = gH_Params[i];
+                float singleParamBoxHeight = heightFloat * ((GH_AdvancedLinkParamAttr)param.Attributes).ParamHeight;
 
                 float rectX = isInput ? componentBox.X - singleParamBoxMaxWidth : componentBox.Right + Datas.ComponentToCoreDistance;
-                float rectY = componentBox.Y + i * singleParamBoxHeight;
+                float rectY = componentBox.Y + movementY;
                 float width = singleParamBoxMaxWidth - Datas.ComponentToCoreDistance;
                 float height = singleParamBoxHeight;
                 param.Attributes.Pivot = new PointF(rectX + 0.5f * singleParamBoxMaxWidth, rectY + 0.5f * singleParamBoxHeight);
                 param.Attributes.Bounds = GH_Convert.ToRectangle(new RectangleF(rectX, rectY, width, height));
 
+                movementY += singleParamBoxHeight;
             }
 
             //Layout tags.

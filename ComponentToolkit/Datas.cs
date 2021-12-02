@@ -283,6 +283,36 @@ namespace ComponentToolkit
             }
         }
 
+        public static bool UseParamLineControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamLineControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamLineControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamPlaneControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamPlaneControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamPlaneControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamCircleControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamCircleControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamCircleControl), value);
+                RefreshLayout();
+            }
+        }
+
         public static bool UseParamGeneralControl
         {
             get => Instances.Settings.GetValue(nameof(UseParamGeneralControl), false);

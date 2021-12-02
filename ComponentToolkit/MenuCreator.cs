@@ -95,6 +95,8 @@ namespace ComponentToolkit
 
             major.DropDown.Closing += DropDown_Closing;
 
+            CreateTextLabel(major, "Single Control");
+
             major.DropDownItems.Add(CreateCheckBox("Boolean Control", Datas.UseParamBooleanControl, new Param_Boolean().Icon_24x24,
                 (boolean) => Datas.UseParamBooleanControl = boolean));
 
@@ -112,11 +114,10 @@ namespace ComponentToolkit
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
+            CreateTextLabel(major, "One Line Control");
+
             major.DropDownItems.Add(CreateCheckBox("Interval Control", Datas.UseParamIntervalControl, new Param_Interval().Icon_24x24,
                 (boolean) => Datas.UseParamIntervalControl = boolean));
-
-            major.DropDownItems.Add(CreateCheckBox("Interval2d Control", Datas.UseParamInterval2DControl, new Param_Interval2D().Icon_24x24,
-                (boolean) => Datas.UseParamInterval2DControl = boolean));
 
             major.DropDownItems.Add(CreateCheckBox("Point Control", Datas.UseParamPointControl, new Param_Point().Icon_24x24,
                 (boolean) => Datas.UseParamPointControl = boolean));
@@ -126,6 +127,22 @@ namespace ComponentToolkit
 
             major.DropDownItems.Add(CreateCheckBox("Complex Control", Datas.UseParamComplexControl, new Param_Complex().Icon_24x24,
                 (boolean) => Datas.UseParamComplexControl = boolean));
+
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+
+            CreateTextLabel(major, "Multi-line Control");
+
+            major.DropDownItems.Add(CreateCheckBox("Interval2d Control", Datas.UseParamInterval2DControl, new Param_Interval2D().Icon_24x24,
+                (boolean) => Datas.UseParamInterval2DControl = boolean));
+
+            major.DropDownItems.Add(CreateCheckBox("Line Control", Datas.UseParamLineControl, new Param_Line().Icon_24x24,
+                (boolean) => Datas.UseParamLineControl = boolean));
+
+            major.DropDownItems.Add(CreateCheckBox("Plane Control", Datas.UseParamPlaneControl, new Param_Plane().Icon_24x24,
+                (boolean) => Datas.UseParamPlaneControl = boolean));
+
+            major.DropDownItems.Add(CreateCheckBox("Circle Control", Datas.UseParamCircleControl, new Param_Circle().Icon_24x24,
+                (boolean) => Datas.UseParamCircleControl = boolean));
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
@@ -183,16 +200,21 @@ namespace ComponentToolkit
 
         }
 
+        private static void CreateTextLabel(ToolStripMenuItem item, string name, string tooltips = null)
+        {
+            ToolStripLabel textBox = new ToolStripLabel(name);
+            textBox.Font = new Font(textBox.Font, FontStyle.Bold);
+            if (!string.IsNullOrEmpty(tooltips))
+                textBox.ToolTipText = tooltips;
+            item.DropDownItems.Add(textBox);
+        }
 
         private static void CreateNumberBox(ToolStripMenuItem item, string itemName, double originValue, Action<double> valueChange, double valueDefault, double Max, double Min)
         {
             item.DropDown.Closing -= DropDown_Closing;
             item.DropDown.Closing += DropDown_Closing;
 
-            ToolStripLabel textBox = new ToolStripLabel(itemName);
-            textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size, FontStyle.Bold);
-            textBox.ToolTipText = $"Value from {Min} to {Max}";
-            item.DropDownItems.Add(textBox);
+            CreateTextLabel(item, itemName, $"Value from {Min} to {Max}");
 
             int decimalPlace = 0;
 

@@ -1,74 +1,59 @@
 ﻿using Grasshopper.GUI;
-using Grasshopper.GUI.Base;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
 
 namespace ComponentToolkit
 {
-    public abstract class ParamControlBase<T>:BaseControlItem where T : class, IGH_Goo
+    internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : class, IGH_Goo
     {
-        protected GH_PersistentParam<T> Owner { get; }
-        private bool _isSaveUndo = true;
-        internal T OwnerGooData
-        {
-            get
-            {
-                return Owner.PersistentData.get_FirstItem(true);
-            }
-            private set
-            {
-                if (_isSaveUndo)
-                {
-                    Owner.RecordUndoEvent("Set: " + value.ToString());
-                    _isSaveUndo = false;
-                }
-                Owner.PersistentData.Clear();
-                Owner.PersistentData.Append(value);
-                Owner.ExpireSolution(true);
-            }
-        }
-        internal sealed override int Width => Valid? ActualWidth : 0;
-        protected int ActualWidth 
-        {
-            get
-            {
-                int max = int.MinValue;
-                foreach (var control in _controlItems)
-                {
-                    max = Math.Max(max, control.Width);
-                }
-                return max;
-            }
-        }
-        internal sealed override int Height 
+        internal sealed override int Width
         {
             get
             {
                 int all = 0;
                 foreach (var control in _controlItems)
                 {
-                    all += control.Height;
+                    all += control.Width;
                 }
                 return all;
-
             }
         }
-        protected virtual bool Valid => Owner.OnPingDocument() == Grasshopper.Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2;
-
+        internal sealed override int Height
+        {
+            get
+            {
+                int max = 0;
+                foreach (var control in _controlItems)
+                {
+                    max = Math.Max(max, control.Height);
+                }
+                return max;
+            }
+        }
         private BaseControlItem[] _controlItems;
         private IGooValue[] _Values;
-        public ParamControlBase(GH_PersistentParam<T> owner)
+        public GooMultiControlBase(Func<T> valueGetter, string name) : base(valueGetter)
         {
-            _controlItems = SetControlItems(owner) ?? new BaseControlItem[0];
+            BaseControlItem[] addcontrolItems = SetControlItems() ?? new BaseControlItem[0];
+            if (string.IsNullOrEmpty(name))
+            {
+                _controlItems = addcontrolItems;
+            }
+            else
+            {
+                List<BaseControlItem> items = new List<BaseControlItem> { new StringRender(name) };
+                items.AddRange(addcontrolItems);
+                _controlItems = items.ToArray();
+            }
+
             List<IGooValue> gooValues = new List<IGooValue>();
             foreach (var control in _controlItems)
             {
@@ -79,9 +64,7 @@ namespace ComponentToolkit
                 }
             }
             _Values = gooValues.ToArray();
-            Owner = owner;
         }
-
         private void SetValue()
         {
             IGH_Goo[] goos = new IGH_Goo[_Values.Length];
@@ -89,24 +72,21 @@ namespace ComponentToolkit
             {
                 goos[i] = _Values[i].SaveGoo;
                 if (goos[i] == null) return;
-                if(! goos[i].IsValid) return;
+                if (!goos[i].IsValid) return;
             }
-            OwnerGooData = SetValue(goos);
+            ShowValue = SetValue(goos);
         }
 
-        protected virtual T SetValue(IGH_Goo[] values) => (T)values[0];
-
-        protected abstract BaseControlItem[] SetControlItems(GH_PersistentParam<T> owner);
+        protected abstract T SetValue(IGH_Goo[] values);
+        protected abstract BaseControlItem[] SetControlItems();
 
         protected sealed override void LayoutObject(RectangleF bounds)
         {
-            float y = bounds.Y;
-            //Datas.ControlAlignRightLayout
+            float x = bounds.X;
             foreach (BaseControlItem item in _controlItems)
             {
-                item.Bounds = new RectangleF(Datas.ControlAlignRightLayout ? bounds.Right - item.Width : bounds.X, 
-                    y, item.Width, item.Height);
-                y += item.Height;
+                item.Bounds = new RectangleF(x, bounds.Y + (bounds.Height - item.Height) / 2, item.Width, item.Height);
+                x += item.Width;
             }
             base.LayoutObject(bounds);
         }
@@ -120,7 +100,6 @@ namespace ComponentToolkit
         }
         internal sealed override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            _isSaveUndo = true;
             foreach (var control in _controlItems)
             {
                 if (control is StringRender) continue;
@@ -130,14 +109,14 @@ namespace ComponentToolkit
                     return;
                 }
             }
-            new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, OwnerGooData.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
+            new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowValue.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
 
             void SaveString(string str)
             {
                 T value = (T)Activator.CreateInstance(typeof(T));
                 if (value.CastFrom(str))
                 {
-                    OwnerGooData = value;
+                    ShowValue = value;
                 }
                 else
                 {
