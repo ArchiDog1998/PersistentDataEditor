@@ -12,6 +12,8 @@ namespace ComponentToolkit
     {
         protected override bool Valid => base.Valid && Datas.UseParamCircleControl;
 
+        protected override Guid AddCompnentGuid => new Guid("d114323a-e6ee-4164-946b-e4ca0ce15efa");
+
         public ParamCircleControl(GH_PersistentParam<GH_Circle> owner) : base(owner)
         {
 

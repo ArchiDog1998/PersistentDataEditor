@@ -84,7 +84,10 @@ namespace ComponentToolkit
                 {
                     return new ParamCircleControl((GH_PersistentParam<GH_Circle>)param);
                 }
-
+                else if (param is GH_PersistentParam<GH_Material>)
+                {
+                    return new ParamMaterialControl((GH_PersistentParam<GH_Material>)param);
+                }
                 else
                 {
                     Type controlType = typeof(ParamGeneralControl<>).MakeGenericType(storedData);
@@ -116,19 +119,17 @@ namespace ComponentToolkit
 
         public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (Control != null && Control.Bounds.Contains(e.CanvasLocation))
             {
-                if (Control != null && Control.Bounds.Contains(e.CanvasLocation))
-                {
-                    Control.Clicked(sender, e);
+                Control.Clicked(sender, e);
 
-                    return GH_ObjectResponse.Release;
-                }
-                if (MenuCreator.UseQuickWire && StringRect.Contains(e.CanvasLocation))
-                {
-                    RespondToQuickWire(Owner, Owner.Kind == GH_ParamKind.input).Show(sender, e.ControlLocation);
-                    return GH_ObjectResponse.Release;
-                }
+                return GH_ObjectResponse.Release;
+            }
+
+            if (MenuCreator.UseQuickWire && e.Button == MouseButtons.Left && StringRect.Contains(e.CanvasLocation))
+            {
+                RespondToQuickWire(Owner, Owner.Kind == GH_ParamKind.input).Show(sender, e.ControlLocation);
+                return GH_ObjectResponse.Release;
             }
             return base.RespondToMouseUp(sender, e);
         }

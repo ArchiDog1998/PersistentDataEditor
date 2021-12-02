@@ -13,6 +13,8 @@ namespace ComponentToolkit
     {
         protected override bool Valid => base.Valid && Datas.UseParamPointControl;
 
+        protected override Guid AddCompnentGuid => new Guid("3581f42a-9592-4549-bd6b-1c0fc39d067b");
+
         public ParamPoint3dControl(GH_PersistentParam<GH_Point> owner) : base(owner)
         {
         }

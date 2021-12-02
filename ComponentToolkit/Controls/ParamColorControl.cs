@@ -13,6 +13,7 @@ namespace ComponentToolkit
     {
         protected override bool Valid => base.Valid && Datas.UseParamColourControl;
 
+        protected override Guid AddCompnentGuid => new Guid("9c53bac0-ba66-40bd-8154-ce9829b9db1a");
         internal ParamColorControl(GH_PersistentParam<GH_Colour> owner) : base(owner)
         {
         }

@@ -26,7 +26,7 @@ namespace ComponentToolkit
             ToolStripMenuItem major = new ToolStripMenuItem("Component Toolkit", Properties.Resources.ComponentToolkitIcon_24) { ToolTipText = "Two tools and some component's layout params." };
 
             ToolStripMenuItem quickClick = new ToolStripMenuItem("Use Quick Wire", Properties.Resources.QuickwireIcon_24) { Checked = UseQuickWire };
-            quickClick.ToolTipText = "You can left click the component's param to choose which activeobjec you want to add.";
+            quickClick.ToolTipText = "You can left click the component's param or double click floating param to choose which activeobjec you want to add.";
             quickClick.Click += (sender, e) =>
             {
                 quickClick.Checked = !quickClick.Checked;
@@ -112,6 +112,9 @@ namespace ComponentToolkit
             major.DropDownItems.Add(CreateCheckBox("Colour Control", Datas.UseParamColourControl, new Param_Colour().Icon_24x24,
                 (boolean) => Datas.UseParamColourControl = boolean));
 
+            major.DropDownItems.Add(CreateCheckBox("Material Control", Datas.UseParamMaterialControl, new Param_OGLShader().Icon_24x24,
+                (boolean) => Datas.UseParamMaterialControl = boolean));
+
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
             CreateTextLabel(major, "One Line Control");
@@ -178,6 +181,7 @@ namespace ComponentToolkit
         private static ToolStripMenuItem CreateCheckBox(string itemName, bool valueDefault, Bitmap icon, Action<bool> valueChange)
         {
             ToolStripMenuItem click = new ToolStripMenuItem(itemName, icon) { Checked = valueDefault };
+            click.Font = new Font(click.Font, FontStyle.Regular);
             CreateCheckBox(ref click, valueChange);
             return click;
         }

@@ -305,10 +305,20 @@ namespace ComponentToolkit
 
         public static bool UseParamCircleControl
         {
-            get => Instances.Settings.GetValue(nameof(UseParamCircleControl), true);
+            get => Instances.Settings.GetValue(nameof(UseParamCircleControl), false);
             set
             {
                 Instances.Settings.SetValue(nameof(UseParamCircleControl), value);
+                RefreshLayout();
+            }
+        }
+
+        public static bool UseParamMaterialControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseParamMaterialControl), false);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseParamMaterialControl), value);
                 RefreshLayout();
             }
         }

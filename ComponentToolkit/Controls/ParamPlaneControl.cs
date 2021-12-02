@@ -12,6 +12,8 @@ namespace ComponentToolkit
     {
         protected override bool Valid => base.Valid && Datas.UseParamPlaneControl;
 
+        protected override Guid AddCompnentGuid => new Guid("cfb6b17f-ca82-4f5d-b604-d4f69f569de3");
+
         public ParamPlaneControl(GH_PersistentParam<GH_Plane> owner) : base(owner)
         {
 

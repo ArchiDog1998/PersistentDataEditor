@@ -35,19 +35,6 @@ namespace ComponentToolkit
             ShowName = $"{proxy.Desc.Name}[{index}]";
         }
 
-        //public override bool Equals(object obj)
-        //{
-        //    if (obj == null) return false;
-        //    CreateObjectItem other = obj as CreateObjectItem;
-        //    if (other == null) return false;
-
-        //    if (ObjectGuid != other.ObjectGuid) return false;
-        //    if(InitString != other.InitString) return false;
-        //    if(Index != other.Index) return false;
-
-        //    return true;
-        //}
-
         public CreateObjectItem(CreateObjectItemSave save, bool isInput):this(save.ObjectGuid, save.Index, save.initString, isInput)
         {
 

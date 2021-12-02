@@ -109,7 +109,7 @@ namespace ComponentToolkit
                     return;
                 }
             }
-            new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowValue.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
+            new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowValue?.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
 
             void SaveString(string str)
             {

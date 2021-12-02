@@ -15,6 +15,7 @@ namespace ComponentToolkit
 {
     internal class ParamStringControl : ParamInputBoxControl<GH_String>
     {
+        protected override Guid AddCompnentGuid => new Guid("59e0b89a-e487-49f8-bab8-b5bab16be14c");
         protected override bool Valid => base.Valid && Datas.UseParamStringControl;
         internal ParamStringControl(GH_PersistentParam<GH_String> owner):base(owner)
         {

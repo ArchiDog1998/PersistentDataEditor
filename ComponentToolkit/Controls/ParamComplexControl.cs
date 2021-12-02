@@ -13,6 +13,8 @@ namespace ComponentToolkit
     {
         protected override bool Valid => base.Valid && Datas.UseParamComplexControl;
 
+        protected override Guid AddCompnentGuid => new Guid("63d12974-2915-4ccf-ac26-5d566c3bac92");
+
         public ParamComplexControl(GH_PersistentParam<GH_ComplexNumber> owner) : base(owner)
         {
         }

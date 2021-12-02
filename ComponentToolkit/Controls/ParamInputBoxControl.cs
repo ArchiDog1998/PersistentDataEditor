@@ -14,6 +14,8 @@ namespace ComponentToolkit
         {
         }
 
+        protected override Guid AddCompnentGuid => default(Guid);
+
         protected sealed override BaseControlItem[] SetControlItems(GH_PersistentParam<T> owner)
         {
             return new BaseControlItem[]

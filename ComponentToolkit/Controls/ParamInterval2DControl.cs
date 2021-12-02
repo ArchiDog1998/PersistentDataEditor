@@ -13,6 +13,8 @@ namespace ComponentToolkit
     {
         protected override bool Valid => base.Valid && Datas.UseParamInterval2DControl;
 
+        protected override Guid AddCompnentGuid => new Guid("8555a743-36c1-42b8-abcc-06d9cb94519f");
+
         public ParamInterval2DControl(GH_PersistentParam<GH_Interval2D> owner) : base(owner)
         {
         }

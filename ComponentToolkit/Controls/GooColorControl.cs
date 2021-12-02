@@ -18,7 +18,7 @@ namespace ComponentToolkit
     {
         internal override int Width => 12;
 
-        internal override int Height => 50;
+        internal override int Height => 12;
 
         private Brush _background = new HatchBrush(HatchStyle.LargeCheckerBoard, Color.White, Color.LightGray);
         private GraphicsPath _path;

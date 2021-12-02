@@ -12,6 +12,8 @@ namespace ComponentToolkit
     {
         protected override bool Valid => base.Valid && Datas.UseParamLineControl;
 
+        protected override Guid AddCompnentGuid => new Guid("4c4e56eb-2f04-43f9-95a3-cc46a14f495a");
+
         public ParamLineControl(GH_PersistentParam<GH_Line> owner) : base(owner)
         {
 

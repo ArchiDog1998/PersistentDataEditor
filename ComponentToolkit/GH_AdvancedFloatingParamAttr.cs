@@ -17,7 +17,7 @@ namespace ComponentToolkit
         {
         }
 
-        public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
+        public override GH_ObjectResponse RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             if (MenuCreator.UseQuickWire && e.Button == System.Windows.Forms.MouseButtons.Left)
             {
@@ -34,7 +34,7 @@ namespace ComponentToolkit
 
                 return GH_ObjectResponse.Release;
             }
-            return base.RespondToMouseUp(sender, e);
+            return base.RespondToMouseDoubleClick(sender, e);
         }
     }
 }

@@ -16,6 +16,9 @@ namespace ComponentToolkit
 {
     public abstract class ParamControlBase<T>:BaseControlItem where T : class, IGH_Goo
     {
+        protected abstract Guid AddCompnentGuid { get; }
+        protected virtual ushort AddCompnentIndex => 0;
+        protected virtual string AddCompnentInit => OwnerGooData?.ToString();
         protected GH_PersistentParam<T> Owner { get; }
         private bool _isSaveUndo = true;
         internal T OwnerGooData
@@ -120,28 +123,35 @@ namespace ComponentToolkit
         }
         internal sealed override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            _isSaveUndo = true;
-            foreach (var control in _controlItems)
+            if(e.Button == MouseButtons.Right)
             {
-                if (control is StringRender) continue;
-                if (control.Bounds.Contains(e.CanvasLocation))
-                {
-                    control.Clicked(sender, e);
-                    return;
-                }
+                new CreateObjectItem(AddCompnentGuid, AddCompnentIndex, AddCompnentInit, true).CreateObject(Owner);
             }
-            new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, OwnerGooData.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
-
-            void SaveString(string str)
+            else if (e.Button == MouseButtons.Left)
             {
-                T value = (T)Activator.CreateInstance(typeof(T));
-                if (value.CastFrom(str))
+                _isSaveUndo = true;
+                foreach (var control in _controlItems)
                 {
-                    OwnerGooData = value;
+                    if (control is StringRender) continue;
+                    if (control.Bounds.Contains(e.CanvasLocation))
+                    {
+                        control.Clicked(sender, e);
+                        return;
+                    }
                 }
-                else
+                new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, OwnerGooData.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
+
+                void SaveString(string str)
                 {
-                    MessageBox.Show($"Can't cast a {typeof(T).Name} from \"{str}\".");
+                    T value = (T)Activator.CreateInstance(typeof(T));
+                    if (value.CastFrom(str))
+                    {
+                        OwnerGooData = value;
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Can't cast a {typeof(T).Name} from \"{str}\".");
+                    }
                 }
             }
         }
