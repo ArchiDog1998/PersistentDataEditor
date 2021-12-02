@@ -7,6 +7,7 @@ using Grasshopper.Kernel.Components;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -27,6 +28,31 @@ namespace ComponentToolkit
         internal static CreateObjectItems StaticCreateObjectItems;
 
         private static readonly FieldInfo _tagsInfo = typeof(GH_LinkedParamAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_renderTags")).First();
+
+        private static ImageAttributes _imageAttributes;
+        private static ImageAttributes ImageAttribute
+        {
+            get
+            {
+                if( _imageAttributes == null) ChangeIconOpacityValue();
+                return _imageAttributes;
+            }
+        }
+        internal static void ChangeIconOpacityValue()
+        {
+            float opacity = (float)Datas.ComponentIconOpacity;
+            float[][] nArray =
+            {
+                new float[]{1,0,0,0,0},
+                new float[]{0,1,0,0,0},
+                new float[]{0,0,1,0,0},
+                new float[]{0,0,0,opacity,0},
+                new float[]{0,0,0,0,1},
+            };
+
+            _imageAttributes = new ImageAttributes();
+            _imageAttributes.SetColorMatrix(new ColorMatrix(nArray), ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+        }
 
         public GH_ComponentAttributesReplacer(IGH_Component component): base(component)
         {
@@ -222,6 +248,11 @@ namespace ComponentToolkit
             {
                 int controlAddition = controlMaxWidth == 0? 0 : controlMaxWidth + Datas.ComponentControlNameDistance;
                 singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + Datas.AdditionWidth, Datas.AdditionWidth + Datas.MiniWidth);
+
+                if (Datas.ShowLinkParamIcon)
+                {
+                    singleParamBoxMaxWidth += GH_AdvancedLinkParamAttr.IconSize + Datas.ComponentIconDistance;
+                }
             }
             else singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth + Datas.AdditionWidth, Datas.AdditionWidth + Datas.MiniWidth);
 
@@ -322,10 +353,23 @@ namespace ComponentToolkit
 
                 if (isInput)
                 {
+                    float x = attr.Bounds.X + additionforTag;
+
+                    if (Datas.ShowLinkParamIcon)
+                    {
+                        float size = GH_AdvancedLinkParamAttr.IconSize;
+                        attr.IconRegion = new RectangleF(x, attr.Bounds.Y + attr.Bounds.Height /2 - size/2, size, size);
+                        x += size + Datas.ComponentIconDistance;
+                    }
+                    else
+                    {
+                        attr.IconRegion = RectangleF.Empty;
+                    }
+
                     if (Datas.SeperateCalculateWidthControl)
                     {
-                        float maxStringRight = attr.Bounds.X + additionforTag + Datas.ComponentToEdgeDistance + nameMaxWidth;
-                        attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(attr.Bounds.X + additionforTag + Datas.ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                        float maxStringRight = x + Datas.ComponentToEdgeDistance + nameMaxWidth;
+                        attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(x  + Datas.ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
                             new RectangleF(maxStringRight - stringwidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
 
 
@@ -337,7 +381,7 @@ namespace ComponentToolkit
                     }
                     else
                     {
-                        attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(attr.Bounds.X + additionforTag + Datas.ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                        attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(x + Datas.ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
                             new RectangleF(attr.Bounds.Right - wholeWidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
                         if (attr.Control != null)
                         {
@@ -352,6 +396,15 @@ namespace ComponentToolkit
                     attr.StringRect = Datas.ComponentOutputEdgeLayout ? new RectangleF(attr.Bounds.Right - additionforTag - wholeWidth - Datas.ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
                          new RectangleF(attr.Bounds.X, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
 
+                    if (Datas.ShowLinkParamIcon)
+                    {
+                        float size = GH_AdvancedLinkParamAttr.IconSize;
+                        attr.IconRegion = new RectangleF(attr.StringRect.Right + Datas.ComponentIconDistance, attr.Bounds.Y + attr.Bounds.Height / 2 - size / 2, size, size);
+                    }
+                    else
+                    {
+                        attr.IconRegion = RectangleF.Empty;
+                    }
                 }
             }
         }
@@ -386,6 +439,12 @@ namespace ComponentToolkit
 
                     //Render names.
                     graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, attr.StringRect, GH_TextRenderingConstants.CenterCenter);
+
+                    graphics.DrawImage(item.Icon_24x24, GH_Convert.ToRectangle( attr.IconRegion), 0, 0, 24, 24,
+                        GraphicsUnit.Pixel, ImageAttribute);
+
+                    //graphics.DrawImage(item.Icon_24x24, new Rectangle(0, 0, 24, 24),attr.IconRegion.X, attr.IconRegion.Y, attr.IconRegion.Width, attr.IconRegion.Height, 
+                    //    GraphicsUnit.Pixel, ImageAttribute);
 
                     //Render Control
                     BaseControlItem control = attr.Control;

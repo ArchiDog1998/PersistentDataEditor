@@ -7,22 +7,25 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace ComponentToolkit
 {
     internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes
     {
-
+        internal static readonly int IconSize = 18;
         public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
         public int ControlWidth => Control?.Width ?? 0;
-        public int WholeWidth => StringWidth + (ControlWidth == 0 ? 0 : ControlWidth + Datas.ComponentControlNameDistance);
+        public int WholeWidth => StringWidth + (ControlWidth == 0 ? 0 : ControlWidth + Datas.ComponentControlNameDistance) + 
+            (Datas.ShowLinkParamIcon ? IconSize + Datas.ComponentIconDistance : 0);
         public int ParamHeight => Math.Max(20, (Control?.Height ?? 0) + 3);
 
         public BaseControlItem Control { get; private set; } = null;
 
-        public RectangleF StringRect { get; internal set; }
+        public RectangleF StringRect { get; set; }
 
+        public RectangleF IconRegion { get; set; }
         public GH_AdvancedLinkParamAttr(IGH_Param param, IGH_Attributes parent) : base(param, parent)
         {
             if (param.Kind != GH_ParamKind.input) return;

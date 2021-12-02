@@ -80,8 +80,31 @@ namespace ComponentToolkit
             set => Instances.Settings.SetValue(nameof(UseQuickWire), value);
         }
 
+        public static readonly double _componentIconOpacityDefault = 0.6;
+        public static double ComponentIconOpacity
+        {
+            get => Instances.Settings.GetValue(nameof(ComponentIconOpacity), _componentIconOpacityDefault);
+            set
+            {
+                Instances.Settings.SetValue(nameof(ComponentIconOpacity), value);
+                GH_ComponentAttributesReplacer.ChangeIconOpacityValue();
+                RefreshLayout();
+            }
+        }
+
         #region Settings For Layout
         public static readonly int MiniWidth = 6;
+
+        public static readonly int _componentIconDistanceDefault = 2;
+        public static int ComponentIconDistance
+        {
+            get => Instances.Settings.GetValue(nameof(ComponentIconDistance), _componentIconDistanceDefault);
+            set
+            {
+                Instances.Settings.SetValue(nameof(ComponentIconDistance), value);
+                RefreshLayout();
+            }
+        }
 
         public static readonly int _componentToEdgeDistanceDefault = 3;
         public static int ComponentToEdgeDistance
@@ -323,7 +346,7 @@ namespace ComponentToolkit
 
         public static bool UseParamInterval2DControl
         {
-            get => Instances.Settings.GetValue(nameof(UseParamInterval2DControl), true);
+            get => Instances.Settings.GetValue(nameof(UseParamInterval2DControl), false);
             set
             {
                 Instances.Settings.SetValue(nameof(UseParamInterval2DControl), value);
@@ -333,7 +356,7 @@ namespace ComponentToolkit
 
         public static bool UseParamLineControl
         {
-            get => Instances.Settings.GetValue(nameof(UseParamLineControl), true);
+            get => Instances.Settings.GetValue(nameof(UseParamLineControl), false);
             set
             {
                 Instances.Settings.SetValue(nameof(UseParamLineControl), value);
@@ -343,7 +366,7 @@ namespace ComponentToolkit
 
         public static bool UseParamPlaneControl
         {
-            get => Instances.Settings.GetValue(nameof(UseParamPlaneControl), true);
+            get => Instances.Settings.GetValue(nameof(UseParamPlaneControl), false);
             set
             {
                 Instances.Settings.SetValue(nameof(UseParamPlaneControl), value);
@@ -381,5 +404,15 @@ namespace ComponentToolkit
             }
         }
         #endregion
+
+        public static bool ShowLinkParamIcon
+        {
+            get => Instances.Settings.GetValue(nameof(ShowLinkParamIcon), false);
+            set
+            {
+                Instances.Settings.SetValue(nameof(ShowLinkParamIcon), value);
+                RefreshLayout();
+            }
+        }
     }
 }

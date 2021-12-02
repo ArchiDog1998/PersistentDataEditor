@@ -30,6 +30,7 @@ namespace ComponentToolkit
 
             major.DropDownItems.Add(CreateCheckBox("Component Input Align Edge", Datas.ComponentInputEdgeLayout, (boolean) => Datas.ComponentInputEdgeLayout = boolean));
             major.DropDownItems.Add(CreateCheckBox("Component Output Align Edge", Datas.ComponentOutputEdgeLayout, (boolean) => Datas.ComponentOutputEdgeLayout = boolean));
+            major.DropDownItems.Add(CreateShowParamIconItem());
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
             CreateNumberBox(major, "Component's Params to Edge", Datas.ComponentToEdgeDistance, (v) => Datas.ComponentToEdgeDistance = (int)v, Datas._componentToEdgeDistanceDefault, 20, 0);
@@ -40,6 +41,19 @@ namespace ComponentToolkit
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
             CreateNumberBox(major, "Params to Core", Datas.ParamsCoreDistance, (v) => Datas.ParamsCoreDistance = (int)v, Datas._paramsCoreDistanceDefault, 20, 0);
 
+
+            return major;
+        }
+
+        private static ToolStripMenuItem CreateShowParamIconItem()
+        {
+            ToolStripMenuItem major = CreateCheckBox("Show Component's Param Icon", Datas.ShowLinkParamIcon, (boolean) => Datas.ShowLinkParamIcon = boolean);
+
+            major.DropDown.Closing += DropDown_Closing;
+
+            CreateNumberBox(major, "Distance From Icon To String", Datas.ComponentIconDistance, (v) => Datas.ComponentIconDistance = (int)v, Datas._componentIconDistanceDefault, 20, 0);
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+            CreateNumberBox(major, "Icon's Opacity", Datas.ComponentIconOpacity, (v) => Datas.ComponentIconOpacity = (int)v, Datas._componentIconOpacityDefault, 1, 0, 3);
 
             return major;
         }
@@ -218,14 +232,12 @@ namespace ComponentToolkit
             item.DropDownItems.Add(textBox);
         }
 
-        private static void CreateNumberBox(ToolStripMenuItem item, string itemName, double originValue, Action<double> valueChange, double valueDefault, double Max, double Min)
+        private static void CreateNumberBox(ToolStripMenuItem item, string itemName, double originValue, Action<double> valueChange, double valueDefault, double Max, double Min, int decimalPlace = 0)
         {
             item.DropDown.Closing -= DropDown_Closing;
             item.DropDown.Closing += DropDown_Closing;
 
             CreateTextLabel(item, itemName, $"Value from {Min} to {Max}");
-
-            int decimalPlace = 0;
 
             GH_DigitScroller slider = new GH_DigitScroller
             {
