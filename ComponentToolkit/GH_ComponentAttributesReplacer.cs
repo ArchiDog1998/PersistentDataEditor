@@ -29,31 +29,6 @@ namespace ComponentToolkit
 
         private static readonly FieldInfo _tagsInfo = typeof(GH_LinkedParamAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_renderTags")).First();
 
-        private static ImageAttributes _imageAttributes;
-        private static ImageAttributes ImageAttribute
-        {
-            get
-            {
-                if( _imageAttributes == null) ChangeIconOpacityValue();
-                return _imageAttributes;
-            }
-        }
-        internal static void ChangeIconOpacityValue()
-        {
-            float opacity = (float)Datas.ComponentIconOpacity;
-            float[][] nArray =
-            {
-                new float[]{1,0,0,0,0},
-                new float[]{0,1,0,0,0},
-                new float[]{0,0,1,0,0},
-                new float[]{0,0,0,opacity,0},
-                new float[]{0,0,0,0,1},
-            };
-
-            _imageAttributes = new ImageAttributes();
-            _imageAttributes.SetColorMatrix(new ColorMatrix(nArray), ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-        }
-
         public GH_ComponentAttributesReplacer(IGH_Component component): base(component)
         {
 
@@ -227,6 +202,7 @@ namespace ComponentToolkit
             int nameMaxWidth = 0;
             int controlMaxWidth = 0;
             int heightCalculate = 0;
+            int iconSpaceWidth = Datas.ShowLinkParamIcon ? Datas.ComponentParamIconSize + Datas.ComponentIconDistance : 0;
             foreach (IGH_Param param in gH_Params)
             {
                 if (param.Attributes == null || !(param.Attributes is GH_AdvancedLinkParamAttr))
@@ -247,12 +223,7 @@ namespace ComponentToolkit
             if (Datas.SeperateCalculateWidthControl)
             {
                 int controlAddition = controlMaxWidth == 0? 0 : controlMaxWidth + Datas.ComponentControlNameDistance;
-                singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + Datas.AdditionWidth, Datas.AdditionWidth + Datas.MiniWidth);
-
-                if (Datas.ShowLinkParamIcon)
-                {
-                    singleParamBoxMaxWidth += Datas.ComponentParamIconSize + Datas.ComponentIconDistance;
-                }
+                singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + Datas.AdditionWidth + iconSpaceWidth, Datas.AdditionWidth + Datas.MiniWidth);
             }
             else singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth + Datas.AdditionWidth, Datas.AdditionWidth + Datas.MiniWidth);
 
@@ -353,23 +324,19 @@ namespace ComponentToolkit
 
                 if (isInput)
                 {
-                    float x = attr.Bounds.X + additionforTag;
+                    float startX = attr.Bounds.X + additionforTag + Datas.ComponentToEdgeDistance;
 
                     if (Datas.ShowLinkParamIcon)
                     {
                         float size = Datas.ComponentParamIconSize;
-                        attr.IconRegion = new RectangleF(x, attr.Bounds.Y + attr.Bounds.Height /2 - size/2, size, size);
-                        x += size + Datas.ComponentIconDistance;
-                    }
-                    else
-                    {
-                        attr.IconRegion = RectangleF.Empty;
+                        attr.IconPivot = new PointF(startX, attr.Bounds.Y + attr.Bounds.Height /2 - size/2);
+                        startX += size + Datas.ComponentIconDistance;
                     }
 
                     if (Datas.SeperateCalculateWidthControl)
                     {
-                        float maxStringRight = x + Datas.ComponentToEdgeDistance + nameMaxWidth;
-                        attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(x  + Datas.ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                        float maxStringRight = startX + Datas.ComponentToEdgeDistance + nameMaxWidth;
+                        attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(startX , attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
                             new RectangleF(maxStringRight - stringwidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
 
 
@@ -381,7 +348,7 @@ namespace ComponentToolkit
                     }
                     else
                     {
-                        attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(x + Datas.ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                        attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(startX, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
                             new RectangleF(attr.Bounds.Right - wholeWidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
                         if (attr.Control != null)
                         {
@@ -399,11 +366,8 @@ namespace ComponentToolkit
                     if (Datas.ShowLinkParamIcon)
                     {
                         float size = Datas.ComponentParamIconSize;
-                        attr.IconRegion = new RectangleF(attr.StringRect.Right + Datas.ComponentIconDistance, attr.Bounds.Y + attr.Bounds.Height / 2 - size / 2, size, size);
-                    }
-                    else
-                    {
-                        attr.IconRegion = RectangleF.Empty;
+                        attr.IconPivot = new PointF(attr.Bounds.Right - Datas.ComponentParamIconSize - additionforTag - Datas.ComponentToEdgeDistance, 
+                            attr.Bounds.Y + attr.Bounds.Height / 2 - size / 2);
                     }
                 }
             }
@@ -421,15 +385,22 @@ namespace ComponentToolkit
 
         public static void RenderComponentParametersNew(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
+            RenderComponentParametersPr(canvas, graphics, owner, style);
+
+        }
+
+
+        private static void RenderComponentParametersPr(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
+        {
 
             int zoomFadeLow = GH_Canvas.ZoomFadeLow;
-			if (zoomFadeLow < 5)
-			{
-				return;
-			}
-			canvas.SetSmartTextRenderingHint();
-			Color color = Color.FromArgb(zoomFadeLow, style.Text);
-			SolidBrush solidBrush = new SolidBrush(color);
+            if (zoomFadeLow < 5)
+            {
+                return;
+            }
+            canvas.SetSmartTextRenderingHint();
+            Color color = Color.FromArgb(zoomFadeLow, style.Text);
+            SolidBrush solidBrush = new SolidBrush(color);
             foreach (IGH_Param item in owner.Params)
             {
                 RectangleF bounds = item.Attributes.Bounds;
@@ -440,15 +411,20 @@ namespace ComponentToolkit
                     //Render names.
                     graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, attr.StringRect, GH_TextRenderingConstants.CenterCenter);
 
-                    graphics.DrawImage(item.Icon_24x24, GH_Convert.ToRectangle( attr.IconRegion), 0, 0, 24, 24,
-                        GraphicsUnit.Pixel, ImageAttribute);
-
-                    //graphics.DrawImage(item.Icon_24x24, new Rectangle(0, 0, 24, 24),attr.IconRegion.X, attr.IconRegion.Y, attr.IconRegion.Width, attr.IconRegion.Height, 
-                    //    GraphicsUnit.Pixel, ImageAttribute);
+                    //Render Icon;
+                    if (Datas.ShowLinkParamIcon)
+                    {
+                        Bitmap icon;
+                        if (!GH_AdvancedLinkParamAttr.IconSet.TryGetValue(item.ComponentGuid, out icon))
+                        {
+                            icon = attr.SetParamIcon();
+                        }
+                        graphics.DrawImage(icon, attr.IconPivot);
+                    }
 
                     //Render Control
                     BaseControlItem control = attr.Control;
-                    if(control != null && control.Bounds.Width >= 1f)
+                    if (control != null && control.Bounds.Width >= 1f)
                     {
                         attr.Control.RenderObject(canvas, graphics, owner, style);
                     }
@@ -458,9 +434,8 @@ namespace ComponentToolkit
                     if (tags != null) tags.RenderStateTags(graphics);
                 }
             }
-			solidBrush.Dispose();
-		}
-
+            solidBrush.Dispose();
+        }
 
     }
 }

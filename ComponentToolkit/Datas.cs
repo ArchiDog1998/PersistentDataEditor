@@ -87,7 +87,7 @@ namespace ComponentToolkit
             set
             {
                 Instances.Settings.SetValue(nameof(ComponentParamIconSize), value);
-                //GH_ComponentAttributesReplacer.ChangeIconOpacityValue();
+                GH_AdvancedLinkParamAttr.UpdataIcons();
                 RefreshLayout();
             }
         }
@@ -99,7 +99,7 @@ namespace ComponentToolkit
             set
             {
                 Instances.Settings.SetValue(nameof(ComponentIconOpacity), value);
-                GH_ComponentAttributesReplacer.ChangeIconOpacityValue();
+                GH_AdvancedLinkParamAttr.UpdataIcons();
                 RefreshLayout();
             }
         }
@@ -257,10 +257,14 @@ namespace ComponentToolkit
 
         private static void RefreshLayout()
         {
-            foreach (IGH_DocumentObject @object in Instances.ActiveCanvas.Document.Objects)
+            foreach (GH_Document doc in Instances.DocumentServer)
             {
-                @object.Attributes.ExpireLayout();
+                foreach (IGH_DocumentObject @object in doc.Objects)
+                {
+                    @object.Attributes.ExpireLayout();
+                }
             }
+
             Instances.RedrawCanvas();
         }
         #endregion

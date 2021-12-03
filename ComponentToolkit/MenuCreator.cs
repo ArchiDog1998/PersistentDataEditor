@@ -47,13 +47,13 @@ namespace ComponentToolkit
 
         private static ToolStripMenuItem CreateShowParamIconItem()
         {
-            ToolStripMenuItem major = CreateCheckBox("Show Component's Param Icon", Datas.ShowLinkParamIcon, (boolean) => Datas.ShowLinkParamIcon = boolean);
+            ToolStripMenuItem major = CreateCheckBox("Show Component's Param Icon", Datas.ShowLinkParamIcon,new Param_GenericObject().Icon_24x24, (boolean) => Datas.ShowLinkParamIcon = boolean);
 
             major.DropDown.Closing += DropDown_Closing;
 
             CreateNumberBox(major, "Distance From Icon To String", Datas.ComponentIconDistance, (v) => Datas.ComponentIconDistance = (int)v, Datas._componentIconDistanceDefault, 20, 0);
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateNumberBox(major, "Icon's Opacity", Datas.ComponentIconOpacity, (v) => Datas.ComponentIconOpacity = (int)v, Datas._componentIconOpacityDefault, 1, 0, 3);
+            CreateNumberBox(major, "Icon's Opacity", Datas.ComponentIconOpacity, (v) => Datas.ComponentIconOpacity = v, Datas._componentIconOpacityDefault, 1, 0, 3);
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
             CreateNumberBox(major, "Icon Size", Datas.ComponentParamIconSize, (v) => Datas.ComponentParamIconSize = (int)v, Datas._componentParamIconSizeDefault, 20, 4);
 
@@ -89,8 +89,8 @@ namespace ComponentToolkit
             major.DropDownItems.Add(CreateUseControlItem());
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            major.DropDownItems.Add(CreateCheckBox("Use on Components", Datas.ComponentUseControl, (boolean) => Datas.ComponentUseControl = boolean));
-            major.DropDownItems.Add(CreateCheckBox("Use on Parameters", Datas.ParamUseControl, (boolean) => Datas.ParamUseControl = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Use on Components", Datas.ComponentUseControl, Properties.Resources.ComponentIcon_24, (boolean) => Datas.ComponentUseControl = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Use on Parameters", Datas.ParamUseControl, Properties.Resources.ParametersIcon_24, (boolean) => Datas.ParamUseControl = boolean));
 
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);

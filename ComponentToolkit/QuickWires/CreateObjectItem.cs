@@ -19,8 +19,8 @@ namespace ComponentToolkit
         public Guid ObjectGuid { get; }
         public string InitString { get; set; }
         public Bitmap Icon { get; } = null;
-        public string ShowName { get; } = "";
-        public string Name { get; } = "";
+        public string ShowName { get; } = "Not Found";
+        public string Name { get; } = "Not Found";
         public bool IsInput { get; }
         public CreateObjectItem(Guid guid, ushort index, string init, bool isInput)
         {

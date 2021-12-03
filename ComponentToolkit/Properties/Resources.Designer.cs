@@ -63,6 +63,16 @@ namespace ComponentToolkit.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ComponentIcon_24 {
+            get {
+                object obj = ResourceManager.GetObject("ComponentIcon_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ComponentToolkitIcon_128 {
             get {
                 object obj = ResourceManager.GetObject("ComponentToolkitIcon_128", resourceCulture);
@@ -103,6 +113,16 @@ namespace ComponentToolkit.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ParametersIcon_24 {
+            get {
+                object obj = ResourceManager.GetObject("ParametersIcon_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap QuickwireIcon_24 {
             get {
                 object obj = ResourceManager.GetObject("QuickwireIcon_24", resourceCulture);
@@ -111,7 +131,7 @@ namespace ComponentToolkit.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {&quot;InputItems&quot;:{&quot;15b7afe5-d0d0-43e1-b894-34fcfe3be384&quot;:[{&quot;ObjectGuid&quot;:&quot;d1a28e95-cf96-4936-bf34-8bf142d731bf&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;ObjectGuid&quot;:&quot;ccfd6ba8-ecb1-44df-a47e-08126a653c51&quot;,&quot;initString&quot;:null,&quot;Index&quot;:1},{&quot;ObjectGuid&quot;:&quot;f44b92b0-3b5b-493a-86f4-fd7408c3daf3&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;ObjectGuid&quot;:&quot;95992b33-89e1-4d36-bd35-2754a11af21e&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0}],&quot;16ef3e75-e315-4899-b531-d3166b42dac9&quot;:[{&quot;ObjectGuid&quot;:&quot;56b92eab-d121-43f7-94d3-6cd8f0ddead8&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;Obje [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to {&quot;InputItems&quot;:{&quot;04d3eace-deaa-475e-9e69-8f804d687998&quot;:[{&quot;ObjectGuid&quot;:&quot;bb59bffc-f54c-4682-9778-f6c3fe74fce3&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;ObjectGuid&quot;:&quot;9fa1b081-b1c7-4a12-a163-0aa8da9ff6c4&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;ObjectGuid&quot;:&quot;9d2583dd-6cf5-497c-8c40-c9a290598396&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;ObjectGuid&quot;:&quot;75f4b0fd-9721-47b1-99e7-9c098b342e67&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;ObjectGuid&quot;:&quot;75f4b0fd-9721-47b1-99e7-9c098b342e67&quot;,&quot;initString&quot;:null,&quot;Index&quot;:1},{&quot;ObjectGuid&quot;:&quot;9d8dec9c-3fd1-481c-9c3d-75ea5e15 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string quickwires {
             get {

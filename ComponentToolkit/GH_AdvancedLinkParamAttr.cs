@@ -2,6 +2,8 @@
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
+using Grasshopper.Kernel.Parameters;
+using Grasshopper.Kernel.Parameters.Hints;
 using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
@@ -24,12 +26,61 @@ namespace ComponentToolkit
 
         public RectangleF StringRect { get; set; }
 
-        public RectangleF IconRegion { get; set; }
+        public PointF IconPivot { get; set; }
+
+        public static SortedList<Guid, Bitmap> IconSet = new SortedList<Guid, Bitmap>();
+
         public GH_AdvancedLinkParamAttr(IGH_Param param, IGH_Attributes parent) : base(param, parent)
         {
             if (param.Kind != GH_ParamKind.input) return;
             Control = SetControl(param);
+            SetParamIcon();
         }
+
+        public static void UpdataIcons()
+        {
+            SortedList<Guid, Bitmap> iconset = new SortedList<Guid, Bitmap>();
+            foreach (var item in IconSet)
+            {
+                IGH_ObjectProxy proxy = Grasshopper.Instances.ComponentServer.EmitObjectProxy(item.Key);
+                iconset[item.Key] = BitmapConvert(proxy.Icon);
+            }
+            IconSet = iconset;
+        }
+
+        public Bitmap SetParamIcon()
+        {
+            if (Owner == null) return null;
+
+            Bitmap outBit = BitmapConvert(Owner.Icon_24x24);
+            IconSet[Owner.ComponentGuid] = outBit;
+            return outBit;
+        }
+
+        private static Bitmap BitmapConvert(Bitmap bitmap, bool useOpacity = true)
+        {
+            float opacity = useOpacity ? (float)Datas.ComponentIconOpacity : 1;
+            float[][] nArray =
+            {
+                new float[]{1,0,0,0,0},
+                new float[]{0,1,0,0,0},
+                new float[]{0,0,1,0,0},
+                new float[]{0,0,0,opacity,0},
+                new float[]{0,0,0,0,1},
+            };
+
+            ImageAttributes attr = new ImageAttributes();
+            attr.SetColorMatrix(new ColorMatrix(nArray), ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+            int iconSize = Datas.ComponentParamIconSize;
+            Bitmap outBitmap = new Bitmap(iconSize, iconSize);
+            Graphics g = Graphics.FromImage(outBitmap);
+            g.DrawImage(bitmap, new Rectangle(0, 0, iconSize, iconSize), 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel, attr);
+            g.Dispose();
+
+            return outBitmap;
+        }
+
         internal static BaseControlItem SetControl(IGH_Param param)
         {
             if (IsPersistentParam(param.GetType(), out Type storedData))
@@ -130,11 +181,15 @@ namespace ComponentToolkit
                 return GH_ObjectResponse.Release;
             }
 
-            if (Datas.UseQuickWire && e.Button == MouseButtons.Left && StringRect.Contains(e.CanvasLocation))
+            if (Datas.UseQuickWire && e.Button == MouseButtons.Left)
             {
-                RespondToQuickWire(Owner, Owner.Kind == GH_ParamKind.input).Show(sender, e.ControlLocation);
-                return GH_ObjectResponse.Release;
-            }
+                if (StringRect.Contains(e.CanvasLocation) ||
+                    (Datas.ShowLinkParamIcon && new RectangleF(IconPivot, new Size(Datas.ComponentParamIconSize, Datas.ComponentParamIconSize)).Contains(e.CanvasLocation)))
+                {
+                    RespondToQuickWire(Owner, Owner.Kind == GH_ParamKind.input).Show(sender, e.ControlLocation);
+                    return GH_ObjectResponse.Release;
+                }
+            } 
             return base.RespondToMouseUp(sender, e);
         }
 
@@ -150,13 +205,78 @@ namespace ComponentToolkit
                 dict = GH_ComponentAttributesReplacer.StaticCreateObjectItems.OutputItems;
             }
 
-            CreateObjectItem[] items = new CreateObjectItem[0];
-            if (dict.ContainsKey(param.ComponentGuid))
+            Guid guid = param.ComponentGuid;
+            if(param is Param_ScriptVariable)
             {
-                items = dict[param.ComponentGuid];
+                Param_ScriptVariable script = (Param_ScriptVariable)param;
+
+                if(script.TypeHint != null)
+                {
+                    if (script.TypeHint is GH_ArcHint)
+                        guid = new Param_Arc().ComponentGuid;
+                    else if (script.TypeHint is GH_BooleanHint_CS || script.TypeHint is GH_BooleanHint_VB)
+                        guid = new Param_Boolean().ComponentGuid;
+                    else if (script.TypeHint is GH_BoxHint)
+                        guid = new Param_Box().ComponentGuid;
+                    else if (script.TypeHint is GH_BrepHint)
+                        guid = new Param_Brep().ComponentGuid;
+                    else if (script.TypeHint is GH_CircleHint)
+                        guid = new Param_Circle().ComponentGuid;
+                    else if (script.TypeHint is GH_ColorHint)
+                        guid = new Param_Colour().ComponentGuid;
+                    else if (script.TypeHint is GH_ComplexHint)
+                        guid = new Param_Complex().ComponentGuid;
+                    else if (script.TypeHint is GH_CurveHint)
+                        guid = new Param_Curve().ComponentGuid;
+                    else if (script.TypeHint is GH_DateTimeHint)
+                        guid = new Param_Time().ComponentGuid;
+                    else if (script.TypeHint is GH_DoubleHint_CS || script.TypeHint is GH_DoubleHint_VB)
+                        guid = new Param_Number().ComponentGuid;
+                    else if (script.TypeHint is GH_GeometryBaseHint)
+                        guid = new Param_Geometry().ComponentGuid;
+                    else if (script.TypeHint is GH_GuidHint)
+                        guid = new Param_Guid().ComponentGuid;
+                    else if (script.TypeHint is GH_IntegerHint_CS || script.TypeHint is GH_IntegerHint_VB)
+                        guid = new Param_Integer().ComponentGuid;
+                    else if (script.TypeHint is GH_IntervalHint)
+                        guid = new Param_Interval().ComponentGuid;
+                    else if (script.TypeHint is GH_LineHint)
+                        guid = new Param_Line().ComponentGuid;
+                    else if (script.TypeHint is GH_MeshHint)
+                        guid = new Param_Mesh().ComponentGuid;
+                    else if (script.TypeHint is GH_NullHint)
+                        guid = new Param_GenericObject().ComponentGuid;
+                    else if (script.TypeHint is GH_PlaneHint)
+                        guid = new Param_Plane().ComponentGuid;
+                    else if (script.TypeHint is GH_Point3dHint)
+                        guid = new Param_Point().ComponentGuid;
+                    else if (script.TypeHint is GH_PolylineHint)
+                        guid = new Param_Curve().ComponentGuid;
+                    else if (script.TypeHint is GH_Rectangle3dHint)
+                        guid = new Param_Rectangle().ComponentGuid;
+                    else if (script.TypeHint is GH_StringHint_CS || script.TypeHint is GH_StringHint_VB)
+                        guid = new Param_String().ComponentGuid;
+                    else if (script.TypeHint?.TypeName == "SubD")
+                        guid = new Guid("{89CD1A12-0007-4581-99BA-66578665E610}");
+                    else if (script.TypeHint is GH_SurfaceHint)
+                        guid = new Param_Surface().ComponentGuid;
+                    else if (script.TypeHint is GH_TransformHint)
+                        guid = new Param_Transform().ComponentGuid;
+                    else if (script.TypeHint is GH_UVIntervalHint)
+                        guid = new Param_Interval2D().ComponentGuid;
+                    else if (script.TypeHint is GH_Vector3dHint)
+                        guid = new Param_Vector().ComponentGuid;
+                }
+
             }
 
-            ToolStripDropDownMenu menu = new ToolStripDropDownMenu();
+            CreateObjectItem[] items = new CreateObjectItem[0];
+            if (dict.ContainsKey(guid))
+            {
+                items = dict[guid];
+            }
+
+            ToolStripDropDownMenu menu = new ToolStripDropDownMenu() { MaximumSize = new Size(500, 700) };
             foreach (CreateObjectItem createItem in items)
             {
                 ToolStripMenuItem item = GH_DocumentObject.Menu_AppendItem(menu, createItem.ShowName, (sender, e) => Menu_CreateItemClicked(sender, param), createItem.Icon);
@@ -170,7 +290,7 @@ namespace ComponentToolkit
                     item.ToolTipText = "No Init String.";
                 }
             }
-            ToolStripMenuItem editItem = GH_DocumentObject.Menu_AppendItem(menu, "Edit", (sender, e) => Menu_EditItemClicked(sender, param, isInput));
+            ToolStripMenuItem editItem = GH_DocumentObject.Menu_AppendItem(menu, "Edit", (sender, e) => Menu_EditItemClicked(sender, guid, isInput));
             editItem.Image = Properties.Resources.EditIcon_24;
             editItem.Tag = items;
             editItem.ForeColor = Color.DimGray;
@@ -190,13 +310,17 @@ namespace ComponentToolkit
             MessageBox.Show("Something wrong with create object.");
         }
 
-        private static void Menu_EditItemClicked(object sender, IGH_Param param, bool isInput)
+        private static void Menu_EditItemClicked(object sender, Guid guid, bool isInput)
         {
             ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
+
+            IGH_ObjectProxy proxy = Grasshopper.Instances.ComponentServer.EmitObjectProxy(guid);
+            if (proxy == null) return;
+
             if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is CreateObjectItem[])
             {
                 ObservableCollection<CreateObjectItem> structureLists = new ObservableCollection<CreateObjectItem>((CreateObjectItem[])toolStripMenuItem.Tag);
-                new QuickWireEditor(param.ComponentGuid, isInput, param.Icon_24x24, param.TypeName, structureLists).Show();
+                new QuickWireEditor(guid, isInput, proxy.Icon, proxy.Desc.Name, structureLists).Show();
             }
         }
     }

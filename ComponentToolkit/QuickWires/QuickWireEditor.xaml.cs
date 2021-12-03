@@ -30,8 +30,18 @@ namespace ComponentToolkit
     public partial class QuickWireEditor : Window
     {
         private GH_Canvas _canvas = Grasshopper.Instances.ActiveCanvas;
-
-        private IGH_Param _param;
+        private bool _isTheSame = false;
+        private IGH_Param _targetParam;
+        private IGH_Param TargetParam 
+        {
+            get => _targetParam;
+            set
+            {
+                _targetParam = value;
+                if (_targetParam == null) return;
+                _isTheSame = _targetParam.ComponentGuid == _componentGuid;
+            }
+        }
 
         private bool _isInput;
         private Guid _componentGuid;
@@ -149,14 +159,14 @@ namespace ComponentToolkit
         private void _canvas_MouseLeave(object sender, EventArgs e)
         {
             finish();
-            _param = null;
+            TargetParam = null;
         }
 
         private void _canvas_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             finish();
-            if (_param != null) SaveOne(_param);
-            _param = null;
+            if (TargetParam != null) SaveOne(TargetParam);
+            TargetParam = null;
         }
 
         private void finish()
@@ -181,15 +191,10 @@ namespace ComponentToolkit
                 if(gH_RelevantObjectData.Parameter != null)
                 {
                     param = gH_RelevantObjectData.Parameter;
-                    if (_param == param) return;
-                    if (_isInput && param.Kind != GH_ParamKind.input)
+                    if (TargetParam == param) return;
+                    if ((_isInput && param.Kind != GH_ParamKind.input) || (!_isInput && param.Kind != GH_ParamKind.output))
                     {
-                        _param = param;
-                        _canvas.Refresh();
-                    }
-                    else if (!_isInput && param.Kind != GH_ParamKind.output)
-                    {
-                        _param = param;
+                        TargetParam = param;
                         _canvas.Refresh();
                     }
                 }
@@ -226,12 +231,12 @@ namespace ComponentToolkit
                         }
                     }
 
-                    if (param == _param) return;
-                    _param = param;
+                    if (param == TargetParam) return;
+                    TargetParam = param;
                     _canvas.Refresh();
 
                 }
-                if (_param != param)
+                if (TargetParam != param)
                 {
 
                 }
@@ -252,11 +257,11 @@ namespace ComponentToolkit
                 IGH_Component com = (GH_Component)obj;
 
                 int index = _isInput ? com.Params.Output.IndexOf(param) : com.Params.Input.IndexOf(param);
-
                 item = new CreateObjectItem(com.ComponentGuid, (ushort)index, null, _isInput);
 
             }
             ((ObservableCollection<CreateObjectItem>)DataContext).Add(item);
+            dataGrid.SelectedIndex = ((ObservableCollection<CreateObjectItem>)DataContext).Count - 1;
         }
 
         private void CanvasPostPaintWidgets(GH_Canvas canvas)
@@ -267,11 +272,11 @@ namespace ComponentToolkit
             clientRectangle.Inflate(5, 5);
             Region region = new Region(clientRectangle);
             System.Drawing.Rectangle rect = System.Drawing.Rectangle.Empty;
-            if (_param != null)
+            if (TargetParam != null)
             {
-                RectangleF bounds = _param.Attributes.Bounds;
+                RectangleF bounds = TargetParam.Attributes.Bounds;
                 rect = GH_Convert.ToRectangle(canvas.Viewport.ProjectRectangle(bounds));
-                switch (_param.Kind)
+                switch (TargetParam.Kind)
                 {
                     case GH_ParamKind.input:
                         rect.Inflate(2, 2);
@@ -289,10 +294,12 @@ namespace ComponentToolkit
             canvas.Graphics.FillRegion(solidBrush, region);
             solidBrush.Dispose();
             region.Dispose();
-            if (_param != null)
+            if (TargetParam != null)
             {
-                canvas.Graphics.DrawRectangle(Pens.Black, rect);
-                System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.Black, 3f);
+                System.Drawing.Color color = _isTheSame ? System.Drawing.Color.OliveDrab : System.Drawing.Color.Chocolate;
+
+                canvas.Graphics.DrawRectangle(new System.Drawing.Pen(color), rect);
+                System.Drawing.Pen pen = new System.Drawing.Pen(color, 3f);
                 int num = 6;
                 int num2 = rect.Left - 4;
                 int num3 = rect.Right + 4;

@@ -25,7 +25,10 @@ namespace ComponentToolkit
             GH_NumberSlider slider = (GH_NumberSlider)obj;
             if (slider == null) return;
 
-            slider.Slider.DecimalPlaces = Math.Max(slider.Slider.DecimalPlaces, 2);
+            if (slider.Slider.DecimalPlaces == 0)
+            {
+                slider.Slider.DecimalPlaces = 2;
+            }
         }
     }
 }
