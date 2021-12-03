@@ -1,4 +1,5 @@
 ﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
@@ -40,7 +41,29 @@ namespace ComponentToolkit
         protected override GH_Interval2D SetValue(IGH_Goo[] values)
         {
             return new GH_Interval2D(new UVInterval(((GH_Interval)values[0]).Value, ((GH_Interval)values[1]).Value));
+        }
 
+        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        {
+            if (obj == null) return;
+            GH_Component com = (GH_Component)obj;
+            if (com == null) return;
+
+            if (com.Params.Input.Count < 2) return;
+
+            if (com.Params.Input[0] is Param_Interval)
+            {
+                Param_Interval param = (Param_Interval)com.Params.Input[0];
+                param.PersistentData.Clear();
+                param.PersistentData.Append(new GH_Interval(OwnerGooData.Value.U));
+            }
+
+            if (com.Params.Input[1] is Param_Interval)
+            {
+                Param_Interval param = (Param_Interval)com.Params.Input[1];
+                param.PersistentData.Clear();
+                param.PersistentData.Append(new GH_Interval(OwnerGooData.Value.V));
+            }
         }
     }
 }

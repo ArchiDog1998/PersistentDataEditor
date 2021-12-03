@@ -335,7 +335,7 @@ namespace ComponentToolkit
 
                     if (Datas.SeperateCalculateWidthControl)
                     {
-                        float maxStringRight = startX + Datas.ComponentToEdgeDistance + nameMaxWidth;
+                        float maxStringRight = startX + nameMaxWidth;
                         attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(startX , attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
                             new RectangleF(maxStringRight - stringwidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
 

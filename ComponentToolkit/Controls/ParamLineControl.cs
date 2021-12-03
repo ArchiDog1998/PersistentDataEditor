@@ -1,4 +1,5 @@
 ﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,29 @@ namespace ComponentToolkit
         protected override GH_Line SetValue(IGH_Goo[] values)
         {
             return new GH_Line(new  Rhino.Geometry.Line(((GH_Point)values[0]).Value, ((GH_Point)values[1]).Value));
+        }
+
+        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        {
+            if (obj == null) return;
+            GH_Component com = (GH_Component)obj;
+            if (com == null) return;
+
+            if (com.Params.Input.Count < 2) return;
+
+            if (com.Params.Input[0] is Param_Point)
+            {
+                Param_Point param = (Param_Point)com.Params.Input[0];
+                param.PersistentData.Clear();
+                param.PersistentData.Append(new GH_Point(OwnerGooData.Value.From));
+            }
+
+            if (com.Params.Input[1] is Param_Point)
+            {
+                Param_Point param = (Param_Point)com.Params.Input[1];
+                param.PersistentData.Clear();
+                param.PersistentData.Append(new GH_Point(OwnerGooData.Value.To));
+            }
         }
     }
 }

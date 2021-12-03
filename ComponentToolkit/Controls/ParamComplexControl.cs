@@ -1,4 +1,5 @@
 ﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
@@ -25,6 +26,29 @@ namespace ComponentToolkit
             {
                 new GooComplexControl(()=> OwnerGooData, null),
             };
+        }
+
+        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        {
+            if (obj == null) return;
+            GH_Component com = (GH_Component)obj;
+            if (com == null) return;
+
+            if (com.Params.Input.Count < 2) return;
+
+            if (com.Params.Input[0] is Param_Number)
+            {
+                Param_Number param = (Param_Number)com.Params.Input[0];
+                param.PersistentData.Clear();
+                param.PersistentData.Append(new GH_Number(OwnerGooData.Value.Real));
+            }
+
+            if (com.Params.Input[1] is Param_Number)
+            {
+                Param_Number param = (Param_Number)com.Params.Input[1];
+                param.PersistentData.Clear();
+                param.PersistentData.Append(new GH_Number(OwnerGooData.Value.Imaginary));
+            }
         }
     }
 }
