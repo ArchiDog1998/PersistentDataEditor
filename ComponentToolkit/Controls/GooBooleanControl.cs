@@ -13,6 +13,8 @@ namespace ComponentToolkit
 {
     internal class GooBooleanControl : GooControlBase<GH_Boolean>
     {
+        protected override Guid AddCompnentGuid => new Guid("2e78987b-9dfb-42a2-8b76-3923ac8bd91a");
+
         internal override int Width => 10;
 
         internal override int Height => 10;
@@ -23,8 +25,8 @@ namespace ComponentToolkit
 
         internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            bool lastBool = ShowValue?.Value ?? false;
-            ShowValue = new GH_Boolean(!lastBool);
+            bool lastBool = SavedValue?.Value ?? false;
+            SavedValue = new GH_Boolean(!lastBool);
         }
 
         internal override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
@@ -32,7 +34,7 @@ namespace ComponentToolkit
             graphics.FillEllipse(new SolidBrush(Datas.ControlBackgroundColor), Bounds);
             graphics.DrawEllipse(new Pen(new SolidBrush(Datas.ControlBorderColor), 1.5f), Bounds);
 
-            if (ShowValue != null && ShowValue.Value)
+            if (SavedValue != null && SavedValue.Value)
             {
                 RectangleF bound = this.Bounds;
                 bound.Inflate(-2, -2);

@@ -1,0 +1,38 @@
+﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ComponentToolkit
+{ 
+    internal class GooIntegerControl : GooHorizonalControlBase<GH_Integer>
+    {
+        protected override Guid AddCompnentGuid => new Guid("57da07bd-ecab-415d-9d86-af36d7073abc");
+
+        protected override string AddCompnentInit => base.AddCompnentInit ?? "0..100";
+        public GooIntegerControl(Func<GH_Integer> valueGetter, string name) : base(valueGetter, name)
+        {
+
+        }
+
+        protected override GH_Integer SetValue(IGH_Goo[] values)
+        {
+            return (GH_Integer)values[0];
+        }
+
+        protected override BaseControlItem[] SetControlItems()
+        {
+            return new BaseControlItem[]
+            {
+                new GooInputBoxStringControl<GH_Integer>(()=>
+                {
+                    if(SavedValue == null) return null;
+                    return new GH_Integer(SavedValue.Value);
+                }),
+            };
+        }
+    }
+}

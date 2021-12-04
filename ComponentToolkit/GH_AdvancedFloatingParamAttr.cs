@@ -20,11 +20,10 @@ namespace ComponentToolkit
 
 
         private Rectangle _iconTextBound;
-
         public BaseControlItem Control { get; private set; } = null;
         public GH_AdvancedFloatingParamAttr(IGH_Param param): base(param)
         {
-            Control = GH_AdvancedLinkParamAttr.SetControl(param);
+            Control = GH_AdvancedLinkParamAttr.SetControl(Owner);
         }
 
         public override GH_ObjectResponse RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)
@@ -49,7 +48,6 @@ namespace ComponentToolkit
 
         public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            if (!BaseControlItem.ShouldRespond) return GH_ObjectResponse.Ignore;
 
             if (Control != null && Control.Bounds.Contains(e.CanvasLocation))
             {

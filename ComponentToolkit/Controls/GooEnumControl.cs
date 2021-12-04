@@ -1,6 +1,7 @@
 ﻿using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
@@ -15,17 +16,19 @@ namespace ComponentToolkit
 {
     internal class GooEnumControl : GooControlBase<GH_Integer>
     {
+        protected override Guid AddCompnentGuid => new Guid("00027467-0D24-4fa7-B178-8DC0AC5F42EC");
+
         private string _showString
         {
             get
             {
-                if(ShowValue == null)
+                if(SavedValue == null)
                 {
                     return null;
                 }
                 else
                 {
-                    int index = ShowValue.Value;
+                    int index = SavedValue.Value;
                     if (_namedValues.ContainsKey(index))
                     {
                         return _namedValues[index];
@@ -57,7 +60,7 @@ namespace ComponentToolkit
         internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             ToolStripDropDownMenu menu = new ToolStripDropDownMenu();
-            int? num = ShowValue?.Value;
+            int? num = SavedValue?.Value;
             foreach (var namedValue in _namedValues)
             {
                 GH_DocumentObject.Menu_AppendItem(menu, namedValue.Value, Menu_NamedValueClicked, true, namedValue.Key == num).Tag = namedValue.Key;
@@ -70,7 +73,7 @@ namespace ComponentToolkit
             ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
             if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is int)
             {
-                ShowValue = new GH_Integer((int)toolStripMenuItem.Tag);
+                SavedValue = new GH_Integer((int)toolStripMenuItem.Tag);
             }
         }
 
@@ -116,6 +119,20 @@ namespace ComponentToolkit
             graphics.DrawString(_showString, GH_FontServer.StandardAdjusted, new SolidBrush(Datas.ControlTextgroundColor), _stringBounds, GH_TextRenderingConstants.NearCenter);
 
             graphics.FillPath(new SolidBrush(Datas.ControlForegroundColor), _triangle);
+        }
+
+        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        {
+            if (_namedValues == null) return;
+
+            GH_ValueList valuelist = (GH_ValueList)obj;
+            if (valuelist == null) return;
+
+            valuelist.ListItems.Clear();
+            foreach (var keyvalue in _namedValues)
+            {
+                valuelist.ListItems.Add(new GH_ValueListItem(keyvalue.Value, keyvalue.Key.ToString()));
+            }
         }
     }
 }

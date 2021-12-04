@@ -118,60 +118,45 @@ namespace ComponentToolkit
 
             CreateTextLabel(major, "Single Control");
 
-            major.DropDownItems.Add(CreateCheckBox("Boolean Control", Datas.UseParamBooleanControl, new Param_Boolean().Icon_24x24,
-                (boolean) => Datas.UseParamBooleanControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Boolean_Control, GH_Boolean>(new Param_Boolean().Icon_24x24));
 
-            major.DropDownItems.Add(CreateCheckBox("String Control", Datas.UseParamStringControl, new Param_String().Icon_24x24,
-                (boolean) => Datas.UseParamStringControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<String_Control, GH_String>(new Param_String().Icon_24x24));
 
-            major.DropDownItems.Add(CreateCheckBox("Integer Control", Datas.UseParamIntegerControl, new Param_Integer().Icon_24x24,
-                (boolean) => Datas.UseParamIntegerControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Integer_Control, GH_Integer>(new Param_Integer().Icon_24x24));
 
-            major.DropDownItems.Add(CreateCheckBox("Number Control", Datas.UseParamNumberControl, new Param_Number().Icon_24x24,
-                (boolean) => Datas.UseParamNumberControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Number_Control, GH_Number>(new Param_Number().Icon_24x24));
 
-            major.DropDownItems.Add(CreateCheckBox("Colour Control", Datas.UseParamColourControl, new Param_Colour().Icon_24x24,
-                (boolean) => Datas.UseParamColourControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Colour_Control, GH_Colour>(new Param_Colour().Icon_24x24));
 
-            major.DropDownItems.Add(CreateCheckBox("Material Control", Datas.UseParamMaterialControl, new Param_OGLShader().Icon_24x24,
-                (boolean) => Datas.UseParamMaterialControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Material_Control, GH_Material>(new Param_OGLShader().Icon_24x24));
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
             CreateTextLabel(major, "One Line Control");
 
-            major.DropDownItems.Add(CreateCheckBox("Interval Control", Datas.UseParamIntervalControl, new Param_Interval().Icon_24x24,
-                (boolean) => Datas.UseParamIntervalControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Domain_Control, GH_Interval>(new Param_Interval().Icon_24x24));
 
-            major.DropDownItems.Add(CreateCheckBox("Point Control", Datas.UseParamPointControl, new Param_Point().Icon_24x24,
-                (boolean) => Datas.UseParamPointControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Point_Control, GH_Point>(new Param_Point().Icon_24x24));
 
-            major.DropDownItems.Add(CreateCheckBox("Vector Control", Datas.UseParamVectorControl, new Param_Vector().Icon_24x24,
-                (boolean) => Datas.UseParamVectorControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Vector_Control, GH_Vector>(new Param_Vector().Icon_24x24));
 
-            major.DropDownItems.Add(CreateCheckBox("Complex Control", Datas.UseParamComplexControl, new Param_Complex().Icon_24x24,
-                (boolean) => Datas.UseParamComplexControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Complex_Control, GH_ComplexNumber>(new Param_Complex().Icon_24x24));
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
             CreateTextLabel(major, "Multi-line Control");
 
-            major.DropDownItems.Add(CreateCheckBox("Interval2d Control", Datas.UseParamInterval2DControl, new Param_Interval2D().Icon_24x24,
-                (boolean) => Datas.UseParamInterval2DControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Domain2D_Control, GH_Interval2D>(new Param_Interval2D().Icon_24x24));
 
-            major.DropDownItems.Add(CreateCheckBox("Line Control", Datas.UseParamLineControl, new Param_Line().Icon_24x24,
-                (boolean) => Datas.UseParamLineControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Line_Control, GH_Line>(new Param_Line().Icon_24x24));
 
-            major.DropDownItems.Add(CreateCheckBox("Plane Control", Datas.UseParamPlaneControl, new Param_Plane().Icon_24x24,
-                (boolean) => Datas.UseParamPlaneControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Plane_Control, GH_Plane>(new Param_Plane().Icon_24x24));
 
-            major.DropDownItems.Add(CreateCheckBox("Circle Control", Datas.UseParamCircleControl, new Param_Circle().Icon_24x24,
-                (boolean) => Datas.UseParamCircleControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<Circle_Control, GH_Circle>(new Param_Circle().Icon_24x24));
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
-            major.DropDownItems.Add(CreateCheckBox("General Control", Datas.UseParamGeneralControl, new Param_GenericObject().Icon_24x24,
-                (boolean) => Datas.UseParamGeneralControl = boolean));
+            major.DropDownItems.Add(CreateControlStateCheckBox<General_Control,IGH_Goo>(new Param_GenericObject().Icon_24x24));
 
             return major;
         }
@@ -305,6 +290,76 @@ namespace ComponentToolkit
             item.DropDownItems.Add(resetItem);
 
             return picker;
+        }
+
+        private static ToolStripMenuItem CreateControlStateCheckBox<T, Tg>(Bitmap icon) where T : Enum where Tg : class, IGH_Goo
+        {
+            string saveBooleanKey = "UseParam" + typeof(Tg).Name;
+            ToolStripMenuItem major = CreateCheckBox(typeof(T).Name.Replace('_', ' '), Instances.Settings.GetValue(saveBooleanKey, true)
+                , icon, (boolean) =>
+                {
+                    Instances.Settings.SetValue(saveBooleanKey, boolean);
+                    Datas.RefreshLayout();
+                });
+            major.DropDown.Closing += DropDown_Closing;
+
+
+
+
+            string saveKey = typeof(T).FullName;
+            int current = Instances.Settings.GetValue(saveKey, 0);
+
+            var enums = Enum.GetNames(typeof(T)).GetEnumerator();
+            foreach (int i in Enum.GetValues(typeof(T)))
+            {
+                enums.MoveNext();
+                string name = enums.Current.ToString().Replace('_', ' ');
+                ToolStripMenuItem item = new ToolStripMenuItem(name) { Tag = i, Checked = i == current };
+                item.Click += Item_Click;
+                major.DropDownItems.Add(item);
+            }
+
+            void Item_Click(object sender, EventArgs e)
+            {
+                foreach (ToolStripMenuItem dropIt in major.DropDownItems)
+                {
+                    dropIt.Checked = false;
+                }
+
+                ToolStripMenuItem it = (ToolStripMenuItem)sender;
+                it.Checked = true;
+                Instances.Settings.SetValue(saveKey, (int)it.Tag);
+
+                //Refresh Control.
+                foreach (GH_Document doc in Instances.DocumentServer)
+                {
+                    foreach (IGH_DocumentObject @object in doc.Objects)
+                    {
+                        if(@object is IGH_Param && @object.Attributes is GH_AdvancedFloatingParamAttr)
+                        {
+                            GH_AdvancedFloatingParamAttr att = (GH_AdvancedFloatingParamAttr)@object.Attributes;
+                            att.Control?.ChangeControlItems();
+                        }
+                        if (@object is IGH_Component)
+                        {
+                            IGH_Component com = (IGH_Component)@object;
+                            foreach (var param in com.Params)
+                            {
+                                if(param.Attributes is GH_AdvancedLinkParamAttr)
+                                {
+                                    GH_AdvancedLinkParamAttr att = (GH_AdvancedLinkParamAttr)param.Attributes;
+                                    att.Control?.ChangeControlItems();
+                                }
+                            }
+                        }
+                        @object.Attributes.ExpireLayout();
+                    }
+                }
+
+                Instances.RedrawCanvas();
+            }
+
+            return major;
         }
     }
 }

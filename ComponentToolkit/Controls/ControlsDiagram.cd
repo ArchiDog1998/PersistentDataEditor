@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ComponentToolkit.BaseControlItem">
+    <Position X="20.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgABBAABAAAAIAAEAAAAEAAAAAAACAAAAAIBAAAAgA=</HashCode>
+      <FileName>Controls\BaseControlItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooControlBase&lt;T&gt;">
+    <Position X="9" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAKAAAEIAAAAAAAgAAgAAEAAACAIBAAAAAAACAA=</HashCode>
+      <FileName>Controls\GooControlBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ComponentToolkit.ParamControl&lt;T&gt;">
+    <Position X="29.5" Y="5.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACgAAACABAAAAgAAEAAAAGAAAAAAACABAIAIBAAAAAA=</HashCode>
+      <FileName>Controls\ParamControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooMultiControlBase&lt;T&gt;">
+    <Position X="19" Y="11" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAgAKAAAACAAAgAACAAAAAAAAAAAACAABAAIAAAAAAA=</HashCode>
+      <FileName>Controls\GooMultiControlBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooHorizonalControlBase&lt;T&gt;">
+    <Position X="17" Y="16.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAEAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooHorizonalControlBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooVerticalControlBase&lt;T&gt;">
+    <Position X="22" Y="16.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAEAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooVerticalControlBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooBooleanControl">
+    <Position X="1.75" Y="11.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAIAAAAAAAAAEAAAAAAACAAAAAIAAAAAAA=</HashCode>
+      <FileName>Controls\GooBooleanControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooColorControl">
+    <Position X="4" Y="11.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAABAAKAAAAEAAAAEAAAAAAACAAAEAIAQAAAAA=</HashCode>
+      <FileName>Controls\GooColorControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooEnumControl">
+    <Position X="6.75" Y="11.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>BAgAAAAABAAJAAABEAAAAUAAAAAAACABAAAIAAgAAAA=</HashCode>
+      <FileName>Controls\GooEnumControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooInputBoxStringControl&lt;T&gt;">
+    <Position X="9.5" Y="11.25" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="ComponentToolkit.GooInputBoxStringControl&lt;T&gt;.InputBoxBalloon">
+        <TypeIdentifier>
+          <NewMemberFileName>Controls\GooInputBoxStringControl.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAIAABAAIAAAQEAACAEAAAAAQQCAAAAAIAAAAAAA=</HashCode>
+      <FileName>Controls\GooInputBoxStringControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooNumberControl">
+    <Position X="3.25" Y="20.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAgACAAAAAEIAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooNumberControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooIntegerControl">
+    <Position X="6" Y="20.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAEIAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooIntegerControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooPointControl">
+    <Position X="15" Y="20.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAgACAAAAAAIAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooPointControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooVectorControl">
+    <Position X="17.75" Y="20.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAgACAAAAAAIAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooVectorControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooIntervalControl">
+    <Position X="12" Y="20.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAgACAAAAAAIAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooIntervalControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooComplexControl">
+    <Position X="8.75" Y="20.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAgACAAAAAAIAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooComplexControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooGeneralControl&lt;T&gt;">
+    <Position X="12.75" Y="15.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAQAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooGeneralControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooInterval2DControl">
+    <Position X="21.75" Y="20" Width="2.5" />
+    <NestedTypes>
+      <Class Name="ComponentToolkit.GooInterval2DControl.GooInterval2DControlHor" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Controls\GooInterval2DControl.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAgACAAAAAAIAgAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooInterval2DControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooLineControl">
+    <Position X="24.5" Y="20" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAgACAAAAAAIAgAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooLineControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooMaterialControl">
+    <Position X="0.5" Y="20.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAgACAAAAAAIAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooMaterialControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooPlaneControl">
+    <Position X="27.5" Y="20" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAgACAAAAAAIAgAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooPlaneControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamStringControl" Collapsed="true">
+    <Position X="25.75" Y="10.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamBooleanControl" Collapsed="true">
+    <Position X="25.5" Y="12" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamIntegerControl" Collapsed="true">
+    <Position X="28" Y="13.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamNumberControl" Collapsed="true">
+    <Position X="25.25" Y="14.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamColourControl" Collapsed="true">
+    <Position X="28.25" Y="10.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamMaterialControl" Collapsed="true">
+    <Position X="28" Y="12" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamIntervalControl" Collapsed="true">
+    <Position X="31" Y="13.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamPointControl" Collapsed="true">
+    <Position X="28" Y="14.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamVectorControl" Collapsed="true">
+    <Position X="30.75" Y="10.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamComplexControl" Collapsed="true">
+    <Position X="30.75" Y="12" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamInterval2DControl" Collapsed="true">
+    <Position X="33.75" Y="13.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamLineControl" Collapsed="true">
+    <Position X="30.5" Y="14.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamPlaneControl" Collapsed="true">
+    <Position X="33" Y="10.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamCircleControl" Collapsed="true">
+    <Position X="25.5" Y="13.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamGeneralControl&lt;T&gt;" Collapsed="true">
+    <Position X="33.5" Y="12" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooCircleControl">
+    <Position X="30.25" Y="20" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAgACAAAAAAIAgAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooCircleControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="ComponentToolkit.IGooValue">
+    <Position X="19.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooControlBase.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

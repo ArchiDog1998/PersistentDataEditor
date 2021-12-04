@@ -9,25 +9,23 @@ using System.Threading.Tasks;
 
 namespace ComponentToolkit
 {
-    internal class ParamMaterialControl : ParamControlBase<GH_Material>
+    internal class GooMaterialControl : GooHorizonalControlBase<GH_Material>
     {
-        protected override bool Valid => base.Valid && Datas.UseParamMaterialControl;
-
-        protected override Guid AddCompnentGuid => new Guid("9c53bac0-ba66-40bd-8154-ce9829b9db1a");
-
-        public ParamMaterialControl(GH_PersistentParam<GH_Material> owner) : base(owner)
+        public GooMaterialControl(Func<GH_Material> valueGetter) : base(valueGetter, null)
         {
 
         }
 
-        protected override BaseControlItem[] SetControlItems(GH_PersistentParam<GH_Material> owner)
+        protected override Guid AddCompnentGuid => new Guid("9c53bac0-ba66-40bd-8154-ce9829b9db1a");
+
+        protected override BaseControlItem[] SetControlItems()
         {
             return new BaseControlItem[]
             {
                 new GooColorControl(()=>
                 {
-                    if(OwnerGooData == null) return null;
-                    return new GH_Colour(OwnerGooData.Value.Diffuse);
+                    if(SavedValue == null) return null;
+                    return new GH_Colour(SavedValue.Value.Diffuse);
                 }),
             };
         }
@@ -41,8 +39,8 @@ namespace ComponentToolkit
         {
             GH_ColourSwatch swatch = (GH_ColourSwatch)obj;
             if (swatch == null) return;
-            if (OwnerGooData != null)
-                ParamColorControl.SwatchColorInfo.SetValue(swatch, OwnerGooData.Value);
+            if (SavedValue != null)
+                GooColorControl.SwatchColorInfo.SetValue(swatch, SavedValue.Value);
         }
     }
 }

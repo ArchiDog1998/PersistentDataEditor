@@ -117,7 +117,7 @@ namespace ComponentToolkit
             if (item is IGH_Param)
             {
                 var param = (IGH_Param)item;
-                if (param.Kind == GH_ParamKind.floating && param.Attributes is GH_FloatingParamAttributes && !(param.Attributes is GH_AdvancedFloatingParamAttr))
+                if (param.Kind == GH_ParamKind.floating && param.Attributes.GetType() == typeof(GH_FloatingParamAttributes) && !(param.Attributes is GH_AdvancedFloatingParamAttr))
                 {
                     PointF point = param.Attributes.Pivot;
                     param.Attributes = new GH_AdvancedFloatingParamAttr(param);
@@ -406,32 +406,50 @@ namespace ComponentToolkit
                 RectangleF bounds = item.Attributes.Bounds;
                 if (!(bounds.Width < 1f))
                 {
-                    GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)item.Attributes;
-
-                    //Render names.
-                    graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, attr.StringRect, GH_TextRenderingConstants.CenterCenter);
-
-                    //Render Icon;
-                    if (Datas.ShowLinkParamIcon)
+                    if(item.Attributes is GH_AdvancedLinkParamAttr)
                     {
-                        Bitmap icon;
-                        if (!GH_AdvancedLinkParamAttr.IconSet.TryGetValue(item.ComponentGuid, out icon))
+                        GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)item.Attributes;
+
+                        //Render names.
+                        graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, attr.StringRect, GH_TextRenderingConstants.CenterCenter);
+
+                        //Render Icon;
+                        if (Datas.ShowLinkParamIcon)
                         {
-                            icon = attr.SetParamIcon();
+                            Bitmap icon;
+                            if (!GH_AdvancedLinkParamAttr.IconSet.TryGetValue(item.ComponentGuid, out icon))
+                            {
+                                icon = attr.SetParamIcon();
+                            }
+                            graphics.DrawImage(icon, attr.IconPivot);
                         }
-                        graphics.DrawImage(icon, attr.IconPivot);
-                    }
 
-                    //Render Control
-                    BaseControlItem control = attr.Control;
-                    if (control != null && control.Bounds.Width >= 1f)
+                        //Render Control
+                        BaseControlItem control = attr.Control;
+                        if (control != null && control.Bounds.Width >= 1f)
+                        {
+                            attr.Control.RenderObject(canvas, graphics, owner, style);
+                        }
+
+                        //Render tags.
+                        GH_StateTagList tags = (GH_StateTagList)_tagsInfo.GetValue(item.Attributes);
+                        if (tags != null) tags.RenderStateTags(graphics);
+                    }
+                    else
                     {
-                        attr.Control.RenderObject(canvas, graphics, owner, style);
-                    }
+                        StringFormat format = item.Kind == GH_ParamKind.input ?
+                            ( Datas.ComponentInputEdgeLayout ? GH_TextRenderingConstants.NearCenter : GH_TextRenderingConstants.FarCenter) :
+                            ( Datas.ComponentOutputEdgeLayout ? GH_TextRenderingConstants.FarCenter : GH_TextRenderingConstants.NearCenter);
 
-                    //Render tags.
-                    GH_StateTagList tags = (GH_StateTagList)_tagsInfo.GetValue(item.Attributes);
-                    if (tags != null) tags.RenderStateTags(graphics);
+                        graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, bounds, format);
+                        GH_LinkedParamAttributes gH_LinkedParamAttributes = (GH_LinkedParamAttributes)item.Attributes;
+
+                        GH_StateTagList tags = (GH_StateTagList)_tagsInfo.GetValue(gH_LinkedParamAttributes);
+                        if (tags != null)
+                        {
+                            tags.RenderStateTags(graphics);
+                        }
+                    }
                 }
             }
             solidBrush.Dispose();

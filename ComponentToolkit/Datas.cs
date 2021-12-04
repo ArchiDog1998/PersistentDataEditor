@@ -80,7 +80,7 @@ namespace ComponentToolkit
             set => Instances.Settings.SetValue(nameof(UseQuickWire), value);
         }
 
-        public static readonly int _componentParamIconSizeDefault = 18;
+        public static readonly int _componentParamIconSizeDefault = 16;
         public static int ComponentParamIconSize
         {
             get => Instances.Settings.GetValue(nameof(ComponentParamIconSize), _componentParamIconSizeDefault);
@@ -255,7 +255,9 @@ namespace ComponentToolkit
             }
         }
 
-        private static void RefreshLayout()
+        #endregion
+
+        internal static void RefreshLayout()
         {
             foreach (GH_Document doc in Instances.DocumentServer)
             {
@@ -267,7 +269,6 @@ namespace ComponentToolkit
 
             Instances.RedrawCanvas();
         }
-        #endregion
 
         #region Settings for Using Control Item
         public static bool UseParamBooleanControl

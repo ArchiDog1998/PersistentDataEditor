@@ -8,48 +8,34 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Forms;
 
 namespace ComponentToolkit
 {
     internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : class, IGH_Goo
     {
-        internal sealed override int Width
-        {
-            get
-            {
-                int all = 0;
-                foreach (var control in _controlItems)
-                {
-                    all += control.Width;
-                }
-                return all;
-            }
-        }
-        internal sealed override int Height
-        {
-            get
-            {
-                int max = 0;
-                foreach (var control in _controlItems)
-                {
-                    max = Math.Max(max, control.Height);
-                }
-                return max;
-            }
-        }
-        private BaseControlItem[] _controlItems;
+        protected BaseControlItem[] _controlItems;
         private IGooValue[] _Values;
+        private string _name;
+        protected bool _hasName = false;
+
         public GooMultiControlBase(Func<T> valueGetter, string name) : base(valueGetter)
         {
+            _name = name;
+            ChangeControlItems();
+        }
+
+        internal sealed override void ChangeControlItems()
+        {
             BaseControlItem[] addcontrolItems = SetControlItems() ?? new BaseControlItem[0];
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(_name))
             {
                 _controlItems = addcontrolItems;
             }
             else
             {
-                List<BaseControlItem> items = new List<BaseControlItem> { new StringRender(name) };
+                _hasName = true;
+                List<BaseControlItem> items = new List<BaseControlItem> { new StringRender(_name) };
                 items.AddRange(addcontrolItems);
                 _controlItems = items.ToArray();
             }
@@ -57,14 +43,16 @@ namespace ComponentToolkit
             List<IGooValue> gooValues = new List<IGooValue>();
             foreach (var control in _controlItems)
             {
+                control.ChangeControlItems();
                 if (control is IGooValue)
                 {
                     ((IGooValue)control).ValueChange = SetValue;
                     gooValues.Add((IGooValue)control);
                 }
             }
-            _Values = gooValues.ToArray();
+            _Values = gooValues.ToArray(); ;
         }
+
         private void SetValue()
         {
             IGH_Goo[] goos = new IGH_Goo[_Values.Length];
@@ -77,30 +65,11 @@ namespace ComponentToolkit
                     return;
                 }
             }
-            ShowValue = SetValue(goos);
+            SavedValue = SetValue(goos);
         }
 
         protected abstract T SetValue(IGH_Goo[] values);
         protected abstract BaseControlItem[] SetControlItems();
-
-        protected sealed override void LayoutObject(RectangleF bounds)
-        {
-            if (bounds == RectangleF.Empty)
-            {
-                foreach (BaseControlItem item in _controlItems) item.Bounds = RectangleF.Empty;
-            }
-            else
-            {
-                float x = bounds.X;
-                foreach (BaseControlItem item in _controlItems)
-                {
-                    item.Bounds = new RectangleF(x, bounds.Y + (bounds.Height - item.Height) / 2, item.Width, item.Height);
-                    x += item.Width;
-                }
-            }
-
-            base.LayoutObject(bounds);
-        }
 
         internal sealed override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
@@ -111,29 +80,34 @@ namespace ComponentToolkit
         }
         internal sealed override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            foreach (var control in _controlItems)
+            if (e.Button == MouseButtons.Left)
             {
-                if (control is StringRender) continue;
-                if (control.Bounds.Contains(e.CanvasLocation))
+                foreach (var control in _controlItems)
                 {
-                    control.Clicked(sender, e);
-                    return;
+                    if (control is StringRender) continue;
+                    if (control.Bounds.Contains(e.CanvasLocation))
+                    {
+                        control.Clicked(sender, e);
+                        return;
+                    }
                 }
-            }
-            new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowValue?.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
+                new GooInputBoxStringControl<IGH_Goo>.InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, SavedValue?.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
 
-            void SaveString(string str)
-            {
-                T value = (T)Activator.CreateInstance(typeof(T));
-                if (value.CastFrom(str))
+                void SaveString(string str)
                 {
-                    ShowValue = value;
+                    T value = (T)Activator.CreateInstance(typeof(T));
+                    if (value.CastFrom(str))
+                    {
+                        SavedValue = value;
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Can't cast a {typeof(T).Name} from \"{str}\".");
+                    }
                 }
-                else
-                {
-                    MessageBox.Show($"Can't cast a {typeof(T).Name} from \"{str}\".");
-                }
+                return;
             }
+            base.Clicked(sender, e);
         }
     }
 }

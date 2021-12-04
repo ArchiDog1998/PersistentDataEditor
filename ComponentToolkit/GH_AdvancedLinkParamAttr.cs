@@ -1,4 +1,5 @@
-﻿using Grasshopper.GUI;
+﻿using Grasshopper;
+using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
@@ -83,76 +84,79 @@ namespace ComponentToolkit
 
         internal static BaseControlItem SetControl(IGH_Param param)
         {
-            if (IsPersistentParam(param.GetType(), out Type storedData))
+            if (IsPersistentParam(param.GetType(), out Type storeType))
             {
-                if (param is GH_PersistentParam<GH_String>)
+                if (storeType == typeof(GH_String))
                 {
                     return new ParamStringControl((GH_PersistentParam<GH_String>)param);
                 }
-                else if (param is GH_PersistentParam<GH_Integer>)
+                else if (storeType == typeof(GH_Integer))
                 {
                     return new ParamIntegerControl((GH_PersistentParam<GH_Integer>)param);
                 }
-                else if (param is GH_PersistentParam<GH_Number>)
+                else if (storeType == typeof(GH_Number))
                 {
                     return new ParamNumberControl((GH_PersistentParam<GH_Number>)param);
                 }
-                else if (param is GH_PersistentParam<GH_Colour>)
+                else if (storeType == typeof(GH_Colour))
                 {
-                    return new ParamColorControl((GH_PersistentParam<GH_Colour>)param);
+                    return new ParamColourControl((GH_PersistentParam<GH_Colour>)param);
                 }
-                else if (param is GH_PersistentParam<GH_Boolean>)
+                else if (storeType == typeof(GH_Boolean))
                 {
                     return new ParamBooleanControl((GH_PersistentParam<GH_Boolean>)param);
                 }
-                else if (param is GH_PersistentParam<GH_Interval>)
-                {
-                    return new ParamIntervalControl((GH_PersistentParam<GH_Interval>)param);
-                }
-                else if (param is GH_PersistentParam<GH_Point>)
-                {
-                    return new ParamPoint3dControl((GH_PersistentParam<GH_Point>)param);
-                }
-                else if (param is GH_PersistentParam<GH_Vector>)
-                {
-                    return new ParamVector3dControl((GH_PersistentParam<GH_Vector>)param);
-                }
-                else if (param is GH_PersistentParam<GH_Interval2D>)
-                {
-                    return new ParamInterval2DControl((GH_PersistentParam<GH_Interval2D>)param);
-                }
-                else if (param is GH_PersistentParam<GH_ComplexNumber>)
-                {
-                    return new ParamComplexControl((GH_PersistentParam<GH_ComplexNumber>)param);
-                }
-                else if (param is GH_PersistentParam<GH_Line>)
-                {
-                    return new ParamLineControl((GH_PersistentParam<GH_Line>)param);
-                }
-                else if (param is GH_PersistentParam<GH_Plane>)
-                {
-                    return new ParamPlaneControl((GH_PersistentParam<GH_Plane>)param);
-                }
-                else if (param is GH_PersistentParam<GH_Circle>)
-                {
-                    return new ParamCircleControl((GH_PersistentParam<GH_Circle>)param);
-                }
-                else if (param is GH_PersistentParam<GH_Material>)
+                else if (storeType == typeof(GH_Material))
                 {
                     return new ParamMaterialControl((GH_PersistentParam<GH_Material>)param);
                 }
+
+                else if (storeType == typeof(GH_Interval))
+                {
+                    return new ParamIntervalControl((GH_PersistentParam<GH_Interval>)param);
+                }
+                else if (storeType == typeof(GH_Point))
+                {
+                    return new ParamPointControl((GH_PersistentParam<GH_Point>)param);
+                }
+                else if (storeType == typeof(GH_Vector))
+                {
+                    return new ParamVectorControl((GH_PersistentParam<GH_Vector>)param);
+                }
+                else if (storeType == typeof(GH_ComplexNumber))
+                {
+                    return new ParamComplexControl((GH_PersistentParam<GH_ComplexNumber>)param);
+                }
+                else if (storeType == typeof(GH_Interval2D))
+                {
+                    return new ParamInterval2DControl((GH_PersistentParam<GH_Interval2D>)param);
+                }
+                else if (storeType == typeof(GH_Line))
+                {
+                    return new ParamLineControl((GH_PersistentParam<GH_Line>)param);
+                }
+                else if (storeType == typeof(GH_Plane))
+                {
+                    return new ParamPlaneControl((GH_PersistentParam<GH_Plane>)param);
+                }
+                else if (storeType == typeof(GH_Circle))
+                {
+                    return new ParamCircleControl((GH_PersistentParam<GH_Circle>)param);
+                }
+
                 else
                 {
-                    Type controlType = typeof(ParamGeneralControl<>).MakeGenericType(storedData);
+                    Type controlType = typeof(ParamGeneralControl<>).MakeGenericType(storeType);
                     return (BaseControlItem)Activator.CreateInstance(controlType, param);
                 }
             }
             return null;
+
         }
 
-        private static bool IsPersistentParam(Type type, out Type dataType)
+        internal static bool IsPersistentParam(Type type, out Type dataType)
         {
-            dataType = default(Type);
+            dataType = null;
             if (type == null)
             {
                 return false;
@@ -172,7 +176,6 @@ namespace ComponentToolkit
 
         public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            if (!BaseControlItem.ShouldRespond) return GH_ObjectResponse.Ignore;
 
             if (Control != null && Control.Bounds.Contains(e.CanvasLocation))
             {
