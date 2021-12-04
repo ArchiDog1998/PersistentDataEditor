@@ -27,7 +27,7 @@ namespace ComponentToolkit
                 default:
                     return new BaseControlItem[]
                     {
-                        new GooInputBoxStringControl<GH_Vector>(()=> SavedValue),
+                        new GooInputBoxStringControl<GH_Vector>(()=> ShowValue),
                     };
                 case Vector_Control.XYZ:
                     return new BaseControlItem[]
@@ -36,24 +36,24 @@ namespace ComponentToolkit
 
                         new GooInputBoxStringControl<GH_Number>(()=>
                         {
-                            if(SavedValue == null) return null;
-                            return new GH_Number(SavedValue.Value.X);
+                            if(ShowValue == null) return null;
+                            return new GH_Number(ShowValue.Value.X);
                         }),
 
                         new StringRender("Y"),
 
                         new GooInputBoxStringControl<GH_Number>(()=>
                         {
-                            if(SavedValue == null) return null;
-                            return new GH_Number(SavedValue.Value.Y);
+                            if(ShowValue == null) return null;
+                            return new GH_Number(ShowValue.Value.Y);
                         }),
 
                         new StringRender("Z"),
 
                         new GooInputBoxStringControl<GH_Number>(()=>
                         {
-                            if(SavedValue == null) return null;
-                            return new GH_Number(SavedValue.Value.Z);
+                            if(ShowValue == null) return null;
+                            return new GH_Number(ShowValue.Value.Z);
                         }),
                     };
             }
@@ -87,21 +87,21 @@ namespace ComponentToolkit
             {
                 Param_Number param = (Param_Number)com.Params.Input[0];
                 param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Number(SavedValue.Value.X));
+                param.PersistentData.Append(new GH_Number(ShowValue.Value.X));
             }
 
             if (com.Params.Input[1] is Param_Number)
             {
                 Param_Number param = (Param_Number)com.Params.Input[1];
                 param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Number(SavedValue.Value.Y));
+                param.PersistentData.Append(new GH_Number(ShowValue.Value.Y));
             }
 
             if (com.Params.Input[2] is Param_Number)
             {
                 Param_Number param = (Param_Number)com.Params.Input[2];
                 param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Number(SavedValue.Value.Z));
+                param.PersistentData.Append(new GH_Number(ShowValue.Value.Z));
             }
         }
     }

@@ -92,7 +92,7 @@ namespace ComponentToolkit
 
         private void SetValue()
         {
-            IGH_Goo goo = _gooControl.SaveGoo;
+            IGH_Goo goo = _gooControl.SaveValue;
             if (goo == null || !goo.IsValid)
             {
                 Owner.Attributes.GetTopLevel.ExpireLayout();

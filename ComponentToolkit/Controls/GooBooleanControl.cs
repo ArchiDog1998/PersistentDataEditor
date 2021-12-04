@@ -25,8 +25,8 @@ namespace ComponentToolkit
 
         internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            bool lastBool = SavedValue?.Value ?? false;
-            SavedValue = new GH_Boolean(!lastBool);
+            bool lastBool = ShowValue?.Value ?? false;
+            ShowValue = new GH_Boolean(!lastBool);
         }
 
         internal override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
@@ -34,7 +34,7 @@ namespace ComponentToolkit
             graphics.FillEllipse(new SolidBrush(Datas.ControlBackgroundColor), Bounds);
             graphics.DrawEllipse(new Pen(new SolidBrush(Datas.ControlBorderColor), 1.5f), Bounds);
 
-            if (SavedValue != null && SavedValue.Value)
+            if (ShowValue != null && ShowValue.Value)
             {
                 RectangleF bound = this.Bounds;
                 bound.Inflate(-2, -2);

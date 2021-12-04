@@ -26,23 +26,23 @@ namespace ComponentToolkit
                 default:
                     return new BaseControlItem[]
                     {
-                        new GooInputBoxStringControl<GH_Interval>(()=> SavedValue),
+                        new GooInputBoxStringControl<GH_Interval>(()=> ShowValue),
                     };
                 case Domain_Control.T0_T1:
                     return new BaseControlItem[]
                     {
                         new GooInputBoxStringControl<GH_Number>(()=>
                         {
-                            if(SavedValue == null) return null;
-                            return new GH_Number(SavedValue.Value.T0);
+                            if(ShowValue == null) return null;
+                            return new GH_Number(ShowValue.Value.T0);
                         }),
 
                         new StringRender("To"),
 
                         new GooInputBoxStringControl<GH_Number>(()=>
                         {
-                            if(SavedValue == null) return null;
-                            return new GH_Number(SavedValue.Value.T1);
+                            if(ShowValue == null) return null;
+                            return new GH_Number(ShowValue.Value.T1);
                         }),
                     };
             }
@@ -72,14 +72,14 @@ namespace ComponentToolkit
             {
                 Param_Number param = (Param_Number)com.Params.Input[0];
                 param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Number(SavedValue.Value.T0));
+                param.PersistentData.Append(new GH_Number(ShowValue.Value.T0));
             }
 
             if (com.Params.Input[1] is Param_Number)
             {
                 Param_Number param = (Param_Number)com.Params.Input[1];
                 param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Number(SavedValue.Value.T1));
+                param.PersistentData.Append(new GH_Number(ShowValue.Value.T1));
             }
         }
     }

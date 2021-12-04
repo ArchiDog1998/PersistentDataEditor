@@ -15,10 +15,10 @@ namespace ComponentToolkit
     internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : class, IGH_Goo
     {
         protected BaseControlItem[] _controlItems;
-        private IGooValue[] _Values;
+        private IGooValue[] _values;
         private string _name;
         protected bool _hasName = false;
-
+        protected bool _RespondBase = true;
         public GooMultiControlBase(Func<T> valueGetter, string name) : base(valueGetter)
         {
             _name = name;
@@ -50,22 +50,22 @@ namespace ComponentToolkit
                     gooValues.Add((IGooValue)control);
                 }
             }
-            _Values = gooValues.ToArray(); ;
+            _values = gooValues.ToArray(); ;
         }
 
         private void SetValue()
         {
-            IGH_Goo[] goos = new IGH_Goo[_Values.Length];
-            for (int i = 0; i < _Values.Length; i++)
+            IGH_Goo[] goos = new IGH_Goo[_values.Length];
+            for (int i = 0; i < _values.Length; i++)
             {
-                goos[i] = _Values[i].SaveGoo;
+                goos[i] = _values[i].SaveValue;
                 if (goos[i] == null || !goos[i].IsValid)
                 {
                     base.ValueChange();
                     return;
                 }
             }
-            SavedValue = SetValue(goos);
+            ShowValue = SetValue(goos);
         }
 
         protected abstract T SetValue(IGH_Goo[] values);
@@ -91,14 +91,17 @@ namespace ComponentToolkit
                         return;
                     }
                 }
-                new GooInputBoxStringControl<IGH_Goo>.InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, SavedValue?.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
+
+                if (!_RespondBase) return;
+
+                new GooInputBoxStringControl<IGH_Goo>.InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowValue?.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
 
                 void SaveString(string str)
                 {
                     T value = (T)Activator.CreateInstance(typeof(T));
                     if (value.CastFrom(str))
                     {
-                        SavedValue = value;
+                        ShowValue = value;
                     }
                     else
                     {

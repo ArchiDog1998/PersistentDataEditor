@@ -16,11 +16,11 @@ namespace ComponentToolkit
     {
         protected abstract Guid AddCompnentGuid { get; }
         protected virtual ushort AddCompnentIndex => 0;
-        protected virtual string AddCompnentInit => SavedValue?.ToString();
+        protected virtual string AddCompnentInit => ShowValue?.ToString();
         internal IGH_Param Owner { private get; set; } = null;
-        public IGH_Goo SaveGoo => _savedValue;
+        public IGH_Goo SaveValue => _savedValue;
         private T _savedValue;
-        internal T SavedValue 
+        internal T ShowValue 
         {
             get
             {
@@ -57,7 +57,7 @@ namespace ComponentToolkit
 
     public interface IGooValue
     {
-        IGH_Goo SaveGoo { get; }
+        IGH_Goo SaveValue { get; }
         Action ValueChange { set; }
     }
 }

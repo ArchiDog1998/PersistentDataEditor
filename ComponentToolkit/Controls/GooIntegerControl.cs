@@ -29,8 +29,8 @@ namespace ComponentToolkit
             {
                 new GooInputBoxStringControl<GH_Integer>(()=>
                 {
-                    if(SavedValue == null) return null;
-                    return new GH_Integer(SavedValue.Value);
+                    if(ShowValue == null) return null;
+                    return new GH_Integer(ShowValue.Value);
                 }),
             };
         }

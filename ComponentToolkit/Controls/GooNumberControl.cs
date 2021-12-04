@@ -42,8 +42,8 @@ namespace ComponentToolkit
             {
                 new GooInputBoxStringControl<GH_Number>(()=>
                 {
-                    if(SavedValue == null) return null;
-                    return new GH_Number(SavedValue.Value);
+                    if(ShowValue == null) return null;
+                    return new GH_Number(ShowValue.Value);
                 }),
             };
         }

@@ -49,7 +49,7 @@ namespace ComponentToolkit
         }
         public GooVerticalControlBase(Func<T> valueGetter, string name) : base(valueGetter, name)
         {
-
+            _RespondBase = false;
         }
 
         protected sealed override void LayoutObject(RectangleF bounds)

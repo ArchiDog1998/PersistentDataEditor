@@ -24,8 +24,8 @@ namespace ComponentToolkit
             {
                 new GooColorControl(()=>
                 {
-                    if(SavedValue == null) return null;
-                    return new GH_Colour(SavedValue.Value.Diffuse);
+                    if(ShowValue == null) return null;
+                    return new GH_Colour(ShowValue.Value.Diffuse);
                 }),
             };
         }
@@ -39,8 +39,8 @@ namespace ComponentToolkit
         {
             GH_ColourSwatch swatch = (GH_ColourSwatch)obj;
             if (swatch == null) return;
-            if (SavedValue != null)
-                GooColorControl.SwatchColorInfo.SetValue(swatch, SavedValue.Value);
+            if (ShowValue != null)
+                GooColorControl.SwatchColorInfo.SetValue(swatch, ShowValue.Value);
         }
     }
 }

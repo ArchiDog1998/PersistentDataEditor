@@ -26,7 +26,7 @@ namespace ComponentToolkit
                 default:
                     return new BaseControlItem[]
                     {
-                        new GooInputBoxStringControl<GH_ComplexNumber>(()=> SavedValue),
+                        new GooInputBoxStringControl<GH_ComplexNumber>(()=> ShowValue),
                     };
                 case Complex_Control.Real_Imaginary:
                     return new BaseControlItem[]
@@ -35,16 +35,16 @@ namespace ComponentToolkit
 
                         new GooInputBoxStringControl<GH_Number>(()=>
                         {
-                            if(SavedValue == null) return null;
-                            return new GH_Number(SavedValue.Value.Real);
+                            if(ShowValue == null) return null;
+                            return new GH_Number(ShowValue.Value.Real);
                         }),
 
                         new StringRender("i"),
 
                         new GooInputBoxStringControl<GH_Number>(()=>
                         {
-                            if(SavedValue == null) return null;
-                            return new GH_Number(SavedValue.Value.Imaginary);
+                            if(ShowValue == null) return null;
+                            return new GH_Number(ShowValue.Value.Imaginary);
                         }),
                     };
             }
@@ -73,14 +73,14 @@ namespace ComponentToolkit
             {
                 Param_Number param = (Param_Number)com.Params.Input[0];
                 param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Number(SavedValue.Value.Real));
+                param.PersistentData.Append(new GH_Number(ShowValue.Value.Real));
             }
 
             if (com.Params.Input[1] is Param_Number)
             {
                 Param_Number param = (Param_Number)com.Params.Input[1];
                 param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Number(SavedValue.Value.Imaginary));
+                param.PersistentData.Append(new GH_Number(ShowValue.Value.Imaginary));
             }
         }
     }

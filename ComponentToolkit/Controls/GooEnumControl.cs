@@ -22,13 +22,13 @@ namespace ComponentToolkit
         {
             get
             {
-                if(SavedValue == null)
+                if(ShowValue == null)
                 {
                     return null;
                 }
                 else
                 {
-                    int index = SavedValue.Value;
+                    int index = ShowValue.Value;
                     if (_namedValues.ContainsKey(index))
                     {
                         return _namedValues[index];
@@ -60,7 +60,7 @@ namespace ComponentToolkit
         internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             ToolStripDropDownMenu menu = new ToolStripDropDownMenu();
-            int? num = SavedValue?.Value;
+            int? num = ShowValue?.Value;
             foreach (var namedValue in _namedValues)
             {
                 GH_DocumentObject.Menu_AppendItem(menu, namedValue.Value, Menu_NamedValueClicked, true, namedValue.Key == num).Tag = namedValue.Key;
@@ -73,7 +73,7 @@ namespace ComponentToolkit
             ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
             if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is int)
             {
-                SavedValue = new GH_Integer((int)toolStripMenuItem.Tag);
+                ShowValue = new GH_Integer((int)toolStripMenuItem.Tag);
             }
         }
 

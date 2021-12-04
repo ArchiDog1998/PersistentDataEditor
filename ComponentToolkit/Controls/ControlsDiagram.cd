@@ -10,7 +10,7 @@
   <Class Name="ComponentToolkit.GooControlBase&lt;T&gt;">
     <Position X="9" Y="5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAgAAAKAAAEIAAAAAAAgAAgAAEAAACAIBAAAAAAACAA=</HashCode>
+      <HashCode>AAgAAAKAAEEIAAAAAAAIAAgAAEAAACAIBAAAAAAAAAA=</HashCode>
       <FileName>Controls\GooControlBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -25,7 +25,7 @@
   <Class Name="ComponentToolkit.GooMultiControlBase&lt;T&gt;">
     <Position X="19" Y="11" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAgAKAAAACAAAgAACAAAAAAAAAAAACAABAAIAAAAAAA=</HashCode>
+      <HashCode>AAgAKAAAACAAAgAAAAAAAAAEAAAAACAABAAIAAAAACA=</HashCode>
       <FileName>Controls\GooMultiControlBase.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -77,7 +77,7 @@
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAIAABAAIAAAQEAACAEAAAAAQQCAAAAAIAAAAAAA=</HashCode>
+      <HashCode>AAAAAIAABAAIAAAQEAAAAEAAAAAQQCAAAAAIAAAAIAA=</HashCode>
       <FileName>Controls\GooInputBoxStringControl.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -243,7 +243,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="ComponentToolkit.ParamLineControl" Collapsed="true">
-    <Position X="30.5" Y="14.75" Width="1.75" />
+    <Position X="31" Y="14.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Controls\ParamControls.cs</FileName>
@@ -278,9 +278,9 @@
     </TypeIdentifier>
   </Class>
   <Interface Name="ComponentToolkit.IGooValue">
-    <Position X="19.5" Y="6" Width="1.5" />
+    <Position X="11.25" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Controls\GooControlBase.cs</FileName>
     </TypeIdentifier>
   </Interface>

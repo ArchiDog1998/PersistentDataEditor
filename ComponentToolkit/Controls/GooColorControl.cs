@@ -39,14 +39,14 @@ namespace ComponentToolkit
         {
             ToolStripDropDownMenu menu = new ToolStripDropDownMenu() { ShowImageMargin = false };
 
-            Color color = SavedValue?.Value ?? Color.Transparent;
+            Color color = ShowValue?.Value ?? Color.Transparent;
             GH_DocumentObject.Menu_AppendColourPicker(menu, color, ColourChanged);
             menu.Show(sender, e.ControlLocation);
 
 
             void ColourChanged(GH_ColourPicker sender1, GH_ColourPickerEventArgs e1)
             {
-                SavedValue = new GH_Colour(e1.Colour);
+                ShowValue = new GH_Colour(e1.Colour);
             }
         }
 
@@ -61,8 +61,8 @@ namespace ComponentToolkit
 
             graphics.FillPath(_background, _path);
 
-            if (SavedValue != null)
-                graphics.FillPath(new SolidBrush(SavedValue.Value), _path);
+            if (ShowValue != null)
+                graphics.FillPath(new SolidBrush(ShowValue.Value), _path);
 
             graphics.DrawPath(new Pen(new SolidBrush(Datas.ControlBorderColor)), _path);
         }
@@ -71,8 +71,8 @@ namespace ComponentToolkit
         {
             GH_ColourSwatch swatch = (GH_ColourSwatch)obj;
             if (swatch == null) return;
-            if (SavedValue != null)
-                SwatchColorInfo.SetValue(swatch, SavedValue.Value);
+            if (ShowValue != null)
+                SwatchColorInfo.SetValue(swatch, ShowValue.Value);
         }
     }
 }
