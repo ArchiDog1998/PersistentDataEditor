@@ -60,7 +60,7 @@ namespace ComponentToolkit
 
         private static ToolStripMenuItem CreateQuickWireItem()
         {
-            ToolStripMenuItem major = CreateCheckBox("Use Quick Wire", Datas.UseQuickWire, Properties.Resources.QuickwireIcon_24, (boolean) => Datas.UseQuickWire = boolean);
+            ToolStripMenuItem major = CreateCheckBox("Quick Wire", Datas.UseQuickWire, Properties.Resources.QuickwireIcon_24, (boolean) => Datas.UseQuickWire = boolean);
             major.ToolTipText = "You can left click the component's param or double click floating param to choose which activeobjec you want to add.";
 
             ToolStripMenuItem click = new ToolStripMenuItem("Clear all quickwire settings");
@@ -80,7 +80,7 @@ namespace ComponentToolkit
 
         private static ToolStripMenuItem CreateControlItem()
         {
-            ToolStripMenuItem major = CreateCheckBox("Param Control", Datas.UseParamControl, Properties.Resources.ParamControlIcon_24, 
+            ToolStripMenuItem major = CreateCheckBox("Param's Control", Datas.UseParamControl, Properties.Resources.ParamControlIcon_24, 
                 (boolean) => Datas.UseParamControl = boolean);
             major.ToolTipText = "It will show you the persistent param's value and you can change the value easily.";
 
