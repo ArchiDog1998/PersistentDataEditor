@@ -59,13 +59,17 @@ namespace ComponentToolkit
 
         internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            ToolStripDropDownMenu menu = new ToolStripDropDownMenu();
-            int? num = ShowValue?.Value;
-            foreach (var namedValue in _namedValues)
+            if(e.Button == MouseButtons.Left)
             {
-                GH_DocumentObject.Menu_AppendItem(menu, namedValue.Value, Menu_NamedValueClicked, true, namedValue.Key == num).Tag = namedValue.Key;
+                ToolStripDropDownMenu menu = new ToolStripDropDownMenu();
+                int? num = ShowValue?.Value;
+                foreach (var namedValue in _namedValues)
+                {
+                    GH_DocumentObject.Menu_AppendItem(menu, namedValue.Value, Menu_NamedValueClicked, true, namedValue.Key == num).Tag = namedValue.Key;
+                }
+                menu.Show(sender, e.ControlLocation);
             }
-            menu.Show(sender, e.ControlLocation);
+            base.Clicked(sender, e);
         }
 
         private void Menu_NamedValueClicked(object sender, EventArgs e)

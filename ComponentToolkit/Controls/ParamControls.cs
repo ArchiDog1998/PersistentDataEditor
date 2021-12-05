@@ -1,9 +1,12 @@
 ﻿using Grasshopper;
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,6 +40,10 @@ namespace ComponentToolkit
 
     internal class ParamIntegerControl : ParamControl<GH_Integer>
     {
+        private static readonly FieldInfo namedValueListInfo = typeof(Param_Integer).GetRuntimeFields().Where(m => m.Name.Contains("m_namedValues")).First();
+        private static FieldInfo nameInfo = null;
+        private static FieldInfo valueInfo = null;
+
         public ParamIntegerControl(GH_PersistentParam<GH_Integer> owner) : base(owner)
         {
 
@@ -44,7 +51,26 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Integer> SetUpControl(IGH_Param param)
         {
-            return new GooIntegerControl(() => OwnerGooData, null);
+            if (param is Param_Integer && ((Param_Integer)param).HasNamedValues)
+            {
+
+                IList list = (IList)namedValueListInfo.GetValue(param);
+
+                SortedList<int, string> _keyValues = new SortedList<int, string>();
+                foreach (var item in list)
+                {
+                    nameInfo = nameInfo ?? item.GetType().GetRuntimeFields().Where(m => m.Name.Contains("Name")).First();
+                    valueInfo = valueInfo ?? item.GetType().GetRuntimeFields().Where(m => m.Name.Contains("Value")).First();
+
+                    _keyValues[(int)valueInfo.GetValue(item)] = (string)nameInfo.GetValue(item);
+                }
+                return new GooEnumControl(() => OwnerGooData, _keyValues);
+            }
+            else
+            {
+                return new GooIntegerControl(() => OwnerGooData, null);
+            }
+            
         }
     }
 
