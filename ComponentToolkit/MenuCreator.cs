@@ -154,6 +154,10 @@ namespace ComponentToolkit
 
             major.DropDownItems.Add(CreateControlStateCheckBox<Circle_Control, GH_Circle>(new Param_Circle().Icon_24x24));
 
+            major.DropDownItems.Add(CreateControlStateCheckBox<Rectangle_Control, GH_Rectangle>(new Param_Rectangle().Icon_24x24));
+
+            major.DropDownItems.Add(CreateControlStateCheckBox<Box_Control, GH_Box>(new Param_Box().Icon_24x24));
+
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
             major.DropDownItems.Add(CreateControlStateCheckBox<General_Control,IGH_Goo>(new Param_GenericObject().Icon_24x24));

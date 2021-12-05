@@ -192,6 +192,32 @@ namespace ComponentToolkit
         }
     }
 
+    internal class ParamRectangleControl : ParamControl<GH_Rectangle>
+    {
+        public ParamRectangleControl(GH_PersistentParam<GH_Rectangle> owner) : base(owner)
+        {
+
+        }
+
+        protected override GooControlBase<GH_Rectangle> SetUpControl(IGH_Param param)
+        {
+            return new GooRectangleControl(() => OwnerGooData, null);
+        }
+    }
+
+    internal class ParamBoxControl : ParamControl<GH_Box>
+    {
+        public ParamBoxControl(GH_PersistentParam<GH_Box> owner) : base(owner)
+        {
+
+        }
+
+        protected override GooControlBase<GH_Box> SetUpControl(IGH_Param param)
+        {
+            return new GooBoxControl(() => OwnerGooData, null);
+        }
+    }
+
     internal class ParamGeneralControl<T> : ParamControl<T> where T : class, IGH_Goo
     {
         protected override bool Valid

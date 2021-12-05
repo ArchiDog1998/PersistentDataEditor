@@ -143,6 +143,14 @@ namespace ComponentToolkit
                 {
                     return new ParamCircleControl((GH_PersistentParam<GH_Circle>)param);
                 }
+                else if (storeType == typeof(GH_Rectangle))
+                {
+                    return new ParamRectangleControl((GH_PersistentParam<GH_Rectangle>)param);
+                }
+                else if (storeType == typeof(GH_Box))
+                {
+                    return new ParamBoxControl((GH_PersistentParam<GH_Box>)param);
+                }
 
                 else
                 {

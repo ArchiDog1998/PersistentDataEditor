@@ -60,7 +60,7 @@ namespace ComponentToolkit
 
         internal override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
-            if(_start != null && _end != null)
+            if(_start != null && _end != null && canvas.Viewport.Zoom > 0.9f)
             {
                 graphics.DrawLine(new Pen(Datas.ControlForegroundColor, 0.5f), _start, _end);
             }

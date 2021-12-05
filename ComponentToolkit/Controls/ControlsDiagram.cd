@@ -256,7 +256,7 @@
       <FileName>Controls\ParamControls.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="ComponentToolkit.ParamCircleControl" Collapsed="true">
+  <Class Name="ComponentToolkit.ParamBoxControl" Collapsed="true">
     <Position X="25.5" Y="13.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
@@ -282,6 +282,34 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAABAAAAAAAAAAAAEAAAACAACAAAAAIAAACAAA=</HashCode>
       <FileName>Controls\StringRender.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooRectangleControl">
+    <Position X="33" Y="20" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAgACAAAAAAIAgAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooRectangleControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.GooBoxControl">
+    <Position X="35.75" Y="20" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAgACAAAAAAIAgAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\GooBoxControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamCircleControl" Collapsed="true">
+    <Position X="34.25" Y="14.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.ParamRectangleControl" Collapsed="true">
+    <Position X="25.5" Y="16" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\ParamControls.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="ComponentToolkit.IGooValue">

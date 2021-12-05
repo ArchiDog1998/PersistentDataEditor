@@ -89,6 +89,22 @@ namespace ComponentToolkit
         ReadOnly,
     }
 
+    public enum Rectangle_Control
+    {
+        Domain_Rectangle,
+        Plane_Width_Height,
+        Center_Rectangle,
+        ReadOnly,
+    }
+
+    public enum Box_Control
+    {
+        Domain_Box,
+        Center_Box,
+        Box_Rectangle,
+        ReadOnly,
+    }
+
     public enum General_Control
     {
         General,
