@@ -71,7 +71,7 @@ namespace ComponentToolkit
         protected abstract T SetValue(IGH_Goo[] values);
         protected abstract BaseControlItem[] SetControlItems();
 
-        internal sealed override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
+        internal override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
             foreach (var control in _controlItems)
             {

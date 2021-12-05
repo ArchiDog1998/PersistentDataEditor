@@ -39,7 +39,7 @@
   <Class Name="ComponentToolkit.GooVerticalControlBase&lt;T&gt;">
     <Position X="22" Y="16.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAABAAAAAAAEAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAABAAAgAAAEAAAAEAAAAAAAAAAAAAIAAQAAAA=</HashCode>
       <FileName>Controls\GooVerticalControlBase.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -275,6 +275,13 @@
     <TypeIdentifier>
       <HashCode>AAgACAAAAAAIAgAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Controls\GooCircleControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComponentToolkit.StringRender">
+    <Position X="20.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAEAAAACAACAAAAAIAAACAAA=</HashCode>
+      <FileName>Controls\StringRender.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="ComponentToolkit.IGooValue">

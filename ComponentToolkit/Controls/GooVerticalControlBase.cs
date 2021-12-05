@@ -1,4 +1,6 @@
-﻿using Grasshopper.Kernel.Types;
+﻿using Grasshopper.GUI.Canvas;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -47,9 +49,22 @@ namespace ComponentToolkit
                 return all;
             }
         }
+
+        PointF _start;
+        PointF _end;
+
         public GooVerticalControlBase(Func<T> valueGetter, string name) : base(valueGetter, name)
         {
             _RespondBase = false;
+        }
+
+        internal override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
+        {
+            if(_start != null && _end != null)
+            {
+                graphics.DrawLine(new Pen(Datas.ControlForegroundColor, 0.5f), _start, _end);
+            }
+            base.RenderObject(canvas, graphics, owner, style);
         }
 
         protected sealed override void LayoutObject(RectangleF bounds)
@@ -60,10 +75,15 @@ namespace ComponentToolkit
             }
             else
             {
+                float margin = 3;
+
                 if (_hasName)
                 {
                     _controlItems[0].Bounds = new RectangleF(bounds.X,
                         bounds.Y + bounds.Height / 2 - _controlItems[0].Height / 2, _controlItems[0].Width, _controlItems[0].Height);
+
+                    _start = new PointF(_controlItems[0].Bounds.Right, bounds.Top + margin);
+                    _end = new PointF(_controlItems[0].Bounds.Right, bounds.Bottom - margin);
 
                     float y = bounds.Y;
                     for (int i = 1; i < _controlItems.Length; i++)
@@ -76,6 +96,9 @@ namespace ComponentToolkit
                 }
                 else
                 {
+                    _start = new PointF(bounds.X, bounds.Top + margin);
+                    _end = new PointF(bounds.X, bounds.Bottom - margin);
+
                     float y = bounds.Y;
                     foreach (BaseControlItem item in _controlItems)
                     {
