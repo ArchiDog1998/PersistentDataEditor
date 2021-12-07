@@ -16,7 +16,7 @@ namespace ComponentToolkit
 
         private Rectangle_Control type => (Rectangle_Control)Instances.Settings.GetValue(typeof(Rectangle_Control).FullName, 0);
 
-        public GooRectangleControl(Func<GH_Rectangle> valueGetter, string name) : base(valueGetter, name)
+        public GooRectangleControl(Func<GH_Rectangle> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
         }
         protected override BaseControlItem[] SetControlItems()
@@ -26,7 +26,7 @@ namespace ComponentToolkit
                 default:
                     return new BaseControlItem[]
                     {
-                        new GooInputBoxStringControl<GH_Rectangle>(()=> ShowValue, true),
+                        new GooInputBoxStringControl<GH_Rectangle>(()=> ShowValue, _isNull, true),
                     };
                 case Rectangle_Control.Domain_Rectangle:
                     return new BaseControlItem[]
@@ -35,19 +35,19 @@ namespace ComponentToolkit
                          {
                              if(ShowValue == null) return null;
                              return new GH_Plane(ShowValue.Value.Plane);
-                         }, "P"),
+                         }, _isNull, "P"),
 
                          new GooIntervalControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Interval(ShowValue.Value.X);
-                         }, "X"),
+                         }, _isNull, "X"),
 
                          new GooIntervalControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Interval(ShowValue.Value.Y);
-                         }, "Y"),
+                         }, _isNull, "Y"),
                     };
                 case Rectangle_Control.Plane_Width_Height:
                     return new BaseControlItem[]
@@ -56,19 +56,19 @@ namespace ComponentToolkit
                          {
                              if(ShowValue == null) return null;
                              return new GH_Plane(ShowValue.Value.Plane);
-                         }, "P"),
+                         }, _isNull, "P"),
 
                          new GooNumberControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Number(ShowValue.Value.X.Length);
-                         }, "W"),
+                         }, _isNull, "W"),
 
                          new GooNumberControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Number(ShowValue.Value.Y.Length);
-                         }, "H"),
+                         }, _isNull, "H"),
                     };
 
                 case Rectangle_Control.Center_Rectangle:
@@ -78,19 +78,19 @@ namespace ComponentToolkit
                          {
                              if(ShowValue == null) return null;
                              return new GH_Plane(ShowValue.Value.Plane);
-                         }, "P"),
+                         }, _isNull, "P"),
 
                          new GooNumberControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Number(ShowValue.Value.X.Length/2);
-                         }, "X"),
+                         }, _isNull, "X"),
 
                          new GooNumberControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Number(ShowValue.Value.Y.Length/2);
-                         }, "Y"),
+                         }, _isNull, "Y"),
                     };
             }
 
@@ -123,24 +123,82 @@ namespace ComponentToolkit
             if (com.Params.Input[0] is Param_Plane)
             {
                 Param_Plane param = (Param_Plane)com.Params.Input[0];
-                param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Plane(ShowValue.Value.Plane));
+                GH_Plane plane = ((GooPlaneControl)_values[0])._savedValue;
+                if (plane != null)
+                {
+                    param.PersistentData.Clear();
+                    param.PersistentData.Append(plane);
+                }
             }
 
             if (com.Params.Input[1] is Param_Interval)
             {
                 Param_Interval param = (Param_Interval)com.Params.Input[1];
-                param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Interval(ShowValue.Value.X));
+                switch (type)
+                {
+                    case Rectangle_Control.Domain_Rectangle:
+                        GH_Interval interval = ((GooIntervalControl)_values[1])._savedValue;
+                        if (interval != null)
+                        {
+                            param.PersistentData.Clear();
+                            param.PersistentData.Append(interval);
+                        }
+                        break;
+
+                    case Rectangle_Control.Plane_Width_Height:
+                        GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[1])._savedValue;
+                        if (number != null)
+                        {
+                            param.PersistentData.Clear();
+                            param.PersistentData.Append(new GH_Interval(new Rhino.Geometry.Interval(0, number.Value)));
+                        }
+                        break;
+
+                    case Rectangle_Control.Center_Rectangle:
+                        GH_Number number1 = ((GooInputBoxStringControl<GH_Number>)_values[1])._savedValue;
+                        if (number1 != null)
+                        {
+                            param.PersistentData.Clear();
+                            param.PersistentData.Append(new GH_Interval(new Rhino.Geometry.Interval(-number1.Value, number1.Value)));
+                        }
+                        break;
+                }
             }
 
             if (com.Params.Input[2] is Param_Interval)
             {
                 Param_Interval param = (Param_Interval)com.Params.Input[2];
-                param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Interval(ShowValue.Value.Y));
+                switch (type)
+                {
+                    case Rectangle_Control.Domain_Rectangle:
+                        GH_Interval interval = ((GooIntervalControl)_values[2])._savedValue;
+                        if (interval != null)
+                        {
+                            param.PersistentData.Clear();
+                            param.PersistentData.Append(interval);
+                        }
+                        break;
+
+                    case Rectangle_Control.Plane_Width_Height:
+                        GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[2])._savedValue;
+                        if (number != null)
+                        {
+                            param.PersistentData.Clear();
+                            param.PersistentData.Append(new GH_Interval(new Rhino.Geometry.Interval(0, number.Value)));
+                        }
+                        break;
+
+                    case Rectangle_Control.Center_Rectangle:
+                        GH_Number number1 = ((GooInputBoxStringControl<GH_Number>)_values[2])._savedValue;
+                        if (number1 != null)
+                        {
+                            param.PersistentData.Clear();
+                            param.PersistentData.Append(new GH_Interval(new Rhino.Geometry.Interval(-number1.Value, number1.Value)));
+                        }
+                        break;
+                }
+
             }
         }
-
     }
 }

@@ -25,7 +25,7 @@ namespace ComponentToolkit
 
         private GraphicsPath _roundRect;
         protected virtual bool IsReadOnly { get; }
-        public GooInputBoxStringControl(Func<T> valueGetter, bool readOnly = false) : base(valueGetter)
+        public GooInputBoxStringControl(Func<T> valueGetter, Func<bool> isNull, bool readOnly = false) : base(valueGetter, isNull)
         {
             IsReadOnly = readOnly;
         }
@@ -52,6 +52,12 @@ namespace ComponentToolkit
 
         private void SaveString(string str)
         {
+            if (string.IsNullOrEmpty(str))
+            {
+                ShowValue = null;
+                return;
+            }
+
             T value = (T)Activator.CreateInstance(typeof(T));
             if (value.CastFrom(str))
             {
@@ -73,7 +79,7 @@ namespace ComponentToolkit
         {
             graphics.FillPath(new SolidBrush(Datas.ControlBackgroundColor), _roundRect);
             graphics.DrawPath(new Pen(new SolidBrush(Datas.ControlBorderColor)), _roundRect);
-            Color color = IsNull ? Color.DarkRed : Datas.ControlTextgroundColor;
+            Color color = _isNull() ? Color.DarkRed : Datas.ControlTextgroundColor;
             graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, new SolidBrush(color), Bounds, GH_TextRenderingConstants.NearCenter);
         }
 

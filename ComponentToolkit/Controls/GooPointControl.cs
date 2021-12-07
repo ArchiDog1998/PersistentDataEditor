@@ -15,7 +15,7 @@ namespace ComponentToolkit
     {
         protected override Guid AddCompnentGuid => new Guid("3581f42a-9592-4549-bd6b-1c0fc39d067b");
 
-        public GooPointControl(Func<GH_Point> valueGetter, string name) : base(valueGetter, name)
+        public GooPointControl(Func<GH_Point> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
 
         }
@@ -27,7 +27,7 @@ namespace ComponentToolkit
                 default:
                     return new BaseControlItem[]
                     {
-                        new GooInputBoxStringControl<GH_Point>(()=> ShowValue),
+                        new GooInputBoxStringControl<GH_Point>(()=> ShowValue, _isNull),
                     };
                 case Point_Control.XYZ:
                     return new BaseControlItem[]
@@ -38,7 +38,7 @@ namespace ComponentToolkit
                         {
                             if(ShowValue == null) return null;
                             return new GH_Number(ShowValue.Value.X);
-                        }),
+                        }, _isNull),
 
                         new StringRender("Y"),
 
@@ -46,7 +46,7 @@ namespace ComponentToolkit
                         {
                             if(ShowValue == null) return null;
                             return new GH_Number(ShowValue.Value.Y);
-                        }),
+                        }, _isNull),
 
                         new StringRender("Z"),
 
@@ -54,7 +54,7 @@ namespace ComponentToolkit
                         {
                             if(ShowValue == null) return null;
                             return new GH_Number(ShowValue.Value.Z);
-                        }),
+                        }, _isNull),
                     };
             }
 
@@ -87,22 +87,34 @@ namespace ComponentToolkit
             if (com.Params.Input[0] is Param_Number)
             {
                 Param_Number param = (Param_Number)com.Params.Input[0];
-                param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Number(ShowValue.Value.X));
+                GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[0])._savedValue;
+                if (number != null)
+                {
+                    param.PersistentData.Clear();
+                    param.PersistentData.Append(number);
+                }
             }
 
             if (com.Params.Input[1] is Param_Number)
             {
                 Param_Number param = (Param_Number)com.Params.Input[1];
-                param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Number(ShowValue.Value.Y));
+                GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[1])._savedValue;
+                if (number != null)
+                {
+                    param.PersistentData.Clear();
+                    param.PersistentData.Append(number);
+                }
             }
 
             if (com.Params.Input[2] is Param_Number)
             {
                 Param_Number param = (Param_Number)com.Params.Input[2];
-                param.PersistentData.Clear();
-                param.PersistentData.Append(new GH_Number(ShowValue.Value.Z));
+                GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[2])._savedValue;
+                if (number != null)
+                {
+                    param.PersistentData.Clear();
+                    param.PersistentData.Append(number);
+                }
             }
         }
     }

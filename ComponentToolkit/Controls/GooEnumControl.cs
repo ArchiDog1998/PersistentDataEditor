@@ -52,7 +52,7 @@ namespace ComponentToolkit
         private RectangleF _stringBounds;
         private GraphicsPath _triangle;
 
-        public GooEnumControl(Func<GH_Integer> valueGetter, SortedList<int, string> namedValues) : base(valueGetter)
+        public GooEnumControl(Func<GH_Integer> valueGetter, Func<bool> isNull, SortedList<int, string> namedValues) : base(valueGetter, isNull)
         {
             _namedValues = namedValues;
         }

@@ -11,7 +11,7 @@ namespace ComponentToolkit
 {
     internal class GooMaterialControl : GooHorizonalControlBase<GH_Material>
     {
-        public GooMaterialControl(Func<GH_Material> valueGetter) : base(valueGetter, null)
+        public GooMaterialControl(Func<GH_Material> valueGetter, Func<bool> isNull) : base(valueGetter, isNull, null)
         {
 
         }
@@ -26,7 +26,7 @@ namespace ComponentToolkit
                 {
                     if(ShowValue == null) return null;
                     return new GH_Colour(ShowValue.Value.Diffuse);
-                }),
+                }, _isNull),
             };
         }
 
@@ -39,8 +39,10 @@ namespace ComponentToolkit
         {
             GH_ColourSwatch swatch = (GH_ColourSwatch)obj;
             if (swatch == null) return;
-            if (ShowValue != null)
-                GooColorControl.SwatchColorInfo.SetValue(swatch, ShowValue.Value);
+
+            GH_Colour colour = ((GooColorControl)_values[0])._savedValue;
+            if (colour != null)
+                GooColorControl.SwatchColorInfo.SetValue(swatch, colour.Value);
         }
     }
 }

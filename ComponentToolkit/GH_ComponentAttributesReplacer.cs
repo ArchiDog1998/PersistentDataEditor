@@ -117,7 +117,7 @@ namespace ComponentToolkit
             if (item is IGH_Param)
             {
                 var param = (IGH_Param)item;
-                if (param.Kind == GH_ParamKind.floating && param.Attributes.GetType() == typeof(GH_FloatingParamAttributes) && !(param.Attributes is GH_AdvancedFloatingParamAttr))
+                if (param.Kind == GH_ParamKind.floating && param.Attributes is GH_FloatingParamAttributes && !(param.Attributes is GH_AdvancedFloatingParamAttr))
                 {
                     PointF point = param.Attributes.Pivot;
                     param.Attributes = new GH_AdvancedFloatingParamAttr(param);

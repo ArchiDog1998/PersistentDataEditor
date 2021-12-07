@@ -17,7 +17,7 @@ namespace ComponentToolkit
         protected override Guid AddCompnentGuid => type == Circle_Control.CNR ? new Guid("d114323a-e6ee-4164-946b-e4ca0ce15efa") :
             new Guid("807b86e3-be8d-4970-92b5-f8cdcb45b06b");
 
-        public GooCircleControl(Func<GH_Circle> valueGetter, string name) : base(valueGetter, name)
+        public GooCircleControl(Func<GH_Circle> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
 
         }
@@ -43,7 +43,7 @@ namespace ComponentToolkit
                 default:
                     return new BaseControlItem[]
                     {
-                        new GooInputBoxStringControl<GH_Circle>(()=> ShowValue, true),
+                        new GooInputBoxStringControl<GH_Circle>(()=> ShowValue, _isNull, true),
                     };
                 case Circle_Control.Plane_Radius:
                     return new BaseControlItem[]
@@ -52,13 +52,13 @@ namespace ComponentToolkit
                          {
                              if(ShowValue == null) return null;
                              return new GH_Plane(ShowValue.Value.Plane);
-                         }, "P"),
+                         }, _isNull, "P"),
 
                          new GooNumberControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Number(ShowValue.Value.Radius);
-                         }, "R"),
+                         }, _isNull, "R"),
                     };
                 case Circle_Control.CNR:
                     return new BaseControlItem[]
@@ -67,20 +67,20 @@ namespace ComponentToolkit
                          {
                              if(ShowValue == null) return null;
                              return new GH_Point(ShowValue.Value.Center);
-                         }, "C"),
+                         }, _isNull, "C"),
 
 
                          new GooVectorControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Vector(ShowValue.Value.Normal);
-                         }, "N"),
+                         }, _isNull, "N"),
 
                          new GooNumberControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Number(ShowValue.Value.Radius);
-                         }, "R"),
+                         }, _isNull, "R"),
                     };
             }
         }
@@ -98,24 +98,35 @@ namespace ComponentToolkit
                 if (com.Params.Input[0] is Param_Point)
                 {
                     Param_Point param = (Param_Point)com.Params.Input[0];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Point(ShowValue.Value.Center));
+                    GH_Point point = ((GooPointControl)_values[0])._savedValue;
+                    if (point != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(point);
+                    }
                 }
 
                 if (com.Params.Input[1] is Param_Vector)
                 {
                     Param_Vector param = (Param_Vector)com.Params.Input[1];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Vector(ShowValue.Value.Normal));
+                    GH_Vector vector = ((GooVectorControl)_values[1])._savedValue;
+                    if (vector != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(vector);
+                    }
                 }
 
                 if (com.Params.Input[2] is Param_Number)
                 {
                     Param_Number param = (Param_Number)com.Params.Input[2];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Number(ShowValue.Value.Radius));
+                    GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[2])._savedValue;
+                    if (number != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(number);
+                    }
                 }
-
             }
             else
             {
@@ -124,15 +135,23 @@ namespace ComponentToolkit
                 if (com.Params.Input[0] is Param_Plane)
                 {
                     Param_Plane param = (Param_Plane)com.Params.Input[0];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Plane(ShowValue.Value.Plane));
+                    GH_Plane plane = ((GooPlaneControl)_values[0])._savedValue;
+                    if (plane != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(plane);
+                    }
                 }
 
                 if (com.Params.Input[1] is Param_Number)
                 {
                     Param_Number param = (Param_Number)com.Params.Input[1];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Number(ShowValue.Value.Radius));
+                    GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[1])._savedValue;
+                    if (number != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(number);
+                    }
                 }
             }
 

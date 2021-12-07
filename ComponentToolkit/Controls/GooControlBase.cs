@@ -19,31 +19,32 @@ namespace ComponentToolkit
         protected virtual string AddCompnentInit => ShowValue?.ToString();
         internal IGH_Param Owner { private get; set; } = null;
         public IGH_Goo SaveValue => _savedValue;
-        private T _savedValue;
+        internal T _savedValue;
         internal T ShowValue 
         {
             get
             {
                 T value = _valueGetter();
-                IsNull = value == null;
-                if(!IsNull) _savedValue = value;
+                if(value != null) _savedValue = value;
                 return _savedValue;
             }
             private protected set
             {
                 _savedValue = value;
-                if (ValueChange != null)
-                    ValueChange();
+                ValueChange();
             }
         }
-        protected bool IsNull { get; private set; }
+
+        protected Func<bool> _isNull;
+
         public Action ValueChange { protected get; set; }
 
         private Func<T> _valueGetter;
 
-        internal GooControlBase(Func<T> valueGetter)
+        internal GooControlBase(Func<T> valueGetter, Func<bool> isNull)
         {
             _valueGetter = valueGetter;
+            _isNull = isNull;
         }
 
         protected virtual void DosomethingWhenCreate(IGH_DocumentObject obj) { }

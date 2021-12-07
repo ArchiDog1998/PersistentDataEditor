@@ -17,7 +17,7 @@ namespace ComponentToolkit
 
         private Line_Control type => (Line_Control)Instances.Settings.GetValue(typeof(Line_Control).FullName, 0);
 
-        public GooLineControl(Func<GH_Line> valueGetter, string name) : base(valueGetter, name)
+        public GooLineControl(Func<GH_Line> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
         }
 
@@ -28,7 +28,7 @@ namespace ComponentToolkit
                 default:
                     return new BaseControlItem[]
                     {
-                        new GooInputBoxStringControl<GH_Line>(()=> ShowValue, true),
+                        new GooInputBoxStringControl<GH_Line>(()=> ShowValue, _isNull, true),
                     };
                 case Line_Control.From_To:
                     return new BaseControlItem[]
@@ -37,13 +37,13 @@ namespace ComponentToolkit
                          {
                              if(ShowValue == null) return null;
                              return new GH_Point(ShowValue.Value.From);
-                         }, "F"),
+                         }, _isNull, "F"),
 
                          new GooPointControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Point(ShowValue.Value.To);
-                         }, "T"),
+                         }, _isNull, "T"),
                     };
                 case Line_Control.Start_Direction:
                     return new BaseControlItem[]
@@ -52,13 +52,13 @@ namespace ComponentToolkit
                          {
                              if(ShowValue == null) return null;
                              return new GH_Point(ShowValue.Value.From);
-                         }, "S"),
+                         }, _isNull, "S"),
 
                          new GooVectorControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Vector(ShowValue.Value.Direction);
-                         }, "D"),
+                         }, _isNull, "D"),
                     };
 
                 case Line_Control.SDL:
@@ -68,19 +68,19 @@ namespace ComponentToolkit
                          {
                              if(ShowValue == null) return null;
                              return new GH_Point(ShowValue.Value.From);
-                         }, "S"),
+                         }, _isNull, "S"),
 
                          new GooVectorControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Vector(ShowValue.Value.UnitTangent);
-                         }, "D"),
+                         }, _isNull, "D"),
 
                          new GooNumberControl(() =>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Number(ShowValue.Value.Length);
-                         }, "L"),
+                         }, _isNull, "L"),
                     };
             }
         }
@@ -114,15 +114,23 @@ namespace ComponentToolkit
                 if (com.Params.Input[0] is Param_Point)
                 {
                     Param_Point param = (Param_Point)com.Params.Input[0];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Point(ShowValue.Value.From));
+                    GH_Point point = ((GooPointControl)_values[0])._savedValue;
+                    if (point != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(point);
+                    }
                 }
 
                 if (com.Params.Input[1] is Param_Point)
                 {
                     Param_Point param = (Param_Point)com.Params.Input[1];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Point(ShowValue.Value.To));
+                    GH_Point point = ((GooPointControl)_values[1])._savedValue;
+                    if (point != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(point);
+                    }
                 }
             }
             else
@@ -132,25 +140,49 @@ namespace ComponentToolkit
                 if (com.Params.Input[0] is Param_Point)
                 {
                     Param_Point param = (Param_Point)com.Params.Input[0];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Point(ShowValue.Value.From));
+                    GH_Point point = ((GooPointControl)_values[0])._savedValue;
+                    if (point != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(point);
+                    }
                 }
 
                 if (com.Params.Input[1] is Param_Vector)
                 {
                     Param_Vector param = (Param_Vector)com.Params.Input[1];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Vector(ShowValue.Value.Direction));
+                    GH_Vector vector = ((GooVectorControl)_values[1])._savedValue;
+                    if (vector != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(vector);
+                    }
                 }
 
                 if (com.Params.Input[2] is Param_Number)
                 {
                     Param_Number param = (Param_Number)com.Params.Input[2];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Number(ShowValue.Value.Length));
+
+                    if(_values.Length > 2)
+                    {
+                        GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[2])._savedValue;
+                        if (number != null)
+                        {
+                            param.PersistentData.Clear();
+                            param.PersistentData.Append(number);
+                        }
+                    }
+                    else
+                    {
+                        GH_Vector vector = ((GooVectorControl)_values[1])._savedValue;
+                        if (vector != null)
+                        {
+                            param.PersistentData.Clear();
+                            param.PersistentData.Append(new GH_Number(vector.Value.Length));
+                        }
+                    }
                 }
             }
-
         }
     }
 }

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ComponentToolkit
 {
-    internal class ParamStringControl : ParamControl<GH_String>
+    internal class ParamStringControl : ParamControlBase<GH_String>
     {
         public ParamStringControl(GH_PersistentParam<GH_String> owner) : base(owner)
         {
@@ -21,11 +21,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_String> SetUpControl(IGH_Param param)
         {
-            return new GooInputBoxStringControl<GH_String>(() => OwnerGooData);
+            return new GooInputBoxStringControl<GH_String>(() => OwnerGooData, () => IsNull);
         }
     }
 
-    internal class ParamBooleanControl : ParamControl<GH_Boolean>
+    internal class ParamBooleanControl : ParamControlBase<GH_Boolean>
     {
         public ParamBooleanControl(GH_PersistentParam<GH_Boolean> owner) : base(owner)
         {
@@ -34,11 +34,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Boolean> SetUpControl(IGH_Param param)
         {
-            return new GooBooleanControl(() => OwnerGooData);
+            return new GooBooleanControl(() => OwnerGooData, () => IsNull);
         }
     }
 
-    internal class ParamIntegerControl : ParamControl<GH_Integer>
+    internal class ParamIntegerControl : ParamControlBase<GH_Integer>
     {
         private static readonly FieldInfo namedValueListInfo = typeof(Param_Integer).GetRuntimeFields().Where(m => m.Name.Contains("m_namedValues")).First();
         private static FieldInfo nameInfo = null;
@@ -64,17 +64,17 @@ namespace ComponentToolkit
 
                     _keyValues[(int)valueInfo.GetValue(item)] = (string)nameInfo.GetValue(item);
                 }
-                return new GooEnumControl(() => OwnerGooData, _keyValues);
+                return new GooEnumControl(() => OwnerGooData, () => IsNull, _keyValues);
             }
             else
             {
-                return new GooIntegerControl(() => OwnerGooData, null);
+                return new GooIntegerControl(() => OwnerGooData, () => IsNull, null);
             }
             
         }
     }
 
-    internal class ParamNumberControl : ParamControl<GH_Number>
+    internal class ParamNumberControl : ParamControlBase<GH_Number>
     {
         public ParamNumberControl(GH_PersistentParam<GH_Number> owner) : base(owner)
         {
@@ -83,12 +83,12 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Number> SetUpControl(IGH_Param param)
         {
-            return new GooNumberControl(() => OwnerGooData, null);
+            return new GooNumberControl(() => OwnerGooData, () => IsNull, null);
         }
     }
 
 
-    internal class ParamColourControl : ParamControl<GH_Colour>
+    internal class ParamColourControl : ParamControlBase<GH_Colour>
     {
         public ParamColourControl(GH_PersistentParam<GH_Colour> owner) : base(owner)
         {
@@ -97,11 +97,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Colour> SetUpControl(IGH_Param param)
         {
-            return new GooColorControl(() => OwnerGooData);
+            return new GooColorControl(() => OwnerGooData, () => IsNull);
         }
     }
 
-    internal class ParamMaterialControl : ParamControl<GH_Material>
+    internal class ParamMaterialControl : ParamControlBase<GH_Material>
     {
         public ParamMaterialControl(GH_PersistentParam<GH_Material> owner) : base(owner)
         {
@@ -110,11 +110,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Material> SetUpControl(IGH_Param param)
         {
-            return new GooMaterialControl(() => OwnerGooData);
+            return new GooMaterialControl(() => OwnerGooData, () => IsNull);
         }
     }
 
-    internal class ParamIntervalControl : ParamControl<GH_Interval>
+    internal class ParamIntervalControl : ParamControlBase<GH_Interval>
     {
         public ParamIntervalControl(GH_PersistentParam<GH_Interval> owner) : base(owner)
         {
@@ -123,11 +123,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Interval> SetUpControl(IGH_Param param)
         {
-            return new GooIntervalControl(() => OwnerGooData, null);
+            return new GooIntervalControl(() => OwnerGooData, () => IsNull, null);
         }
     }
 
-    internal class ParamPointControl : ParamControl<GH_Point>
+    internal class ParamPointControl : ParamControlBase<GH_Point>
     {
         public ParamPointControl(GH_PersistentParam<GH_Point> owner) : base(owner)
         {
@@ -136,11 +136,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Point> SetUpControl(IGH_Param param)
         {
-            return new GooPointControl(() => OwnerGooData, null);
+            return new GooPointControl(() => OwnerGooData, () => IsNull, null);
         }
     }
 
-    internal class ParamVectorControl : ParamControl<GH_Vector>
+    internal class ParamVectorControl : ParamControlBase<GH_Vector>
     {
         public ParamVectorControl(GH_PersistentParam<GH_Vector> owner) : base(owner)
         {
@@ -149,11 +149,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Vector> SetUpControl(IGH_Param param)
         {
-            return new GooVectorControl(() => OwnerGooData, null);
+            return new GooVectorControl(() => OwnerGooData, () => IsNull, null);
         }
     }
 
-    internal class ParamComplexControl : ParamControl<GH_ComplexNumber>
+    internal class ParamComplexControl : ParamControlBase<GH_ComplexNumber>
     {
         public ParamComplexControl(GH_PersistentParam<GH_ComplexNumber> owner) : base(owner)
         {
@@ -162,11 +162,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_ComplexNumber> SetUpControl(IGH_Param param)
         {
-            return new GooComplexControl(() => OwnerGooData, null);
+            return new GooComplexControl(() => OwnerGooData, () => IsNull, null);
         }
     }
 
-    internal class ParamInterval2DControl : ParamControl<GH_Interval2D>
+    internal class ParamInterval2DControl : ParamControlBase<GH_Interval2D>
     {
         public ParamInterval2DControl(GH_PersistentParam<GH_Interval2D> owner) : base(owner)
         {
@@ -175,11 +175,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Interval2D> SetUpControl(IGH_Param param)
         {
-            return new GooInterval2DControl(() => OwnerGooData, null);
+            return new GooInterval2DControl(() => OwnerGooData, () => IsNull, null);
         }
     }
 
-    internal class ParamLineControl : ParamControl<GH_Line>
+    internal class ParamLineControl : ParamControlBase<GH_Line>
     {
         public ParamLineControl(GH_PersistentParam<GH_Line> owner) : base(owner)
         {
@@ -188,11 +188,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Line> SetUpControl(IGH_Param param)
         {
-            return new GooLineControl(() => OwnerGooData, null);
+            return new GooLineControl(() => OwnerGooData, () => IsNull, null);
         }
     }
 
-    internal class ParamPlaneControl : ParamControl<GH_Plane>
+    internal class ParamPlaneControl : ParamControlBase<GH_Plane>
     {
         public ParamPlaneControl(GH_PersistentParam<GH_Plane> owner) : base(owner)
         {
@@ -201,11 +201,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Plane> SetUpControl(IGH_Param param)
         {
-            return new GooPlaneControl(() => OwnerGooData, null);
+            return new GooPlaneControl(() => OwnerGooData, () => IsNull, null);
         }
     }
 
-    internal class ParamCircleControl : ParamControl<GH_Circle>
+    internal class ParamCircleControl : ParamControlBase<GH_Circle>
     {
         public ParamCircleControl(GH_PersistentParam<GH_Circle> owner) : base(owner)
         {
@@ -214,11 +214,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Circle> SetUpControl(IGH_Param param)
         {
-            return new GooCircleControl(() => OwnerGooData, null);
+            return new GooCircleControl(() => OwnerGooData, () => IsNull, null);
         }
     }
 
-    internal class ParamRectangleControl : ParamControl<GH_Rectangle>
+    internal class ParamRectangleControl : ParamControlBase<GH_Rectangle>
     {
         public ParamRectangleControl(GH_PersistentParam<GH_Rectangle> owner) : base(owner)
         {
@@ -227,11 +227,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Rectangle> SetUpControl(IGH_Param param)
         {
-            return new GooRectangleControl(() => OwnerGooData, null);
+            return new GooRectangleControl(() => OwnerGooData, () => IsNull, null);
         }
     }
 
-    internal class ParamBoxControl : ParamControl<GH_Box>
+    internal class ParamBoxControl : ParamControlBase<GH_Box>
     {
         public ParamBoxControl(GH_PersistentParam<GH_Box> owner) : base(owner)
         {
@@ -240,11 +240,11 @@ namespace ComponentToolkit
 
         protected override GooControlBase<GH_Box> SetUpControl(IGH_Param param)
         {
-            return new GooBoxControl(() => OwnerGooData, null);
+            return new GooBoxControl(() => OwnerGooData, () => IsNull, null);
         }
     }
 
-    internal class ParamGeneralControl<T> : ParamControl<T> where T : class, IGH_Goo
+    internal class ParamGeneralControl<T> : ParamControlBase<T> where T : class, IGH_Goo
     {
         protected override bool Valid
         {
@@ -265,7 +265,7 @@ namespace ComponentToolkit
 
         protected override GooControlBase<T> SetUpControl(IGH_Param param)
         {
-            return new GooGeneralControl<T>(() => OwnerGooData);
+            return new GooGeneralControl<T>(() => OwnerGooData, () => IsNull);
         }
     }
 }

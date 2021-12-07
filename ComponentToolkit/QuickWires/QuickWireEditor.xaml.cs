@@ -236,10 +236,6 @@ namespace ComponentToolkit
                     _canvas.Refresh();
 
                 }
-                if (TargetParam != param)
-                {
-
-                }
             }
         }
 

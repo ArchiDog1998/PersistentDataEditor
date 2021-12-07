@@ -15,7 +15,7 @@ namespace ComponentToolkit
 
         protected override string AddCompnentInit => base.AddCompnentInit ?? "0..100.00";
 
-        public GooNumberControl(Func<GH_Number> valueGetter, string name) : base(valueGetter, name)
+        public GooNumberControl(Func<GH_Number> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
 
         }
@@ -44,7 +44,7 @@ namespace ComponentToolkit
                 {
                     if(ShowValue == null) return null;
                     return new GH_Number(ShowValue.Value);
-                }),
+                }, _isNull),
             };
         }
     }

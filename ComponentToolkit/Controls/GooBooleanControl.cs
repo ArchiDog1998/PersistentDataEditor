@@ -19,7 +19,7 @@ namespace ComponentToolkit
 
         internal override int Height => 10;
 
-        public GooBooleanControl(Func<GH_Boolean> valueGetter) : base(valueGetter)
+        public GooBooleanControl(Func<GH_Boolean> valueGetter, Func<bool> isNull) : base(valueGetter, isNull)
         {
         }
 

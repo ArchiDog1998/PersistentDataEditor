@@ -16,7 +16,7 @@ namespace ComponentToolkit
         {
             protected override Guid AddCompnentGuid => default(Guid);
 
-            public GooInterval2DControlHor(Func<GH_Interval2D> valueGetter) : base(valueGetter, null)
+            public GooInterval2DControlHor(Func<GH_Interval2D> valueGetter, Func<bool> isNull) : base(valueGetter, isNull, null)
             {
             }
 
@@ -30,26 +30,26 @@ namespace ComponentToolkit
                     {
                         if(ShowValue == null) return null;
                         return new GH_Number(ShowValue.Value.U0);
-                    },"U0"),
+                    }, _isNull, "U0"),
 
                     new GooNumberControl(()=>
                     {
                         if(ShowValue == null) return null;
                         return new GH_Number(ShowValue.Value.U1);
-                    }, "U1"),
+                    }, _isNull, "U1"),
 
 
                     new GooNumberControl(()=>
                     {
                         if(ShowValue == null) return null;
                         return new GH_Number(ShowValue.Value.V0);
-                    }, "V0"),
+                    }, _isNull, "V0"),
 
                     new GooNumberControl(()=>
                     {
                         if(ShowValue == null) return null;
                         return new GH_Number(ShowValue.Value.V1);
-                    }, "V1"),
+                    }, _isNull, "V1"),
 
                 };
             }
@@ -65,7 +65,7 @@ namespace ComponentToolkit
 
         protected override Guid AddCompnentGuid => type == Domain2D_Control.U0_U1_V0_V1 ? 
             new Guid("9083b87f-a98c-4e41-9591-077ae4220b19"): new Guid("8555a743-36c1-42b8-abcc-06d9cb94519f");
-        public GooInterval2DControl(Func<GH_Interval2D> valueGetter, string name) : base(valueGetter, name)
+        public GooInterval2DControl(Func<GH_Interval2D> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
         }
 
@@ -76,7 +76,7 @@ namespace ComponentToolkit
                 default:
                     return new BaseControlItem[]
                     {
-                        new GooInputBoxStringControl<GH_Interval2D>(()=> ShowValue, true),
+                        new GooInputBoxStringControl<GH_Interval2D>(()=> ShowValue, _isNull, true),
                     };
                 case Domain2D_Control.U_V:
                     return new BaseControlItem[]
@@ -85,18 +85,18 @@ namespace ComponentToolkit
                          {
                              if(ShowValue == null) return null;
                              return new GH_Interval(ShowValue.Value.U);
-                         }, "U"),
+                         }, _isNull, "U"),
                     
                          new GooIntervalControl(()=>
                          {
                              if(ShowValue == null) return null;
                              return new GH_Interval(ShowValue.Value.V);
-                         }, "V"),
+                         }, _isNull, "V"),
                     };
                 case Domain2D_Control.U0_U1_V0_V1:
                     return new BaseControlItem[]
                     {
-                         new GooInterval2DControlHor(() => ShowValue),
+                         new GooInterval2DControlHor(() => ShowValue, _isNull),
                     };
             }
         }
@@ -116,32 +116,50 @@ namespace ComponentToolkit
             {
                 if (com.Params.Input.Count < 4) return;
 
+                var values = ((GooInterval2DControlHor)_values[0])._values;
+
                 if (com.Params.Input[0] is Param_Number)
                 {
                     Param_Number param = (Param_Number)com.Params.Input[0];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Number(ShowValue.Value.U0));
+                    GH_Number number = ((GooInputBoxStringControl<GH_Number>)values[0])._savedValue;
+                    if (number != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(number);
+                    }
                 }
 
                 if (com.Params.Input[1] is Param_Number)
                 {
                     Param_Number param = (Param_Number)com.Params.Input[1];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Number(ShowValue.Value.U1));
+                    GH_Number number = ((GooInputBoxStringControl<GH_Number>)values[1])._savedValue;
+                    if (number != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(number);
+                    }
                 }
 
                 if (com.Params.Input[2] is Param_Number)
                 {
                     Param_Number param = (Param_Number)com.Params.Input[2];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Number(ShowValue.Value.V0));
+                    GH_Number number = ((GooInputBoxStringControl<GH_Number>)values[2])._savedValue;
+                    if (number != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(number);
+                    }
                 }
 
                 if (com.Params.Input[3] is Param_Number)
                 {
                     Param_Number param = (Param_Number)com.Params.Input[3];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Number(ShowValue.Value.V1));
+                    GH_Number number = ((GooInputBoxStringControl<GH_Number>)values[3])._savedValue;
+                    if (number != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(number);
+                    }
                 }
             }
             else
@@ -151,15 +169,23 @@ namespace ComponentToolkit
                 if (com.Params.Input[0] is Param_Interval)
                 {
                     Param_Interval param = (Param_Interval)com.Params.Input[0];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Interval(ShowValue.Value.U));
+                    GH_Interval interval = ((GooIntervalControl)_values[0])._savedValue;
+                    if (interval != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(interval);
+                    }
                 }
 
                 if (com.Params.Input[1] is Param_Interval)
                 {
                     Param_Interval param = (Param_Interval)com.Params.Input[1];
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(new GH_Interval(ShowValue.Value.V));
+                    GH_Interval interval = ((GooIntervalControl)_values[1])._savedValue;
+                    if (interval != null)
+                    {
+                        param.PersistentData.Clear();
+                        param.PersistentData.Append(interval);
+                    }
                 }
             }
 

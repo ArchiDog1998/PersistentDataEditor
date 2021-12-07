@@ -30,7 +30,7 @@ namespace ComponentToolkit
         private GraphicsPath _path;
 
 
-        public GooColorControl(Func<GH_Colour> valueGetter):base(valueGetter)
+        public GooColorControl(Func<GH_Colour> valueGetter, Func<bool> isNull) : base(valueGetter, isNull)
         {
         }
 

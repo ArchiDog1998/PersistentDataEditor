@@ -15,11 +15,11 @@ namespace ComponentToolkit
     internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : class, IGH_Goo
     {
         protected BaseControlItem[] _controlItems;
-        private IGooValue[] _values;
+        internal IGooValue[] _values;
         private string _name;
         protected bool _hasName = false;
         protected bool _RespondBase = true;
-        public GooMultiControlBase(Func<T> valueGetter, string name) : base(valueGetter)
+        public GooMultiControlBase(Func<T> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull)
         {
             _name = name;
             ChangeControlItems();
@@ -61,7 +61,7 @@ namespace ComponentToolkit
                 goos[i] = _values[i].SaveValue;
                 if (goos[i] == null || !goos[i].IsValid)
                 {
-                    base.ValueChange();
+                    ShowValue = null;
                     return;
                 }
             }

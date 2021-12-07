@@ -38,7 +38,7 @@ namespace ComponentToolkit
                 return max;
             }
         }
-        public GooHorizonalControlBase(Func<T> valueGetter, string name) : base(valueGetter, name)
+        public GooHorizonalControlBase(Func<T> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
         }
 

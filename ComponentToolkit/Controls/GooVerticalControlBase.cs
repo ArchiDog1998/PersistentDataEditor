@@ -53,7 +53,7 @@ namespace ComponentToolkit
         PointF _start;
         PointF _end;
 
-        public GooVerticalControlBase(Func<T> valueGetter, string name) : base(valueGetter, name)
+        public GooVerticalControlBase(Func<T> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
             _RespondBase = false;
         }

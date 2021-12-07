@@ -17,7 +17,7 @@ namespace ComponentToolkit
 
         protected override bool IsReadOnly => type == General_Control.ReadOnly;
 
-        public GooGeneralControl(Func<T> valueGetter) : base(valueGetter)
+        public GooGeneralControl(Func<T> valueGetter, Func<bool> isNull) : base(valueGetter, isNull)
         {
 
         }

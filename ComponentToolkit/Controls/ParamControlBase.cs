@@ -3,16 +3,11 @@ using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ComponentToolkit
 {
-    internal abstract class ParamControl<T> : BaseControlItem where T : class, IGH_Goo
+    internal abstract class ParamControlBase<T> : BaseControlItem where T : class, IGH_Goo
     {
         protected GH_PersistentParam<T> Owner { get; }
         private bool _isSaveUndo = true;
@@ -20,20 +15,25 @@ namespace ComponentToolkit
         {
             get
             {
-                return Owner.PersistentData.get_FirstItem(true);
+                T value = Owner.PersistentData.get_FirstItem(true);
+                IsNull = value == null;
+                return value;
             }
             private set
             {
                 if (_isSaveUndo)
                 {
-                    Owner.RecordUndoEvent("Set: " + value.ToString());
+                    Owner.RecordUndoEvent("Set: " + value?.ToString());
                     _isSaveUndo = false;
                 }
                 Owner.PersistentData.Clear();
-                Owner.PersistentData.Append(value);
+                if (value != null)
+                    Owner.PersistentData.Append(value);
                 Owner.ExpireSolution(true);
             }
         }
+
+        protected bool IsNull { get; private set; }
 
         private GooControlBase<T> _gooControl;
 
@@ -82,7 +82,7 @@ namespace ComponentToolkit
             }
         }
 
-        public ParamControl(GH_PersistentParam<T> owner)
+        public ParamControlBase(GH_PersistentParam<T> owner)
         {
             Owner = owner;
             _gooControl = SetUpControl(owner);
@@ -93,12 +93,12 @@ namespace ComponentToolkit
         private void SetValue()
         {
             IGH_Goo goo = _gooControl.SaveValue;
-            if (goo == null || !goo.IsValid)
-            {
-                Owner.Attributes.GetTopLevel.ExpireLayout();
-                Grasshopper.Instances.ActiveCanvas.Refresh();
-                return;
-            }
+            //if (goo == null || !goo.IsValid)
+            //{
+            //    Owner.Attributes.GetTopLevel.ExpireLayout();
+            //    Grasshopper.Instances.ActiveCanvas.Refresh();
+            //    return;
+            //}
             OwnerGooData = (T)(object)goo;
         }
         protected abstract GooControlBase<T> SetUpControl(IGH_Param param);
@@ -117,6 +117,7 @@ namespace ComponentToolkit
         internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             if (!Valid || !ShouldRespond) return;
+            if(e.Button == System.Windows.Forms.MouseButtons.Left) _isSaveUndo = true;
             _gooControl.Clicked(sender, e);
         }
 
