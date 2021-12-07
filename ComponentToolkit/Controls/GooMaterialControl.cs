@@ -16,7 +16,7 @@ namespace ComponentToolkit
 
         }
 
-        protected override Guid AddCompnentGuid => new Guid("9c53bac0-ba66-40bd-8154-ce9829b9db1a");
+        public override Guid AddCompnentGuid => new Guid("9c53bac0-ba66-40bd-8154-ce9829b9db1a");
 
         protected override BaseControlItem[] SetControlItems()
         {
@@ -35,7 +35,7 @@ namespace ComponentToolkit
             return new GH_Material(((GH_Colour)values[0]).Value);
         }
 
-        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        public override void DosomethingWhenCreate(IGH_DocumentObject obj)
         {
             GH_ColourSwatch swatch = (GH_ColourSwatch)obj;
             if (swatch == null) return;

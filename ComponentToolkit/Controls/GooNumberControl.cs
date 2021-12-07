@@ -11,7 +11,7 @@ namespace ComponentToolkit
 {
     internal class GooNumberControl: GooHorizonalControlBase<GH_Number>
     {
-        protected override Guid AddCompnentGuid => new Guid("57da07bd-ecab-415d-9d86-af36d7073abc");
+        public override Guid AddCompnentGuid => new Guid("57da07bd-ecab-415d-9d86-af36d7073abc");
 
         protected override string AddCompnentInit => base.AddCompnentInit ?? "0..100.00";
 
@@ -20,7 +20,7 @@ namespace ComponentToolkit
 
         }
 
-        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        public override void DosomethingWhenCreate(IGH_DocumentObject obj)
         {
             GH_NumberSlider slider = (GH_NumberSlider)obj;
             if (slider == null) return;

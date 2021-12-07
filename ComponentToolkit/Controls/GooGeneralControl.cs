@@ -13,7 +13,7 @@ namespace ComponentToolkit
         private General_Control type => (General_Control)Instances.Settings.GetValue(typeof(General_Control).FullName, 0);
 
 
-        protected override Guid AddCompnentGuid => default(Guid);
+        public override Guid AddCompnentGuid => default(Guid);
 
         protected override bool IsReadOnly => type == General_Control.ReadOnly;
 

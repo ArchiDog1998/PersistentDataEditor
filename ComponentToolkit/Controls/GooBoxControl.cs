@@ -12,7 +12,7 @@ namespace ComponentToolkit
 {
     internal class GooBoxControl : GooVerticalControlBase<GH_Box>
     {
-        protected override Guid AddCompnentGuid
+        public override Guid AddCompnentGuid
         {
             get
             {
@@ -138,7 +138,7 @@ namespace ComponentToolkit
             }
         }
 
-        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        public override void DosomethingWhenCreate(IGH_DocumentObject obj)
         {
             if (obj == null) return;
             GH_Component com = (GH_Component)obj;

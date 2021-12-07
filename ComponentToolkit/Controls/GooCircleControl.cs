@@ -14,7 +14,7 @@ namespace ComponentToolkit
     {
         private Circle_Control type => (Circle_Control)Instances.Settings.GetValue(typeof(Circle_Control).FullName, 0);
 
-        protected override Guid AddCompnentGuid => type == Circle_Control.CNR ? new Guid("d114323a-e6ee-4164-946b-e4ca0ce15efa") :
+        public override Guid AddCompnentGuid => type == Circle_Control.CNR ? new Guid("d114323a-e6ee-4164-946b-e4ca0ce15efa") :
             new Guid("807b86e3-be8d-4970-92b5-f8cdcb45b06b");
 
         public GooCircleControl(Func<GH_Circle> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
@@ -85,7 +85,7 @@ namespace ComponentToolkit
             }
         }
 
-        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        public override void DosomethingWhenCreate(IGH_DocumentObject obj)
         {
             if (obj == null) return;
             GH_Component com = (GH_Component)obj;

@@ -14,7 +14,7 @@ namespace ComponentToolkit
 {
     internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T : class, IGH_Goo
     {
-        protected abstract Guid AddCompnentGuid { get; }
+        public abstract Guid AddCompnentGuid { get; }
         protected virtual ushort AddCompnentIndex => 0;
         protected virtual string AddCompnentInit => ShowValue?.ToString();
         internal IGH_Param Owner { private get; set; } = null;
@@ -47,7 +47,7 @@ namespace ComponentToolkit
             _isNull = isNull;
         }
 
-        protected virtual void DosomethingWhenCreate(IGH_DocumentObject obj) { }
+        public virtual void DosomethingWhenCreate(IGH_DocumentObject obj) { }
 
         internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
@@ -60,5 +60,7 @@ namespace ComponentToolkit
     {
         IGH_Goo SaveValue { get; }
         Action ValueChange { set; }
+        Guid AddCompnentGuid { get; }
+        void DosomethingWhenCreate(IGH_DocumentObject obj);
     }
 }

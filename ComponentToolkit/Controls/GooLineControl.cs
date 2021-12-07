@@ -12,7 +12,7 @@ namespace ComponentToolkit
 {
     internal class GooLineControl : GooVerticalControlBase<GH_Line>
     {
-        protected override Guid AddCompnentGuid => type == Line_Control.From_To ? new Guid("4c4e56eb-2f04-43f9-95a3-cc46a14f495a") :
+        public override Guid AddCompnentGuid => type == Line_Control.From_To ? new Guid("4c4e56eb-2f04-43f9-95a3-cc46a14f495a") :
             new Guid("4c619bc9-39fd-4717-82a6-1e07ea237bbe");
 
         private Line_Control type => (Line_Control)Instances.Settings.GetValue(typeof(Line_Control).FullName, 0);
@@ -101,7 +101,7 @@ namespace ComponentToolkit
             }
         }
 
-        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        public override void DosomethingWhenCreate(IGH_DocumentObject obj)
         {
             if (obj == null) return;
             GH_Component com = (GH_Component)obj;

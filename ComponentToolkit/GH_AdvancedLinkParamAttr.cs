@@ -84,6 +84,11 @@ namespace ComponentToolkit
 
         internal static BaseControlItem SetControl(IGH_Param param)
         {
+            if(param is Param_ScriptVariable)
+            {
+                return new ParamVariableControl((Param_ScriptVariable)param);
+            }
+
             if (IsPersistentParam(param.GetType(), out Type storeType))
             {
                 if (storeType == typeof(GH_String))

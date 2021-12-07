@@ -107,7 +107,7 @@ namespace ComponentToolkit
 
     public enum General_Control
     {
-        General,
         ReadOnly,
+        General,
     }
 }

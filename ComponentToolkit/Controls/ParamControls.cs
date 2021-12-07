@@ -1,6 +1,7 @@
 ﻿using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
+using Grasshopper.Kernel.Parameters.Hints;
 using Grasshopper.Kernel.Types;
 using System;
 using System.Collections;
@@ -266,6 +267,19 @@ namespace ComponentToolkit
         protected override GooControlBase<T> SetUpControl(IGH_Param param)
         {
             return new GooGeneralControl<T>(() => OwnerGooData, () => IsNull);
+        }
+    }
+
+    internal class ParamVariableControl : ParamGeneralControl<IGH_Goo>
+    {
+        public ParamVariableControl(Param_ScriptVariable owner) : base(owner)
+        {
+
+        }
+
+        protected override GooControlBase<IGH_Goo> SetUpControl(IGH_Param param)
+        {
+            return new GooVariableControl(() => OwnerGooData, () => IsNull, (Param_ScriptVariable)param);
         }
     }
 }

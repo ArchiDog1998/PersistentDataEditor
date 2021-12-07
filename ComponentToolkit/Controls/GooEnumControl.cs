@@ -16,7 +16,7 @@ namespace ComponentToolkit
 {
     internal class GooEnumControl : GooControlBase<GH_Integer>
     {
-        protected override Guid AddCompnentGuid => new Guid("00027467-0D24-4fa7-B178-8DC0AC5F42EC");
+        public override Guid AddCompnentGuid => new Guid("00027467-0D24-4fa7-B178-8DC0AC5F42EC");
 
         private string _showString
         {
@@ -125,7 +125,7 @@ namespace ComponentToolkit
             graphics.FillPath(new SolidBrush(Datas.ControlForegroundColor), _triangle);
         }
 
-        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        public override void DosomethingWhenCreate(IGH_DocumentObject obj)
         {
             if (_namedValues == null) return;
 

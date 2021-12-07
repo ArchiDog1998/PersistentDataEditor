@@ -13,7 +13,7 @@ namespace ComponentToolkit
 {
     internal class GooPointControl : GooHorizonalControlBase<GH_Point>
     {
-        protected override Guid AddCompnentGuid => new Guid("3581f42a-9592-4549-bd6b-1c0fc39d067b");
+        public override Guid AddCompnentGuid => new Guid("3581f42a-9592-4549-bd6b-1c0fc39d067b");
 
         public GooPointControl(Func<GH_Point> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
@@ -76,7 +76,7 @@ namespace ComponentToolkit
             }
         }
 
-        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        public override void DosomethingWhenCreate(IGH_DocumentObject obj)
         {
             if (obj == null) return;
             GH_Component com = (GH_Component)obj;

@@ -13,7 +13,7 @@ namespace ComponentToolkit
 {
     internal class GooVectorControl : GooHorizonalControlBase<GH_Vector>
     {
-        protected override Guid AddCompnentGuid => new Guid("56b92eab-d121-43f7-94d3-6cd8f0ddead8");
+        public override Guid AddCompnentGuid => new Guid("56b92eab-d121-43f7-94d3-6cd8f0ddead8");
 
         public GooVectorControl(Func<GH_Vector> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
@@ -75,7 +75,7 @@ namespace ComponentToolkit
         }
 
 
-        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        public override void DosomethingWhenCreate(IGH_DocumentObject obj)
         {
             if (obj == null) return;
             GH_Component com = (GH_Component)obj;

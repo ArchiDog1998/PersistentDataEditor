@@ -16,7 +16,7 @@ namespace ComponentToolkit
 {
     internal class GooInputBoxStringControl<T> : GooControlBase<T> where T : class, IGH_Goo
     {
-        protected override Guid AddCompnentGuid => new Guid("59e0b89a-e487-49f8-bab8-b5bab16be14c");
+        public override Guid AddCompnentGuid => new Guid("59e0b89a-e487-49f8-bab8-b5bab16be14c");
 
         private string ShowString => ChangeStringShow(ShowValue?.ToString());
         internal override int Height => 14;

@@ -13,7 +13,7 @@ namespace ComponentToolkit
 {
     internal class GooIntervalControl : GooHorizonalControlBase<GH_Interval>
     {
-        protected override Guid AddCompnentGuid => new Guid("d1a28e95-cf96-4936-bf34-8bf142d731bf");
+        public override Guid AddCompnentGuid => new Guid("d1a28e95-cf96-4936-bf34-8bf142d731bf");
 
         public GooIntervalControl(Func<GH_Interval> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
@@ -60,7 +60,7 @@ namespace ComponentToolkit
             }
         }
 
-        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        public override void DosomethingWhenCreate(IGH_DocumentObject obj)
         {
             if (obj == null) return;
             GH_Component com = (GH_Component)obj;

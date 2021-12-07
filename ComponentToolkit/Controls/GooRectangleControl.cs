@@ -12,7 +12,7 @@ namespace ComponentToolkit
 {
     internal class GooRectangleControl : GooVerticalControlBase<GH_Rectangle>
     {
-        protected override Guid AddCompnentGuid => new Guid("d93100b6-d50b-40b2-831a-814659dc38e3");
+        public override Guid AddCompnentGuid => new Guid("d93100b6-d50b-40b2-831a-814659dc38e3");
 
         private Rectangle_Control type => (Rectangle_Control)Instances.Settings.GetValue(typeof(Rectangle_Control).FullName, 0);
 
@@ -112,7 +112,7 @@ namespace ComponentToolkit
 
             }
         }
-        protected override void DosomethingWhenCreate(IGH_DocumentObject obj)
+        public override void DosomethingWhenCreate(IGH_DocumentObject obj)
         {
             if (obj == null) return;
             GH_Component com = (GH_Component)obj;

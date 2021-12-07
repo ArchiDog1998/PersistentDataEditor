@@ -13,7 +13,7 @@ namespace ComponentToolkit
 {
     internal class GooBooleanControl : GooControlBase<GH_Boolean>
     {
-        protected override Guid AddCompnentGuid => new Guid("2e78987b-9dfb-42a2-8b76-3923ac8bd91a");
+        public override Guid AddCompnentGuid => new Guid("2e78987b-9dfb-42a2-8b76-3923ac8bd91a");
 
         internal override int Width => 10;
 
