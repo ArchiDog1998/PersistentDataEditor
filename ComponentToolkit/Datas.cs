@@ -263,6 +263,20 @@ namespace ComponentToolkit
             {
                 foreach (IGH_DocumentObject @object in doc.Objects)
                 {
+                    if (@object is IGH_Component)
+                    {
+                        //Refresh Variable Control.
+                        IGH_Component com = (IGH_Component)@object;
+                        foreach (var param in com.Params)
+                        {
+                            if (param.Attributes is GH_AdvancedLinkParamAttr)
+                            {
+                                GH_AdvancedLinkParamAttr att = (GH_AdvancedLinkParamAttr)param.Attributes;
+                                if (att.Control is ParamVariableControl)
+                                    att.Control?.ChangeControlItems();
+                            }
+                        }
+                    }
                     @object.Attributes.ExpireLayout();
                 }
             }
