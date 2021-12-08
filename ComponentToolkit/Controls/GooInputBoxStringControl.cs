@@ -61,50 +61,6 @@ namespace ComponentToolkit
 
             if (typeof(T).IsInterface)
             {
-                if(GH_Convert.ToInt32(str, out int integer, GH_Conversion.Both))
-                {
-                    ShowValue = (T)(object)new GH_Integer(integer);
-                    return;
-                }
-                if(GH_Convert.ToDouble(str, out double number, GH_Conversion.Both))
-                {
-                    ShowValue = (T)(object)new GH_Number(number);
-                    return;
-                }
-                if (GH_Convert.ToBoolean(str, out bool boolean, GH_Conversion.Both))
-                {
-                    ShowValue = (T)(object)new GH_Boolean(boolean);
-                    return;
-                }
-                if (GH_Convert.ToComplex(str, out Complex complex, GH_Conversion.Both))
-                {
-                    ShowValue = (T)(object)new GH_ComplexNumber(complex);
-                    return;
-                }
-                Interval interval = default(Interval);
-                if (GH_Convert.ToInterval(str, ref interval, GH_Conversion.Both))
-                {
-                    ShowValue = (T)(object)new GH_Interval(interval);
-                    return;
-                }
-                Point3d point = default(Point3d);
-                if (GH_Convert.ToPoint3d(str, ref point, GH_Conversion.Both))
-                {
-                    ShowValue = (T)(object)new GH_Point(point);
-                    return;
-                }
-                DateTime time = default(DateTime);
-                if (GH_Convert.StringToDate(str, ref time))
-                {
-                    ShowValue = (T)(object)new GH_Time(time);
-                    return;
-                }
-                if (GH_Convert.StringToTime(str, ref time))
-                {
-                    ShowValue = (T)(object)new GH_Time(time);
-                    return;
-                }
-
                 ShowValue = (T)(object)new GH_String(str);
                 return;
             }

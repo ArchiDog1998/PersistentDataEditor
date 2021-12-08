@@ -74,7 +74,7 @@ namespace ComponentToolkit
         {
             get
             {
-                bool isActive = Owner.OnPingDocument() == Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2;
+                bool isActive = Owner.OnPingDocument() == Instances.ActiveCanvas.Document && Owner.Access == GH_ParamAccess.item && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2;
                 bool isUse = Datas.UseParamControl && (Owner.Attributes.IsTopLevel ? Datas.ParamUseControl : Datas.ComponentUseControl);
                 string saveBooleanKey = "UseParam" + typeof(T).Name;
                 bool useParam = Instances.Settings.GetValue(saveBooleanKey, true);
