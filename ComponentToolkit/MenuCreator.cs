@@ -217,6 +217,7 @@ namespace ComponentToolkit
         private static void CreateTextLabel(ToolStripMenuItem item, string name, string tooltips = null)
         {
             ToolStripLabel textBox = new ToolStripLabel(name);
+            textBox.TextAlign = ContentAlignment.MiddleCenter;
             textBox.Font = new Font(textBox.Font, FontStyle.Bold);
             if (!string.IsNullOrEmpty(tooltips))
                 textBox.ToolTipText = tooltips;
@@ -273,9 +274,7 @@ namespace ComponentToolkit
             item.DropDown.Closing -= DropDown_Closing;
             item.DropDown.Closing += DropDown_Closing;
 
-            ToolStripLabel textBox = new ToolStripLabel(itemName);
-            textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size, FontStyle.Bold);
-            item.DropDownItems.Add(textBox);
+            CreateTextLabel(item, itemName);
 
             GH_ColourPicker picker = GH_DocumentObject.Menu_AppendColourPicker(item.DropDown, rightColor, (sender, e) =>
             {

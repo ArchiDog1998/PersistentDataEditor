@@ -120,8 +120,10 @@ namespace ComponentToolkit
                 if (param.Kind == GH_ParamKind.floating && param.Attributes is GH_FloatingParamAttributes && !(param.Attributes is GH_AdvancedFloatingParamAttr))
                 {
                     PointF point = param.Attributes.Pivot;
+                    bool isSelected = param.Attributes.Selected;
                     param.Attributes = new GH_AdvancedFloatingParamAttr(param);
                     param.Attributes.Pivot = point;
+                    param.Attributes.Selected = isSelected;
                     param.Attributes.ExpireLayout();
                 }
             }
