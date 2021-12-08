@@ -104,6 +104,9 @@ namespace ComponentToolkit
                     ShowValue = (T)(object)new GH_Time(time);
                     return;
                 }
+
+                ShowValue = (T)(object)new GH_String(str);
+                return;
             }
             else
             {
