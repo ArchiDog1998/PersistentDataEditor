@@ -197,7 +197,7 @@ namespace ComponentToolkit
                 return GH_ObjectResponse.Release;
             }
 
-            if (Datas.UseQuickWire && e.Button == MouseButtons.Left)
+            if (Datas.UseQuickWire && BaseControlItem.ShouldRespond && e.Button == MouseButtons.Left)
             {
                 if (StringRect.Contains(e.CanvasLocation) ||
                     (Datas.ShowLinkParamIcon && new RectangleF(IconPivot, new Size(Datas.ComponentParamIconSize, Datas.ComponentParamIconSize)).Contains(e.CanvasLocation)))

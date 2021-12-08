@@ -71,7 +71,7 @@ namespace ComponentToolkit
             }
             else
             {
-                float stringWidth = GH_FontServer.MeasureString(base.Owner.NickName, GH_FontServer.StandardAdjusted).Width;
+                float stringWidth = GH_FontServer.MeasureString(base.Owner.NickName, GH_FontServer.StandardAdjusted).Width + 1;
                 _iconTextBound = new Rectangle((int)(Pivot.X - stringWidth/2), (int)Pivot.Y - 10, (int)stringWidth, 20);
             }
             Bounds = _iconTextBound;
