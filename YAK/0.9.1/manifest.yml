@@ -1,6 +1,6 @@
 ---
 name: ComponentToolkit
-version: 0.9.0
+version: 0.9.1
 authors:
 - 秋水
 description: >
@@ -17,6 +17,18 @@ description: >
   
   
   Layout Change can change your component's style, also can add an icon on each param of component.
+  
+  
+  0.9.1 Notes:
+  
+  1. Fix the copy param is not selected bug.
+  
+  2. Make Data Param can be set value.
+  
+  3. Fix the floating param's name can't shown all in component draw icons.
+  
+  4. Fix the param quick wire menu miss open when the quick wire adds a param.
+  
 url: https://www.food4rhino.com/en/app/component-toolkit
 keywords:
 - toolkit

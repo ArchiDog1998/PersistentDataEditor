@@ -107,6 +107,10 @@ namespace ComponentToolkit
         {
             foreach (var item in e.Objects)
             {
+                if(item is IGH_Component)
+                {
+                    item.Attributes.ExpireLayout();
+                }
                 ChangeFloatParam(item);
             }
             sender?.DestroyAttributeCache();
