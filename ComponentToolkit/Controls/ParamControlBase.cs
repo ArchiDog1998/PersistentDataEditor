@@ -69,18 +69,7 @@ namespace ComponentToolkit
 
             }
         }
-
-        protected override bool Valid
-        {
-            get
-            {
-                bool isActive = Owner.OnPingDocument() == Instances.ActiveCanvas.Document && Owner.Access == GH_ParamAccess.item && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2;
-                bool isUse = Datas.UseParamControl && (Owner.Attributes.IsTopLevel ? Datas.ParamUseControl : Datas.ComponentUseControl);
-                string saveBooleanKey = "UseParam" + typeof(T).Name;
-                bool useParam = Instances.Settings.GetValue(saveBooleanKey, true);
-                return isActive && isUse && useParam;
-            }
-        }
+        protected override bool Valid => Owner.OnPingDocument() == Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2;
 
         public ParamControlBase(GH_PersistentParam<T> owner)
         {
@@ -92,14 +81,7 @@ namespace ComponentToolkit
 
         private void SetValue()
         {
-            IGH_Goo goo = _gooControl.SaveValue;
-            //if (goo == null || !goo.IsValid)
-            //{
-            //    Owner.Attributes.GetTopLevel.ExpireLayout();
-            //    Grasshopper.Instances.ActiveCanvas.Refresh();
-            //    return;
-            //}
-            OwnerGooData = (T)(object)goo;
+            OwnerGooData = (T)(object)_gooControl.SaveValue;
         }
         protected abstract GooControlBase<T> SetUpControl(IGH_Param param);
 

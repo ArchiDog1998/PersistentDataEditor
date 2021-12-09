@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Grasshopper.Kernel.Parameters;
+using Grasshopper.Kernel.Special;
 
 namespace ComponentToolkit
 {
@@ -160,7 +161,13 @@ namespace ComponentToolkit
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
+            CreateTextLabel(major, "General Control");
+
             major.DropDownItems.Add(CreateControlStateCheckBox<General_Control,IGH_Goo>(new Param_GenericObject().Icon_24x24));
+
+            major.DropDownItems.Add(CreateControlStateCheckBox(new Param_ScriptVariable().Icon_24x24, "Script Control", "Script"));
+
+            major.DropDownItems.Add(CreateControlStateCheckBox(new GH_NumberSlider().Icon_24x24, "Slider Control", "Slider"));
 
             return major;
         }
@@ -231,7 +238,7 @@ namespace ComponentToolkit
 
             CreateTextLabel(item, itemName, $"Value from {Min} to {Max}");
 
-            GH_DigitScroller slider = new GH_DigitScroller
+            Grasshopper.GUI.GH_DigitScroller slider = new Grasshopper.GUI.GH_DigitScroller
             {
                 MinimumValue = (decimal)Min,
                 MaximumValue = (decimal)Max,
@@ -294,19 +301,23 @@ namespace ComponentToolkit
 
             return picker;
         }
-
-        private static ToolStripMenuItem CreateControlStateCheckBox<T, Tg>(Bitmap icon) where T : Enum where Tg : class, IGH_Goo
+        private static ToolStripMenuItem CreateControlStateCheckBox(Bitmap icon, string showName, string saveName)
         {
-            string saveBooleanKey = "UseParam" + typeof(Tg).Name;
-            ToolStripMenuItem major = CreateCheckBox(typeof(T).Name.Replace('_', ' '), Instances.Settings.GetValue(saveBooleanKey, true)
+            string saveBooleanKey = "UseParam" + saveName;
+            ToolStripMenuItem major = CreateCheckBox(showName, Instances.Settings.GetValue(saveBooleanKey, true)
                 , icon, (boolean) =>
                 {
                     Instances.Settings.SetValue(saveBooleanKey, boolean);
-                    Datas.RefreshLayout();
+                    Datas.ChangeControl();
                 });
+
+            return major;
+        }
+
+        private static ToolStripMenuItem CreateControlStateCheckBox<T, Tg>(Bitmap icon) where T : Enum where Tg : class, IGH_Goo
+        {
+            ToolStripMenuItem major = CreateControlStateCheckBox(icon, typeof(T).Name.Replace('_', ' '), typeof(Tg).Name); 
             major.DropDown.Closing += DropDown_Closing;
-
-
 
 
             string saveKey = typeof(T).FullName;

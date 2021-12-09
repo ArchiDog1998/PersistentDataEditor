@@ -14,7 +14,7 @@ using Grasshopper;
 
 namespace ComponentToolkit
 {
-    internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes
+    internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IControlAttr
     {
         private static FieldInfo _tagsinfo = typeof(GH_FloatingParamAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_stateTags")).First();
 
@@ -23,7 +23,18 @@ namespace ComponentToolkit
         public BaseControlItem Control { get; private set; } = null;
         public GH_AdvancedFloatingParamAttr(IGH_Param param): base(param)
         {
-            Control = GH_AdvancedLinkParamAttr.SetControl(Owner);
+            SetControl();
+        }
+        public void SetControl()
+        {
+            if (Datas.UseParamControl && Datas.ParamUseControl)
+            {
+                Control = GH_AdvancedLinkParamAttr.GetControl(Owner);
+            }
+            else
+            {
+                Control = null;
+            }
         }
 
         public override GH_ObjectResponse RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)

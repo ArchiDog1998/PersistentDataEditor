@@ -191,7 +191,7 @@ namespace ComponentToolkit
             set
             {
                 Instances.Settings.SetValue(nameof(UseParamControl), value);
-                RefreshLayout();
+                ChangeControl();
             }
         }
 
@@ -201,7 +201,7 @@ namespace ComponentToolkit
             set
             {
                 Instances.Settings.SetValue(nameof(ComponentUseControl), value);
-                RefreshLayout();
+                ChangeControl();
             }
         }
 
@@ -211,7 +211,7 @@ namespace ComponentToolkit
             set
             {
                 Instances.Settings.SetValue(nameof(ParamUseControl), value);
-                RefreshLayout();
+                ChangeControl();
             }
         }
 
@@ -257,30 +257,38 @@ namespace ComponentToolkit
 
         #endregion
 
+        internal static void ChangeControl()
+        {
+            foreach (GH_Document doc in Instances.DocumentServer)
+            {
+                foreach (IGH_Attributes attr in doc.Attributes)
+                {
+                    if (attr is IControlAttr)
+                    {
+                        ((IControlAttr)attr).SetControl();
+                    }
+                    attr.ExpireLayout();
+                }
+            }
+            Instances.RedrawCanvas();
+        }
+
         internal static void RefreshLayout()
         {
             foreach (GH_Document doc in Instances.DocumentServer)
             {
-                foreach (IGH_DocumentObject @object in doc.Objects)
+                foreach (IGH_Attributes attr in doc.Attributes)
                 {
-                    if (@object is IGH_Component)
+                    //Refresh Variable Control.
+                    if (attr is GH_AdvancedLinkParamAttr)
                     {
-                        //Refresh Variable Control.
-                        IGH_Component com = (IGH_Component)@object;
-                        foreach (var param in com.Params)
-                        {
-                            if (param.Attributes is GH_AdvancedLinkParamAttr)
-                            {
-                                GH_AdvancedLinkParamAttr att = (GH_AdvancedLinkParamAttr)param.Attributes;
-                                if (att.Control is ParamVariableControl)
-                                    att.Control?.ChangeControlItems();
-                            }
-                        }
+                        GH_AdvancedLinkParamAttr att = (GH_AdvancedLinkParamAttr)attr;
+                        if (att.Control is ParamVariableControl)
+                            att.Control?.ChangeControlItems();
                     }
-                    @object.Attributes.ExpireLayout();
+                    attr.ExpireLayout();
                 }
             }
-
             Instances.RedrawCanvas();
         }
 

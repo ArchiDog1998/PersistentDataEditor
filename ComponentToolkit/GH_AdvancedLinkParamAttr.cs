@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 namespace ComponentToolkit
 {
-    internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes
+    internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr
     {
         public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
         public int ControlWidth => Control?.Width ?? 0;
@@ -33,9 +33,20 @@ namespace ComponentToolkit
 
         public GH_AdvancedLinkParamAttr(IGH_Param param, IGH_Attributes parent) : base(param, parent)
         {
-            if (param.Kind != GH_ParamKind.input) return;
-            Control = SetControl(param);
+            SetControl();
             SetParamIcon();
+        }
+
+        public void SetControl()
+        {
+            if(Datas.UseParamControl && Owner.Kind == GH_ParamKind.input && Datas.ComponentUseControl)
+            {
+                Control = GetControl(Owner);
+            }
+            else
+            {
+                Control = null;
+            }
         }
 
         public static void UpdataIcons()
@@ -82,89 +93,94 @@ namespace ComponentToolkit
             return outBitmap;
         }
 
-        internal static BaseControlItem SetControl(IGH_Param param)
+        internal static BaseControlItem GetControl(IGH_Param param)
         {
             if(param is Param_ScriptVariable)
             {
-                return new ParamVariableControl((Param_ScriptVariable)param);
+                return GetUse("Script") ? new ParamVariableControl((Param_ScriptVariable)param) : null;
             }
+            if(param.Access != GH_ParamAccess.item) return null;
 
             if (IsPersistentParam(param.GetType(), out Type storeType))
             {
                 if (storeType == typeof(GH_String))
                 {
-                    return new ParamStringControl((GH_PersistentParam<GH_String>)param);
+                    return GetUse(nameof(GH_String)) ? new ParamStringControl((GH_PersistentParam<GH_String>)param) : null;
                 }
                 else if (storeType == typeof(GH_Integer))
                 {
-                    return new ParamIntegerControl((GH_PersistentParam<GH_Integer>)param);
+                    return GetUse(nameof(GH_Integer)) ? new ParamIntegerControl((GH_PersistentParam<GH_Integer>)param) : null;
                 }
                 else if (storeType == typeof(GH_Number))
                 {
-                    return new ParamNumberControl((GH_PersistentParam<GH_Number>)param);
+                    return GetUse(nameof(GH_Number)) ? new ParamNumberControl((GH_PersistentParam<GH_Number>)param) : null;
                 }
                 else if (storeType == typeof(GH_Colour))
                 {
-                    return new ParamColourControl((GH_PersistentParam<GH_Colour>)param);
+                    return GetUse(nameof(GH_Colour)) ? new ParamColourControl((GH_PersistentParam<GH_Colour>)param) : null;
                 }
                 else if (storeType == typeof(GH_Boolean))
                 {
-                    return new ParamBooleanControl((GH_PersistentParam<GH_Boolean>)param);
+                    return GetUse(nameof(GH_Boolean)) ? new ParamBooleanControl((GH_PersistentParam<GH_Boolean>)param) : null;
                 }
                 else if (storeType == typeof(GH_Material))
                 {
-                    return new ParamMaterialControl((GH_PersistentParam<GH_Material>)param);
+                    return GetUse(nameof(GH_Material)) ? new ParamMaterialControl((GH_PersistentParam<GH_Material>)param) : null;
                 }
 
                 else if (storeType == typeof(GH_Interval))
                 {
-                    return new ParamIntervalControl((GH_PersistentParam<GH_Interval>)param);
+                    return GetUse(nameof(GH_Interval)) ? new ParamIntervalControl((GH_PersistentParam<GH_Interval>)param) : null;
                 }
                 else if (storeType == typeof(GH_Point))
                 {
-                    return new ParamPointControl((GH_PersistentParam<GH_Point>)param);
+                    return GetUse(nameof(GH_Point)) ? new ParamPointControl((GH_PersistentParam<GH_Point>)param) : null;
                 }
                 else if (storeType == typeof(GH_Vector))
                 {
-                    return new ParamVectorControl((GH_PersistentParam<GH_Vector>)param);
+                    return GetUse(nameof(GH_Vector)) ? new ParamVectorControl((GH_PersistentParam<GH_Vector>)param) : null;
                 }
                 else if (storeType == typeof(GH_ComplexNumber))
                 {
-                    return new ParamComplexControl((GH_PersistentParam<GH_ComplexNumber>)param);
+                    return GetUse(nameof(GH_ComplexNumber)) ? new ParamComplexControl((GH_PersistentParam<GH_ComplexNumber>)param) : null;
                 }
                 else if (storeType == typeof(GH_Interval2D))
                 {
-                    return new ParamInterval2DControl((GH_PersistentParam<GH_Interval2D>)param);
+                    return GetUse(nameof(GH_Interval2D)) ? new ParamInterval2DControl((GH_PersistentParam<GH_Interval2D>)param) : null;
                 }
                 else if (storeType == typeof(GH_Line))
                 {
-                    return new ParamLineControl((GH_PersistentParam<GH_Line>)param);
+                    return GetUse(nameof(GH_Line)) ? new ParamLineControl((GH_PersistentParam<GH_Line>)param) : null;
                 }
                 else if (storeType == typeof(GH_Plane))
                 {
-                    return new ParamPlaneControl((GH_PersistentParam<GH_Plane>)param);
+                    return GetUse(nameof(GH_Plane)) ? new ParamPlaneControl((GH_PersistentParam<GH_Plane>)param) : null;
                 }
                 else if (storeType == typeof(GH_Circle))
                 {
-                    return new ParamCircleControl((GH_PersistentParam<GH_Circle>)param);
+                    return GetUse(nameof(GH_Circle))? new ParamCircleControl((GH_PersistentParam<GH_Circle>)param) : null;
                 }
                 else if (storeType == typeof(GH_Rectangle))
                 {
-                    return new ParamRectangleControl((GH_PersistentParam<GH_Rectangle>)param);
+                    return GetUse(nameof(GH_Rectangle)) ? new ParamRectangleControl((GH_PersistentParam<GH_Rectangle>)param) : null;
                 }
                 else if (storeType == typeof(GH_Box))
                 {
-                    return new ParamBoxControl((GH_PersistentParam<GH_Box>)param);
+                    return GetUse(nameof(GH_Box)) ? new ParamBoxControl((GH_PersistentParam<GH_Box>)param) : null;
                 }
 
-                else
+                else if (GetUse(nameof(IGH_Goo)))
                 {
                     Type controlType = typeof(ParamGeneralControl<>).MakeGenericType(storeType);
                     return (BaseControlItem)Activator.CreateInstance(controlType, param);
                 }
             }
             return null;
+        }
 
+        internal static bool GetUse(string name)
+        {
+            return Instances.Settings.GetValue("UseParam" + name, true);
         }
 
         internal static bool IsPersistentParam(Type type, out Type dataType)

@@ -247,18 +247,6 @@ namespace ComponentToolkit
 
     internal class ParamGeneralControl<T> : ParamControlBase<T> where T : class, IGH_Goo
     {
-        protected override bool Valid
-        {
-            get
-            {
-                bool isActive = Owner.OnPingDocument() == Instances.ActiveCanvas.Document && Owner.Access == GH_ParamAccess.item && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2;
-                bool isUse = Datas.UseParamControl && (Owner.Attributes.IsTopLevel ? Datas.ParamUseControl : Datas.ComponentUseControl);
-                string saveBooleanKey = "UseParam" + typeof(IGH_Goo).Name;
-                bool useParam = Instances.Settings.GetValue(saveBooleanKey, true);
-                return isActive && isUse && useParam;
-            }
-        }
-
         public ParamGeneralControl(GH_PersistentParam<T> owner) : base(owner)
         {
 
@@ -272,6 +260,8 @@ namespace ComponentToolkit
 
     internal class ParamVariableControl : ParamGeneralControl<IGH_Goo>
     {
+        protected override bool Valid => base.Valid && Owner.Access == GH_ParamAccess.item;
+
         public ParamVariableControl(Param_ScriptVariable owner) : base(owner)
         {
 
