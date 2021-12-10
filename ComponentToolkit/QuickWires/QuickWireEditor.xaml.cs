@@ -39,15 +39,19 @@ namespace ComponentToolkit
             {
                 _targetParam = value;
                 if (_targetParam == null) return;
-                _isTheSame = _targetParam.ComponentGuid == _componentGuid;
+                _isTheSame = _isTheSameFunc(_targetParam);
             }
         }
 
         private bool _isInput;
-        private Guid _componentGuid;
+        //private Guid _componentGuid;
         private CreateObjectItem[] _preList;
         private bool _cancel = false;
-        public QuickWireEditor(Guid componenguid, bool isInput, Bitmap icon, string name, ObservableCollection<CreateObjectItem> structureLists)
+        private Func<IGH_Param, bool> _isTheSameFunc;
+        private Action<CreateObjectItem[], bool> _saveValue;
+
+        public QuickWireEditor(bool isInput, Bitmap icon, string name, ObservableCollection<CreateObjectItem> structureLists, Func<IGH_Param, bool> isTheSame,
+            Action<CreateObjectItem[], bool> saveValue)
         {
             this._isInput = isInput;
             this.DataContext = structureLists;
@@ -55,15 +59,16 @@ namespace ComponentToolkit
 
             MemoryStream ms = new MemoryStream();
             icon.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-            BitmapImage ImageIcon = new BitmapImage();
 
+            BitmapImage ImageIcon = new BitmapImage();
             ImageIcon.BeginInit();
             ms.Seek(0, SeekOrigin.Begin);
             ImageIcon.StreamSource = ms;
             ImageIcon.EndInit();
             Icon = ImageIcon;
 
-            _componentGuid = componenguid;
+            _isTheSameFunc = isTheSame;
+            _saveValue = saveValue;
             InitializeComponent();
 
             this.Title += "-" + name + (isInput ? "[In]" : "[Out]");
@@ -121,11 +126,7 @@ namespace ComponentToolkit
         private void Apply()
         {
             CreateObjectItem[] saveItems = ((ObservableCollection<CreateObjectItem>)DataContext).ToArray();
-            if (_isInput)
-                GH_ComponentAttributesReplacer.StaticCreateObjectItems.InputItems[_componentGuid] = saveItems;
-            else
-                GH_ComponentAttributesReplacer.StaticCreateObjectItems.OutputItems[_componentGuid] = saveItems;
-
+            _saveValue(saveItems, _isInput);
 
         }
 
@@ -133,10 +134,7 @@ namespace ComponentToolkit
         {
             if (_cancel)
             {
-                if (_isInput)
-                    GH_ComponentAttributesReplacer.StaticCreateObjectItems.InputItems[_componentGuid] = _preList;
-                else
-                    GH_ComponentAttributesReplacer.StaticCreateObjectItems.OutputItems[_componentGuid] = _preList;
+                _saveValue(_preList, _isInput);
             }
             else
             {

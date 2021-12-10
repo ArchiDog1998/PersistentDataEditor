@@ -4,6 +4,7 @@ using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
 using Grasshopper.Kernel.Components;
+using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Special;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace ComponentToolkit
         internal static CreateObjectItems StaticCreateObjectItems;
 
         private static readonly FieldInfo _tagsInfo = typeof(GH_LinkedParamAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_renderTags")).First();
+        private static readonly MethodInfo _pathMapperCreate = typeof(GH_PathMapper).GetRuntimeMethods().Where(m => m.Name.Contains("GetInputMapping")).First();
 
         public GH_ComponentAttributesReplacer(IGH_Component component): base(component)
         {
@@ -113,6 +115,23 @@ namespace ComponentToolkit
                     item.Attributes.ExpireLayout();
                 }
                 ChangeFloatParam(item);
+                if(item is GH_PathMapper)
+                {
+                    GH_PathMapper pathMapper = (GH_PathMapper)item;
+
+                    Instances.ActiveCanvas.Document.ScheduleSolution(50, (doc) =>
+                    {
+                        pathMapper.Lexers.Clear();
+                        List<string> inputMapping = (List<string>)_pathMapperCreate.Invoke(pathMapper, new object[] { true });
+                        if (inputMapping.Count != 0)
+                        {
+                            foreach (string str in inputMapping)
+                            {
+                                pathMapper.Lexers.Add(new GH_LexerCombo(str, "{path_index}"));
+                            }
+                        }
+                    });
+                }
             }
             sender?.DestroyAttributeCache();
         }
@@ -133,6 +152,13 @@ namespace ComponentToolkit
                 }
                 else if(param is GH_NumberSlider && param.Attributes is GH_NumberSliderAttributes && !(param.Attributes is GH_AdvancedNumberSliderAttr))
                 {
+                    GH_NumberSlider slider = (GH_NumberSlider)param;
+                    if(slider.Slider.Type == Grasshopper.GUI.Base.GH_SliderAccuracy.Integer)
+                    {
+                        slider.Slider.DecimalPlaces = 0;
+                        slider.Slider.Type = Grasshopper.GUI.Base.GH_SliderAccuracy.Float;
+                    }
+
                     PointF point = param.Attributes.Pivot;
                     bool isSelected = param.Attributes.Selected;
                     param.Attributes = new GH_AdvancedNumberSliderAttr((GH_NumberSlider)param);

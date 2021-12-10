@@ -3,6 +3,7 @@ using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
+using Grasshopper.Kernel.Components;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Parameters.Hints;
 using Grasshopper.Kernel.Types;
@@ -101,9 +102,16 @@ namespace ComponentToolkit
             }
             if(param.Access != GH_ParamAccess.item) return null;
 
+            if (param is Param_Geometry) return null;
+
             if (IsPersistentParam(param.GetType(), out Type storeType))
             {
-                if (storeType == typeof(GH_String))
+                if (storeType == typeof(GH_Curve) || storeType == typeof(GH_Brep) || storeType == typeof(GH_Surface) || storeType == typeof(GH_Mesh) || storeType.FullName == "Grasshopper.Kernel.Types.GH_SubD"
+                    || storeType == typeof(GH_Field) || storeType == typeof(GH_Transform) || storeType == typeof(GH_Matrix))
+                {
+                    return null;
+                }
+                else if (storeType == typeof(GH_String))
                 {
                     return GetUse(nameof(GH_String)) ? new ParamStringControl((GH_PersistentParam<GH_String>)param) : null;
                 }
@@ -127,7 +135,6 @@ namespace ComponentToolkit
                 {
                     return GetUse(nameof(GH_Material)) ? new ParamMaterialControl((GH_PersistentParam<GH_Material>)param) : null;
                 }
-
                 else if (storeType == typeof(GH_Interval))
                 {
                     return GetUse(nameof(GH_Interval)) ? new ParamIntervalControl((GH_PersistentParam<GH_Interval>)param) : null;
@@ -158,7 +165,7 @@ namespace ComponentToolkit
                 }
                 else if (storeType == typeof(GH_Circle))
                 {
-                    return GetUse(nameof(GH_Circle))? new ParamCircleControl((GH_PersistentParam<GH_Circle>)param) : null;
+                    return GetUse(nameof(GH_Circle)) ? new ParamCircleControl((GH_PersistentParam<GH_Circle>)param) : null;
                 }
                 else if (storeType == typeof(GH_Rectangle))
                 {
@@ -167,6 +174,10 @@ namespace ComponentToolkit
                 else if (storeType == typeof(GH_Box))
                 {
                     return GetUse(nameof(GH_Box)) ? new ParamBoxControl((GH_PersistentParam<GH_Box>)param) : null;
+                }
+                else if (storeType == typeof(GH_Arc))
+                {
+                    return GetUse(nameof(GH_Arc)) ? new ParamArcControl((GH_PersistentParam<GH_Arc>)param) : null;
                 }
 
                 else if (GetUse(nameof(IGH_Goo)))
@@ -215,17 +226,13 @@ namespace ComponentToolkit
 
             if (Datas.UseQuickWire && BaseControlItem.ShouldRespond && e.Button == MouseButtons.Left)
             {
-                if (StringRect.Contains(e.CanvasLocation) ||
-                    (Datas.ShowLinkParamIcon && new RectangleF(IconPivot, new Size(Datas.ComponentParamIconSize, Datas.ComponentParamIconSize)).Contains(e.CanvasLocation)))
-                {
-                    RespondToQuickWire(Owner, Owner.Kind == GH_ParamKind.input).Show(sender, e.ControlLocation);
-                    return GH_ObjectResponse.Release;
-                }
+                RespondToQuickWire(Owner, Owner.ComponentGuid, Owner.Kind == GH_ParamKind.input).Show(sender, e.ControlLocation);
+                return GH_ObjectResponse.Release;
             } 
             return base.RespondToMouseUp(sender, e);
         }
 
-        internal static ToolStripDropDownMenu RespondToQuickWire(IGH_Param param, bool isInput)
+        internal static ToolStripDropDownMenu RespondToQuickWire(IGH_Param param, Guid guid, bool isInput, bool isFirst = true)
         {
             SortedList<Guid, CreateObjectItem[]> dict = new SortedList<Guid, CreateObjectItem[]>();
             if (isInput)
@@ -237,8 +244,8 @@ namespace ComponentToolkit
                 dict = GH_ComponentAttributesReplacer.StaticCreateObjectItems.OutputItems;
             }
 
-            Guid guid = param.ComponentGuid;
-            if(param is Param_ScriptVariable)
+            //Change Guid.
+            if(param is Param_ScriptVariable && guid == new Param_ScriptVariable().ComponentGuid)
             {
                 Param_ScriptVariable script = (Param_ScriptVariable)param;
 
@@ -309,6 +316,105 @@ namespace ComponentToolkit
             }
 
             ToolStripDropDownMenu menu = new ToolStripDropDownMenu() { MaximumSize = new Size(500, 700) };
+
+            if (isFirst)
+            {
+
+                if (param.VolatileDataCount > 1 && !isInput)
+                {
+                    IGH_ObjectProxy proxy = Instances.ComponentServer.EmitObjectProxy(new Guid("59daf374-bc21-4a5e-8282-5504fb7ae9ae"));
+
+                    ToolStripMenuItem listItem = GH_DocumentObject.Menu_AppendItem(menu, "List");
+                    listItem.Image = proxy.Icon;
+                    CreateQuickWireMenu(listItem.DropDown, GH_ComponentAttributesReplacer.StaticCreateObjectItems.ListItems, param, (sender, e) =>
+                    {
+                        ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
+
+                        if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is CreateObjectItem[])
+                        {
+                            ObservableCollection<CreateObjectItem> structureLists = new ObservableCollection<CreateObjectItem>((CreateObjectItem[])toolStripMenuItem.Tag);
+                            new QuickWireEditor(isInput, proxy.Icon, "List", structureLists, (par) => par.Access == GH_ParamAccess.list && par is Param_GenericObject,
+                                (arr, isIn) =>
+                                {
+                                    GH_ComponentAttributesReplacer.StaticCreateObjectItems.ListItems = arr;
+
+                                }).Show();
+                        }
+                    });
+
+                    if(param.VolatileData.PathCount > 1)
+                    {
+                        GH_GraftTreeComponent tree = new GH_GraftTreeComponent();
+                        ToolStripMenuItem treeItem = GH_DocumentObject.Menu_AppendItem(menu, "Tree");
+                        treeItem.Image = tree.Icon_24x24;
+                        CreateQuickWireMenu(treeItem.DropDown, GH_ComponentAttributesReplacer.StaticCreateObjectItems.TreeItems, param, (sender, e) =>
+                        {
+                            ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
+
+                            if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is CreateObjectItem[])
+                            {
+                                ObservableCollection<CreateObjectItem> structureLists = new ObservableCollection<CreateObjectItem>((CreateObjectItem[])toolStripMenuItem.Tag);
+                                new QuickWireEditor(isInput, tree.Icon_24x24, "Tree", structureLists, (par) => par.Access == GH_ParamAccess.tree && par is Param_GenericObject,
+                                    (arr, isIn) =>
+                                    {
+                                        GH_ComponentAttributesReplacer.StaticCreateObjectItems.TreeItems = arr;
+
+                                    }).Show();
+                            }
+                        });
+                    }
+                }
+
+
+                //Curve
+                if (guid == new Param_Rectangle().ComponentGuid || guid == new Param_Circle().ComponentGuid || guid == new Param_Arc().ComponentGuid
+                    || guid == new Param_Line().ComponentGuid)
+                {
+                    Param_Curve curve = new Param_Curve();
+                    ToolStripMenuItem item = GH_DocumentObject.Menu_AppendItem(menu, curve.Name);
+                    item.Image = curve.Icon_24x24;
+                    item.DropDown = RespondToQuickWire(param, curve.ComponentGuid, isInput, false);
+                }
+
+                //Brep
+                if (guid == new Param_Surface().ComponentGuid || guid == new Guid("{89CD1A12-0007-4581-99BA-66578665E610}"))
+                {
+                    Param_Brep brep = new Param_Brep();
+                    ToolStripMenuItem item = GH_DocumentObject.Menu_AppendItem(menu, brep.Name);
+                    item.Image = brep.Icon_24x24;
+                    item.DropDown = RespondToQuickWire(param, brep.ComponentGuid, isInput, false);
+                }
+
+                //Geometry
+                if (guid == new Param_Rectangle().ComponentGuid || guid == new Param_Circle().ComponentGuid || guid == new Param_Arc().ComponentGuid || guid == new Param_Line().ComponentGuid 
+                    || guid == new Param_Point().ComponentGuid ||guid == new Param_Plane().ComponentGuid || guid == new Param_Vector().ComponentGuid
+                    || guid == new Param_Curve().ComponentGuid || guid == new Param_Surface().ComponentGuid || guid == new Param_Brep().ComponentGuid || guid == new Param_Group().ComponentGuid
+                    || guid == new Param_Mesh().ComponentGuid || guid == new Guid("{89CD1A12-0007-4581-99BA-66578665E610}") || guid == new Param_Box().ComponentGuid)
+                {
+                    Param_Geometry geo = new Param_Geometry();
+                    ToolStripMenuItem item = GH_DocumentObject.Menu_AppendItem(menu, geo.Name);
+                    item.Image = geo.Icon_24x24;
+                    item.DropDown = RespondToQuickWire(param, geo.ComponentGuid, isInput, false);
+                }
+
+                //General
+                if(guid != new Param_GenericObject().ComponentGuid)
+                {
+                    Param_GenericObject general = new Param_GenericObject();
+                    ToolStripMenuItem item = GH_DocumentObject.Menu_AppendItem(menu, general.Name);
+                    item.Image = general.Icon_24x24;
+                    item.DropDown = RespondToQuickWire(param, general.ComponentGuid, isInput, false);
+                }
+                GH_DocumentObject.Menu_AppendSeparator(menu);
+            }
+
+            CreateQuickWireMenu(menu, items, param, (sender, e) => Menu_EditItemClicked(sender, guid, param, isInput));
+
+            return menu;
+        }
+
+        private static void CreateQuickWireMenu(ToolStrip menu, CreateObjectItem[] items, IGH_Param param, EventHandler click) 
+        {
             foreach (CreateObjectItem createItem in items)
             {
                 ToolStripMenuItem item = GH_DocumentObject.Menu_AppendItem(menu, createItem.ShowName, (sender, e) => Menu_CreateItemClicked(sender, param), createItem.Icon);
@@ -322,12 +428,10 @@ namespace ComponentToolkit
                     item.ToolTipText = "No Init String.";
                 }
             }
-            ToolStripMenuItem editItem = GH_DocumentObject.Menu_AppendItem(menu, "Edit", (sender, e) => Menu_EditItemClicked(sender, guid, isInput));
+            ToolStripMenuItem editItem = GH_DocumentObject.Menu_AppendItem(menu, "Edit", click);
             editItem.Image = Properties.Resources.EditIcon_24;
             editItem.Tag = items;
             editItem.ForeColor = Color.DimGray;
-
-            return menu;
         }
 
         private static void Menu_CreateItemClicked(object sender, IGH_Param param)
@@ -342,17 +446,36 @@ namespace ComponentToolkit
             MessageBox.Show("Something wrong with create object.");
         }
 
-        private static void Menu_EditItemClicked(object sender, Guid guid, bool isInput)
+        private static void Menu_EditItemClicked(object sender, Guid guid, IGH_Param param, bool isInput)
         {
             ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
 
+            string name;
+            Bitmap icon;
             IGH_ObjectProxy proxy = Grasshopper.Instances.ComponentServer.EmitObjectProxy(guid);
-            if (proxy == null) return;
+            if (proxy == null) 
+            {
+                name = param.Name;
+                icon = param.Icon_24x24;
+            }
+            else
+            {
+                name = proxy.Desc.Name;
+                icon = proxy.Icon;
+            }
 
             if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is CreateObjectItem[])
             {
                 ObservableCollection<CreateObjectItem> structureLists = new ObservableCollection<CreateObjectItem>((CreateObjectItem[])toolStripMenuItem.Tag);
-                new QuickWireEditor(guid, isInput, proxy.Icon, proxy.Desc.Name, structureLists).Show();
+                new QuickWireEditor(isInput, icon, name, structureLists, (par)=> par.ComponentGuid == guid, 
+                    (arr, isIn) =>
+                    {
+                        if (isIn)
+                            GH_ComponentAttributesReplacer.StaticCreateObjectItems.InputItems[guid] = arr;
+                        else
+                            GH_ComponentAttributesReplacer.StaticCreateObjectItems.OutputItems[guid] = arr;
+
+                    }).Show();
             }
         }
     }

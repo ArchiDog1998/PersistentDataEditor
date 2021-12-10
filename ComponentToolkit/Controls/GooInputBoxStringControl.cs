@@ -41,6 +41,7 @@ namespace ComponentToolkit
         private string ChangeStringShow(string str)
         {
             if(string.IsNullOrEmpty(str)) return str;
+            if(str[0] != '{') return str;
 
             List<char> chars = new List<char>();
             foreach (char item in str)

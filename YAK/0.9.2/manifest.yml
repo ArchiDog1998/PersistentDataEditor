@@ -1,0 +1,47 @@
+---
+name: ComponentToolkit
+version: 0.9.2
+authors:
+- 秋水
+description: >
+  Make your workflow faster. Settings are under Display Menu.
+  
+  
+  It contains three features, Component/Parameter's layout changes, Parameter's Persistent data Control, and Quick Connect Wire tools. The latter two are the most important.
+  
+  
+  Param's Control can make you quick set persistent data. Left click on text box can change the value, also can undo it. Right click on control can add a Component to set the params. You can also change control's type on settings.
+  
+  
+  Quick Wire can make you add Components quickly. left click the params' name or icon can open a menu to quick wire, you can also edit the list to make your own quick wire style! The save file is under Grasshopper Setting folder, called 'quickwire.json'.
+  
+  
+  Layout Change can change your component's style, also can add an icon on each param of component.
+  
+  
+  0.9.2 Notes:
+  
+  1. Controls will only be used when param is item access.
+  
+  2. Fix general param only access integer bug.
+  
+  3. Fix the copy component may don't have control bug.
+  
+  4. Less use of memory.
+  
+  5. Add an option to choose whether use script control.
+  
+  6. Add a slider control.
+  
+url: https://www.food4rhino.com/en/app/component-toolkit
+keywords:
+- toolkit
+- param
+- parameter
+- parameters
+- persistent
+- quick
+- wire
+- layout
+icon_url: https://static.food4rhino.com/s3fs-public/styles/thumbnail/public/users-files/qiu-shui/app/componenttoolkiticon256.png
+

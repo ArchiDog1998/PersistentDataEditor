@@ -159,9 +159,12 @@ namespace ComponentToolkit
 
             major.DropDownItems.Add(CreateControlStateCheckBox<Box_Control, GH_Box>(new Param_Box().Icon_24x24));
 
+            major.DropDownItems.Add(CreateControlStateCheckBox<Arc_Control, GH_Arc>(new Param_Arc().Icon_24x24));
+
+
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
-            CreateTextLabel(major, "General Control");
+            CreateTextLabel(major, "Special Control");
 
             major.DropDownItems.Add(CreateControlStateCheckBox<General_Control,IGH_Goo>(new Param_GenericObject().Icon_24x24));
 

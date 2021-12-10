@@ -30,7 +30,7 @@ namespace ComponentToolkit
         //Return a string representing your preferred contact details.
         public override string AuthorContact => "1123993881@qq.com";
 
-        public override string Version => "0.9.1";
+        public override string Version => "1.0.0";
     }
 
     public class ComponentToolkitAssemblyPriority : GH_AssemblyPriority

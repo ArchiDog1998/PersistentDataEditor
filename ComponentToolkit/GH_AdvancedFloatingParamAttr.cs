@@ -39,16 +39,16 @@ namespace ComponentToolkit
 
         public override GH_ObjectResponse RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            if (Datas.UseQuickWire && e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (Datas.UseQuickWire && e.Button == MouseButtons.Left)
             {
                 ToolStripDropDownMenu menu = new ToolStripDropDownMenu();
                 GH_DocumentObject.Menu_AppendItem(menu, "Input", (sender1, e1) =>
                 {
-                    GH_AdvancedLinkParamAttr.RespondToQuickWire(Owner, true).Show(sender, e.ControlLocation);
+                    GH_AdvancedLinkParamAttr.RespondToQuickWire(Owner, Owner.ComponentGuid, true).Show(sender, e.ControlLocation);
                 });
                 GH_DocumentObject.Menu_AppendItem(menu, "Output", (sender1, e1) =>
                 {
-                    GH_AdvancedLinkParamAttr.RespondToQuickWire(Owner, false).Show(sender, e.ControlLocation);
+                    GH_AdvancedLinkParamAttr.RespondToQuickWire(Owner, Owner.ComponentGuid, false).Show(sender, e.ControlLocation);
                 });
                 menu.Show(sender, e.ControlLocation);
 

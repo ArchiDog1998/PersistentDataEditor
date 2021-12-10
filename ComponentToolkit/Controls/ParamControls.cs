@@ -245,6 +245,19 @@ namespace ComponentToolkit
         }
     }
 
+    internal class ParamArcControl : ParamControlBase<GH_Arc>
+    {
+        public ParamArcControl(GH_PersistentParam<GH_Arc> owner) : base(owner)
+        {
+
+        }
+
+        protected override GooControlBase<GH_Arc> SetUpControl(IGH_Param param)
+        {
+            return new GooArcControl(() => OwnerGooData, () => IsNull, null);
+        }
+    }
+
     internal class ParamGeneralControl<T> : ParamControlBase<T> where T : class, IGH_Goo
     {
         public ParamGeneralControl(GH_PersistentParam<T> owner) : base(owner)

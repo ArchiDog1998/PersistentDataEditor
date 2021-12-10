@@ -8,13 +8,12 @@ namespace ComponentToolkit
 {
     internal class CreateObjectItems
     {
-        public SortedList<Guid, CreateObjectItem[]> InputItems { get; set; } 
-        public SortedList<Guid, CreateObjectItem[]> OutputItems { get; set; }
-
+        public SortedList<Guid, CreateObjectItem[]> InputItems { get; set; } = new SortedList<Guid, CreateObjectItem[]>();
+        public SortedList<Guid, CreateObjectItem[]> OutputItems { get; set; } = new SortedList<Guid, CreateObjectItem[]>();
+        public CreateObjectItem[] ListItems { get; set; } = new CreateObjectItem[0];
+        public CreateObjectItem[] TreeItems { get; set; } = new CreateObjectItem[0];
         public CreateObjectItems()
         {
-            InputItems = new SortedList<Guid, CreateObjectItem[]>();
-            OutputItems = new SortedList<Guid, CreateObjectItem[]>();
         }
 
         public CreateObjectItems(CreateObjectItemsSave items)
@@ -40,6 +39,26 @@ namespace ComponentToolkit
                 }
                 OutputItems[new Guid(outputPair.Key)] = outputPairSave;
             }
+
+            if (items.ListItems != null)
+            {
+                CreateObjectItem[] list = new CreateObjectItem[items.ListItems.Length];
+                for (int i = 0; i < items.ListItems.Length; i++)
+                {
+                    list[i] = new CreateObjectItem(items.ListItems[i], false);
+                }
+                ListItems = list;
+            }
+
+            if (items.TreeItems != null)
+            {
+                CreateObjectItem[] tree = new CreateObjectItem[items.TreeItems.Length];
+                for (int i = 0; i < items.TreeItems.Length; i++)
+                {
+                    tree[i] = new CreateObjectItem(items.TreeItems[i], false);
+                }
+                TreeItems = tree;
+            }
         }
     }
 
@@ -47,6 +66,8 @@ namespace ComponentToolkit
     {
         public SortedList<string, CreateObjectItemSave[]> InputItems { get; set; }
         public SortedList<string, CreateObjectItemSave[]> OutputItems { get; set; }
+        public CreateObjectItemSave[] ListItems { get; set; }
+        public CreateObjectItemSave[] TreeItems { get; set; }
 
         public CreateObjectItemsSave(CreateObjectItems items)
         {
@@ -71,6 +92,20 @@ namespace ComponentToolkit
                 }
                 OutputItems[outputPair.Key.ToString()] = outputPairSave;
             }
+
+            CreateObjectItemSave[] list = new CreateObjectItemSave[items.ListItems.Length];
+            for (int i = 0; i < items.ListItems.Length; i++)
+            {
+                list[i] = new CreateObjectItemSave(items.ListItems[i]);
+            }
+            ListItems = list;
+
+            CreateObjectItemSave[] tree = new CreateObjectItemSave[items.TreeItems.Length];
+            for (int i = 0; i < items.TreeItems.Length; i++)
+            {
+                tree[i] = new CreateObjectItemSave(items.TreeItems[i]);
+            }
+            TreeItems = tree;
         }
     }
 }

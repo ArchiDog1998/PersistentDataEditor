@@ -105,6 +105,13 @@ namespace ComponentToolkit
         ReadOnly,
     }
 
+    public enum Arc_Control
+    {
+        Plane_Radius_Angle,
+        SED,
+        ReadOnly,
+    }
+
     public enum General_Control
     {
         General,

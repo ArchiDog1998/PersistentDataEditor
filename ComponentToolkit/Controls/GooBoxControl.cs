@@ -211,7 +211,7 @@ namespace ComponentToolkit
                     if (com.Params.Input[1] is Param_Number)
                     {
                         Param_Number param = (Param_Number)com.Params.Input[1];
-                        GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[1])._savedValue;
+                        GH_Number number = ((GooNumberControl)_values[1])._savedValue;
                         if (number != null)
                         {
                             param.PersistentData.Clear();
@@ -222,7 +222,7 @@ namespace ComponentToolkit
                     if (com.Params.Input[2] is Param_Number)
                     {
                         Param_Number param = (Param_Number)com.Params.Input[2];
-                        GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[2])._savedValue;
+                        GH_Number number = ((GooNumberControl)_values[2])._savedValue;
                         if (number != null)
                         {
                             param.PersistentData.Clear();
@@ -233,7 +233,7 @@ namespace ComponentToolkit
                     if (com.Params.Input[3] is Param_Number)
                     {
                         Param_Number param = (Param_Number)com.Params.Input[3];
-                        GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[3])._savedValue;
+                        GH_Number number = ((GooNumberControl)_values[3])._savedValue;
                         if (number != null)
                         {
                             param.PersistentData.Clear();
