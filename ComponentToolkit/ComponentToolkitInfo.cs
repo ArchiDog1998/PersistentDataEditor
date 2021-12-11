@@ -70,9 +70,19 @@ namespace ComponentToolkit
         private void DoingSomethingFirst(GH_DocumentEditor editor)
         {
             ToolStripMenuItem displayItem = (ToolStripMenuItem)editor.MainMenuStrip.Items[3];
-            ToolStripMenuItem gumball = (ToolStripMenuItem)displayItem.DropDownItems.Find("mnuGumballs", false)[0];
-            displayItem.DropDownItems.Remove(gumball);
-            displayItem.DropDownItems.Insert(3, MenuCreator.CreateMajorMenu(gumball.Image));
+            ToolStripItem[] gumballs = displayItem.DropDownItems.Find("mnuGumballs", false);
+
+            ToolStripMenuItem gumball = null;
+            if(gumballs == null || gumballs.Length == 0)
+            {
+                MessageBox.Show("ComponentToolkit can't find the Gumballs Item!");
+            }
+            else
+            {
+                gumball = (ToolStripMenuItem)gumballs[0];
+                displayItem.DropDownItems.Remove(gumball);
+            }
+            displayItem.DropDownItems.Insert(3, MenuCreator.CreateMajorMenu(gumball?.Image));
             GH_ComponentAttributesReplacer.Init();
 
             CentralSettings.PreviewGumballs = false;

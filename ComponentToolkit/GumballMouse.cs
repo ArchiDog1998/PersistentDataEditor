@@ -29,7 +29,6 @@ namespace ComponentToolkit
 		private GumballObject[] _gumballs;
 
 		private int _index;
-		private bool _undo;
         public GumballMouse(GH_PersistentGeometryParam<T> owner)
         {
 			_owner = owner;
@@ -189,7 +188,6 @@ namespace ComponentToolkit
 				if (conduit.PickGumball(pickContext, null))
 				{
 					_index = i;
-					_undo = true;
 					e.Cancel = true;
 					return;
 				}
@@ -321,11 +319,7 @@ namespace ComponentToolkit
 			}
 			if (trans.IsIdentity) return;
 
-			if (_undo)
-			{
-				_owner.RecordUndoEvent("Gumball drag");
-				_undo = false;
-			}
+			_owner.RecordUndoEvent("Gumball drag");
 
 			if(_geometries.Length == _conduits.Length)
             {
