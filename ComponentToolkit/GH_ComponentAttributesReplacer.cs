@@ -5,6 +5,7 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
 using Grasshopper.Kernel.Components;
 using Grasshopper.Kernel.Data;
+using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Special;
 using System;
 using System.Collections.Generic;
@@ -132,6 +133,22 @@ namespace ComponentToolkit
                         }
                     });
                 }
+                else if (item is GH_NumberSlider && item.Attributes is GH_NumberSliderAttributes && !(item.Attributes is GH_AdvancedNumberSliderAttr))
+                {
+                    GH_NumberSlider slider = (GH_NumberSlider)item;
+                    if (slider.Slider.Type == Grasshopper.GUI.Base.GH_SliderAccuracy.Integer)
+                    {
+                        slider.Slider.DecimalPlaces = 0;
+                        slider.Slider.Type = Grasshopper.GUI.Base.GH_SliderAccuracy.Float;
+                    }
+
+                    PointF point = item.Attributes.Pivot;
+                    bool isSelected = item.Attributes.Selected;
+                    item.Attributes = new GH_AdvancedNumberSliderAttr((GH_NumberSlider)item);
+                    item.Attributes.Pivot = point;
+                    item.Attributes.Selected = isSelected;
+                    item.Attributes.ExpireLayout();
+                }
             }
             sender?.DestroyAttributeCache();
         }
@@ -150,22 +167,7 @@ namespace ComponentToolkit
                     param.Attributes.Selected = isSelected;
                     param.Attributes.ExpireLayout();
                 }
-                else if(param is GH_NumberSlider && param.Attributes is GH_NumberSliderAttributes && !(param.Attributes is GH_AdvancedNumberSliderAttr))
-                {
-                    GH_NumberSlider slider = (GH_NumberSlider)param;
-                    if(slider.Slider.Type == Grasshopper.GUI.Base.GH_SliderAccuracy.Integer)
-                    {
-                        slider.Slider.DecimalPlaces = 0;
-                        slider.Slider.Type = Grasshopper.GUI.Base.GH_SliderAccuracy.Float;
-                    }
 
-                    PointF point = param.Attributes.Pivot;
-                    bool isSelected = param.Attributes.Selected;
-                    param.Attributes = new GH_AdvancedNumberSliderAttr((GH_NumberSlider)param);
-                    param.Attributes.Pivot = point;
-                    param.Attributes.Selected = isSelected;
-                    param.Attributes.ExpireLayout();
-                }
             }
         }
 

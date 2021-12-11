@@ -100,7 +100,7 @@ namespace ComponentToolkit
             {
                 return GetUse("Script") ? new ParamVariableControl((Param_ScriptVariable)param) : null;
             }
-            if(param.Access != GH_ParamAccess.item) return null;
+            if(Datas.OnlyItemAccessControl && param.Access != GH_ParamAccess.item) return null;
 
             if (param is Param_Geometry) return null;
 
@@ -452,7 +452,7 @@ namespace ComponentToolkit
 
             string name;
             Bitmap icon;
-            IGH_ObjectProxy proxy = Grasshopper.Instances.ComponentServer.EmitObjectProxy(guid);
+            IGH_ObjectProxy proxy = Instances.ComponentServer.EmitObjectProxy(guid);
             if (proxy == null) 
             {
                 name = param.Name;

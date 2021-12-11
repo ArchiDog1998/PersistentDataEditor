@@ -195,6 +195,16 @@ namespace ComponentToolkit
             }
         }
 
+        public static bool OnlyItemAccessControl
+        {
+            get => Grasshopper.Instances.Settings.GetValue(nameof(OnlyItemAccessControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(OnlyItemAccessControl), value);
+                ChangeControl();
+            }
+        }
+
         public static bool ComponentUseControl
         {
             get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentUseControl), true);
@@ -271,6 +281,20 @@ namespace ComponentToolkit
                 }
             }
             Instances.RedrawCanvas();
+        }
+
+        internal static void ChangeGumball()
+        {
+            foreach (GH_Document doc in Instances.DocumentServer)
+            {
+                foreach (IGH_Attributes attr in doc.Attributes)
+                {
+                    if (attr is GH_AdvancedFloatingParamAttr)
+                    {
+                        ((GH_AdvancedFloatingParamAttr)attr).RedrawGumballs();
+                    }
+                }
+            }
         }
 
         internal static void RefreshLayout()
@@ -451,6 +475,58 @@ namespace ComponentToolkit
             {
                 Instances.Settings.SetValue(nameof(ShowLinkParamIcon), value);
                 RefreshLayout();
+            }
+        }
+
+        public static readonly int _gumballMaxShowCountDefault = 10;
+        public static int GumballMaxShowCount
+        {
+            get => Instances.Settings.GetValue(nameof(GumballMaxShowCount), _gumballMaxShowCountDefault);
+            set
+            {
+                Instances.Settings.SetValue(nameof(GumballMaxShowCount), value);
+                ChangeGumball();
+            }
+        }
+
+        public static readonly int _paramGumballRadiusDefault = 50;
+        public static int ParamGumballRadius
+        {
+            get => Instances.Settings.GetValue(nameof(ParamGumballRadius), _paramGumballRadiusDefault);
+            set
+            {
+                Instances.Settings.SetValue(nameof(ParamGumballRadius), value);
+                ChangeGumball();
+            }
+        }
+
+        public static bool UseGeoParamGumball
+        {
+            get => Instances.Settings.GetValue(nameof(UseGeoParamGumball), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(UseGeoParamGumball), value);
+                ChangeGumball();
+            }
+        }
+
+        public static bool GeoParamGumballRotate
+        {
+            get => Instances.Settings.GetValue(nameof(GeoParamGumballRotate), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(GeoParamGumballRotate), value);
+                ChangeGumball();
+            }
+        }
+
+        public static bool GeoParamGumballScale
+        {
+            get => Instances.Settings.GetValue(nameof(GeoParamGumballScale), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(GeoParamGumballScale), value);
+                ChangeGumball();
             }
         }
     }

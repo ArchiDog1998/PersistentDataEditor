@@ -18,14 +18,15 @@ namespace ComponentToolkit
     public static  class MenuCreator
     {
 
-        public static ToolStripMenuItem CreateMajorMenu()
+        public static ToolStripMenuItem CreateMajorMenu(Image gumballIcon)
         {
             ToolStripMenuItem major = new ToolStripMenuItem("Component Toolkit", Properties.Resources.ComponentToolkitIcon_24) { ToolTipText = "Two tools and some component's layout params." };
 
 
             major.DropDownItems.Add(CreateQuickWireItem());
-
             major.DropDownItems.Add(CreateControlItem());
+            major.DropDownItems.Add(CreateGumballIttem(gumballIcon));
+
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
@@ -40,6 +41,23 @@ namespace ComponentToolkit
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
             CreateNumberBox(major, "Params' Icon to Edge", Datas.ParamsEdgeDistance, (v) => Datas.ParamsEdgeDistance = (int)v, Datas._paramsEdgeDistanceDefault, 20, 0);
 
+
+            return major;
+        }
+
+        public static ToolStripMenuItem CreateGumballIttem(Image gumballIcon)
+        {
+            ToolStripMenuItem major = CreateCheckBox("Geometry Gumball", Datas.UseGeoParamGumball, (Bitmap)gumballIcon, (boolean) => Datas.UseGeoParamGumball = boolean);
+
+            major.DropDownItems.Add(CreateCheckBox("Use Rotate", Datas.GeoParamGumballRotate, 
+                Instances.ComponentServer.EmitObjectProxy(new Guid("b7798b74-037e-4f0c-8ac7-dc1043d093e0"))?.Icon, (boolean) => Datas.GeoParamGumballRotate = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Use Scale", Datas.GeoParamGumballScale,
+                Instances.ComponentServer.EmitObjectProxy(new Guid("4d2a06bd-4b0f-4c65-9ee0-4220e4c01703"))?.Icon, (boolean) => Datas.GeoParamGumballScale = boolean));
+
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+
+            CreateNumberBox(major, "Max Gumball Count", Datas.GumballMaxShowCount, (v) => Datas.GumballMaxShowCount = (int)v, Datas._gumballMaxShowCountDefault, 100, 1);
+            CreateNumberBox(major, "Gumball Size", Datas.ParamGumballRadius, (v) => Datas.ParamGumballRadius = (int)v, Datas._paramGumballRadiusDefault, 200, 1);
 
             return major;
         }
@@ -86,6 +104,7 @@ namespace ComponentToolkit
             major.ToolTipText = "It will show you the persistent param's value and you can change the value easily.";
 
             major.DropDownItems.Add(CreateUseControlItem());
+            major.DropDownItems.Add(CreateCheckBox("Only Item Access", Datas.OnlyItemAccessControl, null, (boolean) => Datas.OnlyItemAccessControl = boolean));
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
             major.DropDownItems.Add(CreateCheckBox("Use on Components", Datas.ComponentUseControl, Properties.Resources.ComponentIcon_24, (boolean) => Datas.ComponentUseControl = boolean));

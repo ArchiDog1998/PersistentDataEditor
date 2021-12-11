@@ -11,20 +11,75 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using Grasshopper;
+using Rhino;
 
 namespace ComponentToolkit
 {
-    internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IControlAttr
+    internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IControlAttr, IDisposable
     {
         private static FieldInfo _tagsinfo = typeof(GH_FloatingParamAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_stateTags")).First();
 
-
+        private IGumball _gumball;
         private Rectangle _iconTextBound;
+
+        public override bool Selected 
+        { 
+            get => base.Selected;
+            set 
+            {
+                base.Selected = value;
+                if(_gumball != null)
+                {
+                    _gumball.ShowAllGumballs();
+                }
+            } 
+        }
         public BaseControlItem Control { get; private set; } = null;
         public GH_AdvancedFloatingParamAttr(IGH_Param param): base(param)
         {
+            if (IsPersistentGeoParam(param.GetType(), out Type dataType))
+            {
+                Type controlType = typeof(GumballMouse<>).MakeGenericType(dataType);
+                _gumball = (IGumball)Activator.CreateInstance(controlType, param);
+                _gumball.ShowAllGumballs();
+                param.SolutionExpired += Param_SolutionExpired;
+            }
             SetControl();
         }
+
+        private void Param_SolutionExpired(IGH_DocumentObject sender, GH_SolutionExpiredEventArgs e)
+        {
+            if (base.Owner == null)
+            {
+                Owner.SolutionExpired -= Param_SolutionExpired;
+            }
+            else if (base.Owner.OnPingDocument() == null)
+            {
+                Owner.SolutionExpired -= Param_SolutionExpired;
+            }
+            _gumball.ShowAllGumballs();
+        }
+
+        internal static bool IsPersistentGeoParam(Type type, out Type dataType)
+        {
+            dataType = null;
+            if (type == null)
+            {
+                return false;
+            }
+            else if (type.IsGenericType)
+            {
+                if (type.GetGenericTypeDefinition() == typeof(GH_PersistentGeometryParam<>))
+                {
+                    dataType = type.GenericTypeArguments[0];
+                    return true;
+                }
+                else if (type.GetGenericTypeDefinition() == typeof(GH_PersistentParam<>))
+                    return false;
+            }
+            return IsPersistentGeoParam(type.BaseType, out dataType);
+        }
+
         public void SetControl()
         {
             if (Datas.UseParamControl && Datas.ParamUseControl)
@@ -194,6 +249,22 @@ namespace ComponentToolkit
                         }
                         break;
                     }
+            }
+        }
+
+        public void Dispose()
+        {
+            if(_gumball != null)
+            {
+                _gumball.Dispose();
+            }
+        }
+
+        public void RedrawGumballs()
+        {
+            if (_gumball != null)
+            {
+                _gumball.ShowAllGumballs();
             }
         }
     }
