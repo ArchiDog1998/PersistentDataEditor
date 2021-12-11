@@ -57,7 +57,8 @@ namespace ComponentToolkit
             {
                 Owner.SolutionExpired -= Param_SolutionExpired;
             }
-            _gumball.ShowAllGumballs();
+            if (_gumball != null && !_gumball.IsMouseUp)
+                _gumball.ShowAllGumballs();
         }
 
         internal static bool IsPersistentGeoParam(Type type, out Type dataType)

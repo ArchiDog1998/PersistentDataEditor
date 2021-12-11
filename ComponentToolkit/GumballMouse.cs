@@ -19,6 +19,8 @@ namespace ComponentToolkit
 {
     internal class GumballMouse<T> : MouseCallback, IGumball where T : class, IGH_GeometricGoo
     {
+		public bool IsMouseUp { get; private set; } = false;
+
 		private GH_PersistentGeometryParam<T> _owner;
 
 		private T[] _geometries;
@@ -150,6 +152,21 @@ namespace ComponentToolkit
 
 		}
 
+		private void UpdateGumball(int index, Transform xform)
+		{
+			GumballFrame gbFrame = _conduits[index].Gumball.Frame;
+			GumballFrame baseFrame = _gumballs[index].Frame;
+			Plane pl = gbFrame.Plane;
+			pl.Transform(xform);
+
+			baseFrame.Plane = pl;
+			baseFrame.ScaleGripDistance = gbFrame.ScaleGripDistance;
+			_gumballs[index].Frame = baseFrame;
+			_conduits[index].SetBaseGumball(_gumballs[index], settings);
+			_conduits[index].Enabled = true;
+
+		}
+
 		protected override void OnMouseDown(MouseCallbackEventArgs e)
 		{
 			_index = -1;
@@ -217,10 +234,33 @@ namespace ComponentToolkit
 
             if (gumballDisplayConduit.UpdateGumball(dragPoint, worldLine))
 			{
-				_conduits[_index].UpdateGumball(dragPoint, worldLine);
                 RhinoDoc.ActiveDoc.Views.Redraw();
 				e.Cancel = true;
 			}
+		}
+
+		public static string ShowDialog(string caption)
+		{
+			Form prompt = new Form()
+			{
+				Width = 225,
+				Height = 100,
+				FormBorderStyle = FormBorderStyle.FixedToolWindow,
+				Text = caption,
+				StartPosition = FormStartPosition.CenterScreen
+			};
+			TextBox textBox = new TextBox() { Width = 200, Top = 5, Left = 5 };
+			Button confirmation = new Button() { Text = "Ok", Left = 5, Top = 30, Width = 100, DialogResult = DialogResult.OK };
+			Button cancel = new Button() { Text = "cancel", Left = 105, Top = 30, Width = 100, DialogResult = DialogResult.Cancel };
+			confirmation.Click += (sender, e) => { prompt.Close(); };
+			cancel.Click += (sender, e) => { prompt.Close(); };
+			prompt.Controls.Add(textBox);
+			prompt.Controls.Add(confirmation);
+			prompt.Controls.Add(cancel);
+			prompt.AcceptButton = confirmation;
+			prompt.CancelButton = cancel;
+
+			return prompt.ShowDialog() == DialogResult.OK ? textBox.Text : "";
 		}
 
 		protected override void OnMouseUp(MouseCallbackEventArgs e)
@@ -231,7 +271,55 @@ namespace ComponentToolkit
 			}
 
 			Transform trans = _conduits[_index].GumballTransform;
-			if (trans == null || trans.IsIdentity) return;
+			if (trans == null) return;
+            if (trans.IsIdentity)
+            {
+                if (_conduits[_index].PickResult.Mode == GumballMode.TranslateX || _conduits[_index].PickResult.Mode == GumballMode.TranslateY ||
+					_conduits[_index].PickResult.Mode == GumballMode.TranslateZ || _conduits[_index].PickResult.Mode == GumballMode.RotateX ||
+					_conduits[_index].PickResult.Mode == GumballMode.RotateY || _conduits[_index].PickResult.Mode == GumballMode.RotateZ ||
+					 _conduits[_index].PickResult.Mode == GumballMode.ScaleX || _conduits[_index].PickResult.Mode == GumballMode.ScaleY ||
+					  _conduits[_index].PickResult.Mode == GumballMode.ScaleZ)
+					if(GH_Convert.ToDouble(ShowDialog(_conduits[_index].PickResult.Mode.ToString()), out double number, GH_Conversion.Both))
+                    {
+						Plane plane = _conduits[_index].Gumball.Frame.Plane;
+
+						switch (_conduits[_index].PickResult.Mode)
+                        {
+							case GumballMode.TranslateX:
+								trans = Transform.Translation(plane.XAxis * number);
+								break;
+							case GumballMode.TranslateY:
+								trans = Transform.Translation(plane.YAxis * number);
+								break;
+							case GumballMode.TranslateZ:
+								trans = Transform.Translation(plane.ZAxis * number);
+								break;
+							case GumballMode.RotateX:
+								number = RhinoMath.ToRadians(number);
+								trans = Transform.Rotation(number, plane.XAxis, plane.Origin);
+								break;
+							case GumballMode.RotateY:
+								number = RhinoMath.ToRadians(number);
+								trans = Transform.Rotation(number, plane.YAxis, plane.Origin);
+								break;
+							case GumballMode.RotateZ:
+								number = RhinoMath.ToRadians(number);
+								trans = Transform.Rotation(number, plane.ZAxis, plane.Origin);
+								break;
+							case GumballMode.ScaleX:
+								trans = Transform.Scale(plane, number, 1, 1);
+								break;
+							case GumballMode.ScaleY:
+								trans = Transform.Scale(plane, 1, number, 1);
+								break;
+							case GumballMode.ScaleZ:
+								trans = Transform.Scale(plane, 1, 1, number);
+								break;
+						}
+						UpdateGumball(_index, trans);
+                    }
+			}
+			if (trans.IsIdentity) return;
 
 			if (_undo)
 			{
@@ -251,17 +339,19 @@ namespace ComponentToolkit
                 }
             }
 
-			UpdateGumball(_index);
+			IsMouseUp = true;
 			_owner.ExpireSolution(true);
+			IsMouseUp = false;
+			UpdateGumball(_index);
 			RhinoDoc.ActiveDoc.Views.Redraw();
 			_index = -1;
 			e.Cancel = true;
 		}
-
 	}
 
 	public interface IGumball : IDisposable
     {
 		void ShowAllGumballs();
+		bool IsMouseUp { get; }
 	}
 }

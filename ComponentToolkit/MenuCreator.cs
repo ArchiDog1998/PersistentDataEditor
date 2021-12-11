@@ -219,15 +219,15 @@ namespace ComponentToolkit
         }
         private static ToolStripMenuItem CreateCheckBox(string itemName, bool valueDefault, Bitmap icon, Action<bool> valueChange)
         {
-            ToolStripMenuItem click = new ToolStripMenuItem(itemName, icon) { Checked = valueDefault };
+            ToolStripMenuItem click = CreateCheckBox(itemName, valueDefault, valueChange);
             click.Font = new Font(click.Font, FontStyle.Regular);
-            CreateCheckBox(ref click, valueChange);
+            click.Image = icon;
             return click;
         }
         private static ToolStripMenuItem CreateCheckBox(string itemName, bool valueDefault, Action<bool> valueChange)
         {
 
-            ToolStripMenuItem click = new ToolStripMenuItem(itemName) { Checked = valueDefault };
+            ToolStripMenuItem click = new ToolStripMenuItem(itemName) { Checked = valueDefault };  
             CreateCheckBox(ref click, valueChange);
             return click;
         }
@@ -239,8 +239,32 @@ namespace ComponentToolkit
                 ToolStripMenuItem item = (ToolStripMenuItem)sender;
                 item.Checked = !item.Checked;
                 valueChange.Invoke(item.Checked);
+                if (item.HasDropDownItems)
+                {
+                    foreach (ToolStripItem it in item.DropDownItems)
+                    {
+                        it.Enabled = item.Checked;
+                    }
+                }
+
             };
 
+            click.DropDownOpening += Click_DropDownOpening;
+
+        }
+
+        private static void Click_DropDownOpening(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = (ToolStripMenuItem)sender;
+            item.DropDownOpening -= Click_DropDownOpening;
+
+            if (item.HasDropDownItems)
+            {
+                foreach (ToolStripItem it in item.DropDownItems)
+                {
+                    it.Enabled = item.Checked;
+                }
+            }
         }
 
         private static void CreateTextLabel(ToolStripMenuItem item, string name, string tooltips = null)
