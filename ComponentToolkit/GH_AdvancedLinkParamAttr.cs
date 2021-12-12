@@ -28,7 +28,7 @@ namespace ComponentToolkit
 
         public RectangleF StringRect { get; set; }
 
-        public PointF IconPivot { get; set; }
+        public RectangleF IconRect { get; set; }
 
         public static SortedList<Guid, Bitmap> IconSet = new SortedList<Guid, Bitmap>();
 
@@ -85,10 +85,9 @@ namespace ComponentToolkit
             ImageAttributes attr = new ImageAttributes();
             attr.SetColorMatrix(new ColorMatrix(nArray), ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
-            int iconSize = Datas.ComponentParamIconSize;
-            Bitmap outBitmap = new Bitmap(iconSize, iconSize);
+            Bitmap outBitmap = new Bitmap(bitmap.Width, bitmap.Height);
             Graphics g = Graphics.FromImage(outBitmap);
-            g.DrawImage(bitmap, new Rectangle(0, 0, iconSize, iconSize), 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel, attr);
+            g.DrawImage(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel, attr);
             g.Dispose();
 
             return outBitmap;

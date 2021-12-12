@@ -373,7 +373,7 @@ namespace ComponentToolkit
                     if (Datas.ShowLinkParamIcon)
                     {
                         float size = Datas.ComponentParamIconSize;
-                        attr.IconPivot = new PointF(startX, attr.Bounds.Y + attr.Bounds.Height /2 - size/2);
+                        attr.IconRect = new RectangleF(startX, attr.Bounds.Y + attr.Bounds.Height /2 - size/2, size, size);
                         startX += size + Datas.ComponentIconDistance;
                     }
 
@@ -410,8 +410,8 @@ namespace ComponentToolkit
                     if (Datas.ShowLinkParamIcon)
                     {
                         float size = Datas.ComponentParamIconSize;
-                        attr.IconPivot = new PointF(attr.Bounds.Right - Datas.ComponentParamIconSize - additionforTag - Datas.ComponentToEdgeDistance, 
-                            attr.Bounds.Y + attr.Bounds.Height / 2 - size / 2);
+                        attr.IconRect = new RectangleF(attr.Bounds.Right - Datas.ComponentParamIconSize - additionforTag - Datas.ComponentToEdgeDistance, 
+                            attr.Bounds.Y + attr.Bounds.Height / 2 - size / 2, size, size);
                     }
                 }
             }
@@ -465,7 +465,7 @@ namespace ComponentToolkit
                             {
                                 icon = attr.SetParamIcon();
                             }
-                            graphics.DrawImage(icon, attr.IconPivot);
+                            graphics.DrawImage(icon, attr.IconRect, new RectangleF(0, 0, icon.Width, icon.Height), GraphicsUnit.Pixel);
                         }
 
                         //Render Control

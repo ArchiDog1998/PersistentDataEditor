@@ -24,7 +24,6 @@ namespace ComponentToolkit
 		private GH_PersistentGeometryParam<T> _owner;
 
 		private T[] _geometries;
-		//private Transform[] Xform;
 		private GumballDisplayConduit[] _conduits;
 		private GumballObject[] _gumballs;
 
@@ -333,10 +332,10 @@ namespace ComponentToolkit
                 }
             }
 
-			IsMouseUp = true;
-			_owner.ExpireSolution(true);
-			IsMouseUp = false;
-			UpdateGumball(_index);
+            IsMouseUp = true;
+            _owner.ExpireSolution(true);
+            IsMouseUp = false;
+            UpdateGumball(_index);
 			RhinoDoc.ActiveDoc.Views.Redraw();
 			_index = -1;
 			e.Cancel = true;
