@@ -107,7 +107,7 @@ namespace ComponentToolkit
                              if(ShowValue == null) return null;
                              return new GH_Rectangle(new Rhino.Geometry.Rectangle3d(
                                  ShowValue.Value.Plane, ShowValue.Value.X, ShowValue.Value.Y));
-                         }, _isNull, "S"),
+                         }, _isNull, "R"),
 
                         new GooIntervalControl(()=>
                          {

@@ -15,16 +15,14 @@ using Grasshopper.Kernel.Special;
 
 namespace ComponentToolkit
 {
-    public static  class MenuCreator
+    public static class MenuCreator
     {
-
         public static ToolStripMenuItem CreateMajorMenu(Image gumballIcon)
         {
             ToolStripMenuItem major = new ToolStripMenuItem("Component Toolkit", Properties.Resources.ComponentToolkitIcon_24) { ToolTipText = "Two tools and some component's layout params." };
 
-
-            major.DropDownItems.Add(CreateQuickWireItem());
             major.DropDownItems.Add(CreateControlItem());
+            major.DropDownItems.Add(CreateQuickWireItem());
             major.DropDownItems.Add(CreateGumballIttem(gumballIcon));
 
 
@@ -104,9 +102,10 @@ namespace ComponentToolkit
             major.ToolTipText = "It will show you the persistent param's value and you can change the value easily.";
 
             major.DropDownItems.Add(CreateUseControlItem());
-            major.DropDownItems.Add(CreateCheckBox("Only Item Access", Datas.OnlyItemAccessControl, null, (boolean) => Datas.OnlyItemAccessControl = boolean));
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+
+            major.DropDownItems.Add(CreateCheckBox("Only Item Access", Datas.OnlyItemAccessControl, null, (boolean) => Datas.OnlyItemAccessControl = boolean));
             major.DropDownItems.Add(CreateCheckBox("Use on Components", Datas.ComponentUseControl, Properties.Resources.ComponentIcon_24, (boolean) => Datas.ComponentUseControl = boolean));
             major.DropDownItems.Add(CreateCheckBox("Use on Parameters", Datas.ParamUseControl, Properties.Resources.ParametersIcon_24, (boolean) => Datas.ParamUseControl = boolean));
 

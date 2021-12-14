@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ComponentToolkit
 {
@@ -25,8 +26,13 @@ namespace ComponentToolkit
 
         internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            bool lastBool = ShowValue?.Value ?? false;
-            ShowValue = new GH_Boolean(!lastBool);
+            if (e.Button == MouseButtons.Left)
+            {
+                bool lastBool = ShowValue?.Value ?? false;
+                ShowValue = new GH_Boolean(!lastBool);
+                return;
+            }
+            base.Clicked(sender, e);
         }
 
         internal override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)

@@ -42,7 +42,7 @@ namespace ComponentToolkit
 
         }
 
-        public IGH_DocumentObject CreateObject(IGH_Param param, Action<IGH_DocumentObject> action = null)
+        public IGH_DocumentObject CreateObject(IGH_Param param, PointF? objCenter = null, Action<IGH_DocumentObject> action = null)
         {
             IGH_DocumentObject obj = Grasshopper.Instances.ComponentServer.EmitObject(ObjectGuid);
             if (obj == null) return null;
@@ -52,13 +52,14 @@ namespace ComponentToolkit
             RectangleF outBound = param.Attributes.GetTopLevel.Bounds;
             RectangleF thisBound = param.Attributes.Bounds;
 
-            PointF objCenter = new PointF(outBound.Left + (IsInput ? - 100 : (140 + outBound.Width)),
-                thisBound.Top + thisBound.Height / 2);
+            if (!objCenter.HasValue)
+                objCenter = new PointF(outBound.Left + (IsInput ? -100 : (140 + outBound.Width)),
+                   thisBound.Top + thisBound.Height / 2);
 
             if (obj is IGH_Component)
             {
                 IGH_Component com = obj as IGH_Component;
-                AddAObjectToCanvas(obj, objCenter, InitString);
+                AddAObjectToCanvas(obj, objCenter.Value, InitString);
 
                 if (IsInput)
                 {
@@ -74,7 +75,7 @@ namespace ComponentToolkit
             else if(obj is IGH_Param)
             {
                 IGH_Param par = obj as IGH_Param;
-                AddAObjectToCanvas(obj, objCenter, InitString);
+                AddAObjectToCanvas(obj, objCenter.Value, InitString);
 
                 if (IsInput)
                 {

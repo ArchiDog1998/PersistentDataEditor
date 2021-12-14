@@ -52,7 +52,7 @@ namespace ComponentToolkit
         internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             if (e.Button == MouseButtons.Right && AddCompnentGuid != default(Guid) && Owner != null)
-                new CreateObjectItem(AddCompnentGuid, AddCompnentIndex, AddCompnentInit, true).CreateObject(Owner, DosomethingWhenCreate);
+                new CreateObjectItem(AddCompnentGuid, AddCompnentIndex, AddCompnentInit, true).CreateObject(Owner, null, DosomethingWhenCreate);
         }
     }
 
