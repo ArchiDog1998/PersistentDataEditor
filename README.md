@@ -24,7 +24,7 @@ The _Param's Icon to Edge_ doesn't work so well, because the param has a minimum
 
 ## Component's Param Icon
 
-It is a novice friendly feature. You can add a icon on each params side, so you can easily know which type is this param is.
+It is a novice friendly feature. You can add a icon on each params side, so you can easily know which type this param is.
 
 Also you can change some parameters about this icon.
 
