@@ -30,7 +30,7 @@ namespace ComponentToolkit
 
         public void SetControl()
         {
-            if (GH_AdvancedLinkParamAttr.GetUse("Slider") && Datas.UseParamControl)
+            if (GH_AdvancedLinkParamAttr.GetUse("Slider") && Datas.UseParamControl && Datas.ParamUseControl)
             {
                 _controlItems = new BaseControlItem[]
                 {

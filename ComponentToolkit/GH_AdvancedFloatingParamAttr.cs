@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using Grasshopper;
 using Rhino;
+using Grasshopper.Kernel.Types;
 
 namespace ComponentToolkit
 {
@@ -37,14 +38,42 @@ namespace ComponentToolkit
         public BaseControlItem Control { get; private set; } = null;
         public GH_AdvancedFloatingParamAttr(IGH_Param param): base(param)
         {
-            if (IsPersistentGeoParam(param.GetType(), out Type dataType))
+            _gumball = SetGumball(param);
+            if(_gumball != null)
             {
-                Type controlType = typeof(GumballMouse<>).MakeGenericType(dataType);
-                _gumball = (IGumball)Activator.CreateInstance(controlType, param);
-                _gumball.ShowAllGumballs();
                 param.SolutionExpired += Param_SolutionExpired;
             }
             SetControl();
+        }
+
+        internal static IGumball SetGumball(IGH_Param param)
+        {
+            IGumball gumball = null;
+            if (GH_AdvancedLinkParamAttr.IsPersistentParam(param.GetType(), out Type dataType)
+                && typeof(IGH_GeometricGoo).IsAssignableFrom(dataType))
+            {
+                Type controlType = typeof(GumballMouse<>).MakeGenericType(dataType);
+                gumball = (IGumball)Activator.CreateInstance(controlType, param);
+            }
+            return gumball;
+        }
+
+        private static bool IsGeometricGoo(Type type)
+        {
+            if (type == null)
+            {
+                return false;
+            }
+            else if (type.IsGenericType)
+            {
+                if (type.GetGenericTypeDefinition() == typeof(GH_GeometricGoo<>))
+                {
+                    return true;
+                }
+                else if (type.GetGenericTypeDefinition() == typeof(GH_Goo<>))
+                    return false;
+            }
+            return IsGeometricGoo(type.BaseType);
         }
 
         private void Param_SolutionExpired(IGH_DocumentObject sender, GH_SolutionExpiredEventArgs e)
@@ -59,26 +88,6 @@ namespace ComponentToolkit
             }
             if (_gumball != null && !_gumball.IsMouseUp)
                 _gumball.ShowAllGumballs();
-        }
-
-        internal static bool IsPersistentGeoParam(Type type, out Type dataType)
-        {
-            dataType = null;
-            if (type == null)
-            {
-                return false;
-            }
-            else if (type.IsGenericType)
-            {
-                if (type.GetGenericTypeDefinition() == typeof(GH_PersistentGeometryParam<>))
-                {
-                    dataType = type.GenericTypeArguments[0];
-                    return true;
-                }
-                else if (type.GetGenericTypeDefinition() == typeof(GH_PersistentParam<>))
-                    return false;
-            }
-            return IsPersistentGeoParam(type.BaseType, out dataType);
         }
 
         public void SetControl()

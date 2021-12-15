@@ -32,10 +32,48 @@ namespace ComponentToolkit
 
         public static SortedList<Guid, Bitmap> IconSet = new SortedList<Guid, Bitmap>();
 
+        private IGumball _gumball;
+
+
         public GH_AdvancedLinkParamAttr(IGH_Param param, IGH_Attributes parent) : base(param, parent)
         {
+            _gumball = GH_AdvancedFloatingParamAttr.SetGumball(param);
+            if (_gumball != null)
+            {
+                param.SolutionExpired += Param_SolutionExpired;
+            }
             SetControl();
             SetParamIcon();
+        }
+
+        public void ShowAllGumballs()
+        {
+            if (_gumball != null)
+            {
+                _gumball.ShowAllGumballs();
+            }
+        }
+
+        public void CloseAllGumballs()
+        {
+            if (_gumball != null)
+            {
+                _gumball.Dispose();
+            }
+        }
+
+        private void Param_SolutionExpired(IGH_DocumentObject sender, GH_SolutionExpiredEventArgs e)
+        {
+            if (base.Owner == null)
+            {
+                Owner.SolutionExpired -= Param_SolutionExpired;
+            }
+            else if (base.Owner.OnPingDocument() == null)
+            {
+                Owner.SolutionExpired -= Param_SolutionExpired;
+            }
+            if (_gumball != null && !_gumball.IsMouseUp)
+                _gumball.ShowAllGumballs();
         }
 
         public void SetControl()

@@ -40,8 +40,7 @@ namespace ComponentToolkit
         private static readonly FieldInfo _sourceInfo = typeof(GH_WireInteraction).GetRuntimeFields().Where(m => m.Name.Contains("m_source")).First();
         private static readonly FieldInfo _targetInfo = typeof(GH_WireInteraction).GetRuntimeFields().Where(m => m.Name.Contains("m_target")).First();
         private static readonly FieldInfo _fromInputInfo = typeof(GH_WireInteraction).GetRuntimeFields().Where(m => m.Name.Contains("m_dragfrominput")).First();
-
-
+        private static readonly MethodInfo _paintOverlay = typeof(GH_WireInteraction).GetRuntimeMethods().Where(m => m.Name.Contains("Canvas_DrawOverlay")).First();
 
         public GH_ComponentAttributesReplacer(IGH_Component component): base(component)
         {
@@ -84,9 +83,11 @@ namespace ComponentToolkit
             }
 
             Instances.ActiveCanvas.Document_ObjectsAdded += ActiveCanvas_Document_ObjectsAdded;
+            Instances.ActiveCanvas.Document_ObjectsDeleted += ActiveCanvas_Document_ObjectsDeleted;
             Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
-            Instances.ActiveCanvas.MouseMove += ActiveCanvas_MouseMove;
+            Instances.ActiveCanvas.MouseDown += ActiveCanvas_MouseDown;
             Instances.ActiveCanvas.MouseUp += ActiveCanvas_MouseUp;
+            Instances.ActiveCanvas.DocumentObjectMouseDown += ActiveCanvas_DocumentObjectMouseDown;
 
             ExchangeMethod(
                 typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributes.RenderComponentParameters))).First(),
@@ -109,10 +110,78 @@ namespace ComponentToolkit
             );
         }
 
+        private static void ActiveCanvas_Document_ObjectsDeleted(GH_Document sender, GH_DocObjectEventArgs e)
+        {
+            foreach (var component in e.Objects)
+            {
+                if(component is IGH_Component)
+                {
+                    foreach (var item in ((IGH_Component)component).Params.Input)
+                    {
+                        if (item.Attributes is GH_AdvancedLinkParamAttr)
+                        {
+                            ((GH_AdvancedLinkParamAttr)item.Attributes).CloseAllGumballs();
+                        }
+                    }
+                }
+            }
+        }
+
+        private static IGH_Component OnGumballComponent;
+
+        private static void ActiveCanvas_DocumentObjectMouseDown(object sender, GH_CanvasObjectMouseDownEventArgs e)
+        {
+            if(OnGumballComponent != e.Object.TopLevelObject)
+            {
+                CloseGumball();
+            }
+
+            if ( e.Object.TopLevelObject is IGH_Component)
+            {
+                IGH_Component gH_Component = (IGH_Component)e.Object.TopLevelObject;
+                e.Document.ScheduleSolution(50, (doc) =>
+                {
+                    if (!gH_Component.Attributes.Selected) return;
+
+                    OnGumballComponent = gH_Component;
+                    foreach (var item in gH_Component.Params.Input)
+                    {
+                        if (item.Attributes is GH_AdvancedLinkParamAttr)
+                        {
+                            ((GH_AdvancedLinkParamAttr)item.Attributes).ShowAllGumballs();
+                        }
+                    }
+                });
+            } 
+        }
+
+        private static void CloseGumball()
+        {
+            if (OnGumballComponent != null)
+            {
+                Instances.ActiveCanvas.Document.ScheduleSolution(50, (doc) =>
+                {
+                    if (OnGumballComponent == null || OnGumballComponent.Attributes.Selected) return;
+
+                    foreach (var item in OnGumballComponent.Params.Input)
+                    {
+                        if (item.Attributes is GH_AdvancedLinkParamAttr)
+                        {
+                            ((GH_AdvancedLinkParamAttr)item.Attributes).CloseAllGumballs();
+                        }
+                    }
+                    OnGumballComponent = null;
+                });
+            }
+        }
+
         #region QuickWire
 
-        private static void ActiveCanvas_MouseMove(object sender, MouseEventArgs e)
+        private static void ActiveCanvas_MouseDown(object sender, MouseEventArgs e)
         {
+
+            CloseGumball();
+
             if (_wire != null) return;
             if(Datas.UseQuickWire && e.Button == MouseButtons.Left)
             {
@@ -127,13 +196,33 @@ namespace ComponentToolkit
         private static void ActiveCanvas_MouseUp(object sender, MouseEventArgs e)
         {
             if (_wire == null) return;
-            if(_targetInfo.GetValue(_wire) == null && Datas.UseQuickWire && e.Button == MouseButtons.Left)
+            PointF mousePointCanvas = Instances.ActiveCanvas.Viewport.UnprojectPoint(e.Location);
+            IGH_Param source = (IGH_Param)_sourceInfo.GetValue(_wire);
+
+            if (Datas.UseQuickWire && e.Button == MouseButtons.Left && _targetInfo.GetValue(_wire) == null && !source.Attributes.GetTopLevel.Bounds.Contains(mousePointCanvas)
+                && DistanceTo( mousePointCanvas, _wire.CanvasPointDown) > 20)
             {
-                IGH_Param param = (IGH_Param)_sourceInfo.GetValue(_wire);
-                RespondToQuickWire(param, param.ComponentGuid, (bool)_fromInputInfo.GetValue(_wire), Instances.ActiveCanvas.Viewport.UnprojectPoint(e.Location)).Show(
+                Instances.ActiveCanvas.CanvasPostPaintOverlay += ActiveCanvas_CanvasPostPaintOverlay;
+                Instances.ActiveCanvas.Refresh();
+
+                RespondToQuickWire(source, source.ComponentGuid, (bool)_fromInputInfo.GetValue(_wire), mousePointCanvas).Show(
                     Instances.ActiveCanvas, e.Location);
             }
-            _wire = null;
+            else
+            {
+                _wire = null;
+            }
+        }
+
+        private static float DistanceTo(PointF a, PointF b)
+        {
+            return (float)Math.Sqrt(Math.Pow(a.X - b.X, 2) + Math.Pow(a.Y - b.Y, 2));
+        }
+
+        private static void ActiveCanvas_CanvasPostPaintOverlay(GH_Canvas sender)
+        {
+            if (_wire != null)
+                _paintOverlay.Invoke(_wire, new object[] { Instances.ActiveCanvas });
         }
 
         internal static ToolStripDropDownMenu RespondToQuickWire(IGH_Param param, Guid guid, bool isInput, PointF pivot, bool isFirst = true)
@@ -313,6 +402,12 @@ namespace ComponentToolkit
             }
 
             CreateQuickWireMenu(menu, items, param, pivot, (sender, e) => Menu_EditItemClicked(sender, guid, param, isInput));
+            menu.Closed += (sender, e) =>
+            {
+                Instances.ActiveCanvas.CanvasPostPaintOverlay -= ActiveCanvas_CanvasPostPaintOverlay;
+                _wire = null;
+                Instances.ActiveCanvas.Refresh();
+            };
 
             return menu;
         }
@@ -398,11 +493,23 @@ namespace ComponentToolkit
 
         private static void ActiveCanvas_Document_ObjectsAdded(GH_Document sender, GH_DocObjectEventArgs e)
         {
+
             foreach (var item in e.Objects)
             {
                 if(item is IGH_Component)
                 {
                     item.Attributes.ExpireLayout();
+                    //sender.ScheduleSolution(150, (doc) =>
+                    //{
+                    //    foreach (var param in ((IGH_Component)item).Params.Input)
+                    //    {
+                    //        if (param.Attributes is GH_AdvancedLinkParamAttr)
+                    //        {
+                    //            ((GH_AdvancedLinkParamAttr)param.Attributes).CloseAllGumballs();
+                    //        }
+                    //    }
+                    //});
+
                 }
                 ChangeFloatParam(item);
                 if(item is GH_PathMapper)

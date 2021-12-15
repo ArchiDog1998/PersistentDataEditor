@@ -21,14 +21,14 @@ namespace ComponentToolkit
     {
 		public bool IsMouseUp { get; private set; } = false;
 
-		private GH_PersistentGeometryParam<T> _owner;
+		private GH_PersistentParam<T> _owner;
 
 		private T[] _geometries;
 		private GumballDisplayConduit[] _conduits;
 		private GumballObject[] _gumballs;
 
 		private int _index;
-        public GumballMouse(GH_PersistentGeometryParam<T> owner)
+        public GumballMouse(GH_PersistentParam<T> owner)
         {
 			_owner = owner;
 		}
@@ -86,9 +86,11 @@ namespace ComponentToolkit
 			if (_owner == null || _owner.OnPingDocument() == null) return;
 			if (_owner.Locked || !_owner.Attributes.Selected) return;
 			if (_owner is IGH_PreviewObject && ((IGH_PreviewObject)_owner).Hidden) return;
+			if (_owner.Attributes.GetTopLevel.DocObject is IGH_PreviewObject && ((IGH_PreviewObject)_owner.Attributes.GetTopLevel.DocObject).Hidden) return;
 
-            //Get PersistentData.
-            _geometries = _owner.PersistentData.NonNulls.Where((goo) => !goo.IsReferencedGeometry).ToArray();
+
+			//Get PersistentData.
+			_geometries = _owner.PersistentData.NonNulls.Where((goo) => !goo.IsReferencedGeometry).ToArray();
 
 			if(_geometries.Length > Datas.GumballMaxShowCount)
             {

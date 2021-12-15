@@ -19,7 +19,7 @@ namespace ComponentToolkit
     {
         public override Guid AddCompnentGuid => new Guid("59e0b89a-e487-49f8-bab8-b5bab16be14c");
 
-        private string ShowString => ChangeStringShow(ShowValue?.ToString());
+        private string ShowString => ShowValue?.ToString();
         internal override int Height => 14;
         internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15),
             Datas.InputBoxControlMaxWidth);
@@ -36,20 +36,6 @@ namespace ComponentToolkit
             if (e.Button == MouseButtons.Left && !IsReadOnly)
                 new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowString, true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
             base.Clicked(sender, e);
-        }
-
-        private string ChangeStringShow(string str)
-        {
-            if(string.IsNullOrEmpty(str)) return str;
-            if(str[0] != '{') return str;
-
-            List<char> chars = new List<char>();
-            foreach (char item in str)
-            {
-                if (item == '{' || item == '}') continue;
-                chars.Add(item);
-            }
-            return new string(chars.ToArray());
         }
 
         private void SaveString(string str)
