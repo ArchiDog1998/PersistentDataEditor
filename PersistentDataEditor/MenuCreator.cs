@@ -50,10 +50,28 @@ namespace PersistentDataEditor
             major.DropDownItems.Add(CreateCheckBox("Use Scale", Datas.GeoParamGumballScale,
                 Instances.ComponentServer.EmitObjectProxy(new Guid("4d2a06bd-4b0f-4c65-9ee0-4220e4c01703"))?.Icon, (boolean) => Datas.GeoParamGumballScale = boolean));
 
+
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
             CreateNumberBox(major, "Max Gumball Count", Datas.GumballMaxShowCount, (v) => Datas.GumballMaxShowCount = (int)v, Datas._gumballMaxShowCountDefault, 100, 1);
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
             CreateNumberBox(major, "Gumball Size", Datas.ParamGumballRadius, (v) => Datas.ParamGumballRadius = (int)v, Datas._paramGumballRadiusDefault, 200, 1);
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+            CreateNumberBox(major, "Gumball Preview Thickness", Datas.ParamGumballWirePreviewThickness, (v) => Datas.ParamGumballWirePreviewThickness = (int)v, Datas._paramGumballWirePreviewThicknessDefault, 50, 1);
+
+            major.DropDownItems.Add(CreateGumballPreviewColor());
+
+            return major;
+        }
+
+        private static ToolStripMenuItem CreateGumballPreviewColor()
+        {
+            ToolStripMenuItem major = new ToolStripMenuItem("Preview Color") { ToolTipText = "Change gumballs' preview color." };
+
+            CreateColor(major, "Wire Color", Datas.ParamGumballPreviewWireColor, Datas._paramGumballPreviewWireColorDefault, (color) => Datas.ParamGumballPreviewWireColor = color);
+            GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
+            CreateColor(major, "Mesh Color", Datas.ParamGumballPreviewMeshColor, Datas._paramGumballPreviewMeshColorDefault, (color) => Datas.ParamGumballPreviewMeshColor = color);
+
 
             return major;
         }

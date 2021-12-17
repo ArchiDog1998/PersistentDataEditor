@@ -523,5 +523,41 @@ namespace PersistentDataEditor
                 ChangeGumball();
             }
         }
+
+        public static readonly int _paramGumballWirePreviewThicknessDefault = 5;
+        public static int ParamGumballWirePreviewThickness
+        {
+            get => Instances.Settings.GetValue(nameof(ParamGumballWirePreviewThickness), _paramGumballWirePreviewThicknessDefault);
+            set
+            {
+                Instances.Settings.SetValue(nameof(ParamGumballWirePreviewThickness), value);
+            }
+        }
+
+        public static readonly Color _paramGumballPreviewWireColorDefault = Color.DarkBlue;
+        public static Color ParamGumballPreviewWireColor
+        {
+            get
+            {
+                return Instances.Settings.GetValue(nameof(ParamGumballPreviewWireColor), _paramGumballPreviewWireColorDefault);
+            }
+            set
+            {
+                Grasshopper.Instances.Settings.SetValue(nameof(ParamGumballPreviewWireColor), value);
+            }
+        }
+
+        public static readonly Color _paramGumballPreviewMeshColorDefault = Color.DarkBlue;
+        public static Color ParamGumballPreviewMeshColor
+        {
+            get
+            {
+                return Instances.Settings.GetValue(nameof(ParamGumballPreviewMeshColor), _paramGumballPreviewMeshColorDefault);
+            }
+            set
+            {
+                Grasshopper.Instances.Settings.SetValue(nameof(ParamGumballPreviewMeshColor), value);
+            }
+        }
     }
 }

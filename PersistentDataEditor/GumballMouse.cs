@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,6 +21,7 @@ namespace PersistentDataEditor
 {
     internal class GumballMouse<T> : MouseCallback, IGumball where T : class, IGH_GeometricGoo
     {
+
 		public bool IsMouseUp { get; private set; } = false;
 
 		private GH_PersistentParam<T> _owner;
@@ -26,6 +29,8 @@ namespace PersistentDataEditor
 		private T[] _geometries;
 		private GumballDisplayConduit[] _conduits;
 		private GumballObject[] _gumballs;
+
+		private bool _isOnlyOneGumball => _conduits?.Length != _geometries?.Length;
 
 		private int _index;
         public GumballMouse(GH_PersistentParam<T> owner)
@@ -59,7 +64,8 @@ namespace PersistentDataEditor
 
         }
 
-		public void Dispose()
+        #region Show and Off
+        public void Dispose()
 		{
 			if(_conduits != null)
 			{
@@ -167,7 +173,10 @@ namespace PersistentDataEditor
 
 		}
 
-		protected override void OnMouseDown(MouseCallbackEventArgs e)
+        #endregion
+
+        #region Respound
+        protected override void OnMouseDown(MouseCallbackEventArgs e)
 		{
 			_index = -1;
 			if (_conduits.Length == 0 || e.MouseButton != MouseButton.Left)
@@ -189,6 +198,35 @@ namespace PersistentDataEditor
 				if (conduit.PickGumball(pickContext, null))
 				{
 					_index = i;
+
+                    if (_isOnlyOneGumball)
+                    {
+						List<IGH_GeometricGoo> goosRelay = new List<IGH_GeometricGoo>();
+                        foreach (var item in _geometries)
+                        {
+							if (!(item is IGH_PreviewData)) continue;
+
+                            IGH_GeometricGoo addObj = item.DuplicateGeometry();
+                            if (addObj != null) goosRelay.Add(addObj);
+                        }
+						MoveShowConduit.MoveObjects = goosRelay.ToArray();
+                    }
+                    else
+                    {
+						if(_geometries[i] is IGH_PreviewData)
+                        {
+                            IGH_GeometricGoo addObj = _geometries[i].DuplicateGeometry();
+                            if (addObj != null)
+                            {
+                                MoveShowConduit.MoveObjects = new IGH_GeometricGoo[] { addObj };
+                            }
+                            else
+                            {
+                                MoveShowConduit.MoveObjects = new IGH_GeometricGoo[0];
+                            }
+                        }
+                    }
+
 					e.Cancel = true;
 					return;
 				}
@@ -216,24 +254,10 @@ namespace PersistentDataEditor
 			Intersection.LinePlane(worldLine, plane, out var lineParameter);
 			Point3d dragPoint = worldLine.PointAt(lineParameter);
 
-            //Grid Snap
-
-            //if (Rhino.ApplicationSettings.ModelAidSettings.GridSnap)
-            //{
-            //    if (_conduits[_index].PickResult.Mode == GumballMode.TranslateFree || _conduits[_index].PickResult.Mode == GumballMode.TranslateX ||
-            //        _conduits[_index].PickResult.Mode == GumballMode.TranslateY || _conduits[_index].PickResult.Mode == GumballMode.TranslateZ ||
-            //        _conduits[_index].PickResult.Mode == GumballMode.TranslateXY || _conduits[_index].PickResult.Mode == GumballMode.TranslateZX ||
-            //        _conduits[_index].PickResult.Mode == GumballMode.TranslateYZ)
-            //    {
-            //        Point3d snap = new Point3d((int)dragPoint.X, (int)dragPoint.Y, (int)dragPoint.Z);
-            //        worldLine.Transform(Transform.Translation(snap - dragPoint));
-            //        dragPoint = snap;
-            //    }
-            //}
-
             if (gumballDisplayConduit.UpdateGumball(dragPoint, worldLine))
 			{
-                RhinoDoc.ActiveDoc.Views.Redraw();
+				MoveShowConduit.Trans = gumballDisplayConduit.GumballTransform;
+				RhinoDoc.ActiveDoc.Views.Redraw();
 				e.Cancel = true;
 			}
 		}
@@ -341,6 +365,39 @@ namespace PersistentDataEditor
 			RhinoDoc.ActiveDoc.Views.Redraw();
 			_index = -1;
 			e.Cancel = true;
+
+			//Empty Preview.
+			MoveShowConduit.MoveObjects = new IGH_GeometricGoo[0];
+			RhinoDoc.ActiveDoc.Views.Redraw();
+		}
+
+        #endregion
+    }
+
+    public class MoveShowConduit : DisplayConduit
+    {
+
+		public static IGH_GeometricGoo[] MoveObjects { get; set; }
+		public static Transform Trans { get; set; }
+		protected override void DrawOverlay(DrawEventArgs e)
+		{
+			if (MoveObjects != null && MoveObjects.Length != 0)
+			{
+				int thickness = Datas.ParamGumballWirePreviewThickness;
+				Color wireColor = Datas.ParamGumballPreviewWireColor;
+				Color metarColor = Datas.ParamGumballPreviewMeshColor;
+
+                foreach (var item in MoveObjects)
+                {
+					IGH_GeometricGoo copy = item.DuplicateGeometry();
+					copy.Transform(Trans);
+
+					((IGH_PreviewData)copy).DrawViewportWires(new GH_PreviewWireArgs(e.Viewport, e.Display, wireColor, thickness));
+					((IGH_PreviewData)copy).DrawViewportMeshes(new GH_PreviewMeshArgs(e.Viewport, e.Display,
+						new DisplayMaterial(metarColor), MeshingParameters.Default));
+				}
+			}
+			base.DrawOverlay(e);
 		}
 	}
 

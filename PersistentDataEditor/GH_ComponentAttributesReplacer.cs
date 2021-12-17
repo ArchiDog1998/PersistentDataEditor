@@ -41,13 +41,13 @@ namespace PersistentDataEditor
 
         public static void Init()
         {
-
-
             Instances.ActiveCanvas.Document_ObjectsAdded += ActiveCanvas_Document_ObjectsAdded;
             Instances.ActiveCanvas.Document_ObjectsDeleted += ActiveCanvas_Document_ObjectsDeleted;
             Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
             Instances.ActiveCanvas.MouseDown += (sender, e) => CloseGumball();
             Instances.ActiveCanvas.DocumentObjectMouseDown += ActiveCanvas_DocumentObjectMouseDown;
+
+            new MoveShowConduit().Enabled = true;
 
             ExchangeMethod(
                 typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributes.RenderComponentParameters))).First(),
