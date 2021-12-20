@@ -17,9 +17,17 @@ namespace PersistentDataEditor
 {
     public static class MenuCreator
     {
+
+        private static ToolStrip _canvasToolbar = Instances.DocumentEditor.Controls[0].Controls[1] as ToolStrip;
+
         public static ToolStripMenuItem CreateMajorMenu(Image gumballIcon)
         {
             ToolStripMenuItem major = new ToolStripMenuItem("Persistent Data Editor", Properties.Resources.ComponentToolkitIcon_24) { ToolTipText = "Different way to change the persistent data in persistent parameters." };
+
+            ToolStripSeparator toolStripSeparator = new ToolStripSeparator();
+            toolStripSeparator.Margin = new Padding(2,0,2,0);
+            toolStripSeparator.Size = new Size(6, 40);
+            _canvasToolbar.Items.Add(toolStripSeparator);
 
             major.DropDownItems.Add(CreateControlItem());
             major.DropDownItems.Add(CreateGumballIttem(gumballIcon));
@@ -43,7 +51,23 @@ namespace PersistentDataEditor
 
         public static ToolStripMenuItem CreateGumballIttem(Image gumballIcon)
         {
-            ToolStripMenuItem major = CreateCheckBox("Geometry Gumball", Datas.UseGeoParamGumball, (Bitmap)gumballIcon, (boolean) => Datas.UseGeoParamGumball = boolean);
+            ToolStripMenuItem major = new ToolStripMenuItem("Geometry Gumball", (Bitmap)gumballIcon);
+            ToolStripButton toolbar = new ToolStripButton(gumballIcon) { ToolTipText = "Geometry Gumball" };
+
+            major.Checked = toolbar.Checked = Datas.UseGeoParamGumball;
+
+            Action<bool> action = (boolean) =>
+            {
+                Datas.UseGeoParamGumball = major.Checked = toolbar.Checked = boolean;
+            };
+            CreateCheckBox(ref major, action);
+            toolbar.Click += (sender, e) =>
+            {
+                toolbar.Checked = !toolbar.Checked;
+                action.Invoke(toolbar.Checked);
+            };
+
+            _canvasToolbar.Items.Add(toolbar);
 
             major.DropDownItems.Add(CreateCheckBox("Use Rotate", Datas.GeoParamGumballRotate, 
                 Instances.ComponentServer.EmitObjectProxy(new Guid("b7798b74-037e-4f0c-8ac7-dc1043d093e0"))?.Icon, (boolean) => Datas.GeoParamGumballRotate = boolean));
@@ -93,8 +117,25 @@ namespace PersistentDataEditor
 
         private static ToolStripMenuItem CreateControlItem()
         {
-            ToolStripMenuItem major = CreateCheckBox("Param's Control", Datas.UseParamControl, Properties.Resources.ParamControlIcon_24, 
-                (boolean) => Datas.UseParamControl = boolean);
+            ToolStripMenuItem major = new ToolStripMenuItem("Param's Control", Properties.Resources.ParamControlIcon_24);
+
+            ToolStripButton toolbar = new ToolStripButton(Properties.Resources.ParamControlIcon_24) { ToolTipText = "Param's Control" };
+
+            Action<bool> click = (boolean) =>
+            {
+                Datas.UseParamControl = toolbar.Checked = major.Checked = boolean;
+            };
+
+            CreateCheckBox(ref major, Datas.UseParamControl, click);
+            toolbar.Checked = Datas.UseParamControl;
+            toolbar.Click += (sender, e) =>
+            {
+                toolbar.Checked = !toolbar.Checked;
+                click.Invoke(toolbar.Checked);
+            };
+
+            _canvasToolbar.Items.Add(toolbar);
+
             major.ToolTipText = "It will show you the persistent param's value and you can change the value easily.";
 
             major.DropDownItems.Add(CreateUseControlItem());
@@ -222,11 +263,15 @@ namespace PersistentDataEditor
         private static ToolStripMenuItem CreateCheckBox(string itemName, bool valueDefault, Action<bool> valueChange)
         {
 
-            ToolStripMenuItem click = new ToolStripMenuItem(itemName) { Checked = valueDefault };  
-            CreateCheckBox(ref click, valueChange);
+            ToolStripMenuItem click = new ToolStripMenuItem(itemName);
+            CreateCheckBox(ref click, valueDefault, valueChange);
             return click;
         }
-
+        private static void CreateCheckBox(ref ToolStripMenuItem click, bool valueDefault, Action<bool> valueChange)
+        {
+            click.Checked = valueDefault;
+            CreateCheckBox(ref click, valueChange);
+        }
         private static void CreateCheckBox(ref ToolStripMenuItem click, Action<bool> valueChange)
         {
             click.Click += (sender, e) =>
@@ -241,11 +286,8 @@ namespace PersistentDataEditor
                         it.Enabled = item.Checked;
                     }
                 }
-
             };
-
             click.DropDownOpening += Click_DropDownOpening;
-
         }
 
         private static void Click_DropDownOpening(object sender, EventArgs e)
@@ -416,5 +458,6 @@ namespace PersistentDataEditor
 
             return major;
         }
+
     }
 }

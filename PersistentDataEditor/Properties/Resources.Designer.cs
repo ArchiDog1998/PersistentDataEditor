@@ -93,16 +93,6 @@ namespace PersistentDataEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap EditIcon_24 {
-            get {
-                object obj = ResourceManager.GetObject("EditIcon_24", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap ParamControlIcon_24 {
             get {
                 object obj = ResourceManager.GetObject("ParamControlIcon_24", resourceCulture);
@@ -117,25 +107,6 @@ namespace PersistentDataEditor.Properties {
             get {
                 object obj = ResourceManager.GetObject("ParametersIcon_24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap QuickwireIcon_24 {
-            get {
-                object obj = ResourceManager.GetObject("QuickwireIcon_24", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {&quot;InputItems&quot;:{&quot;04d3eace-deaa-475e-9e69-8f804d687998&quot;:[{&quot;ObjectGuid&quot;:&quot;bb59bffc-f54c-4682-9778-f6c3fe74fce3&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;ObjectGuid&quot;:&quot;9fa1b081-b1c7-4a12-a163-0aa8da9ff6c4&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;ObjectGuid&quot;:&quot;9d2583dd-6cf5-497c-8c40-c9a290598396&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;ObjectGuid&quot;:&quot;75f4b0fd-9721-47b1-99e7-9c098b342e67&quot;,&quot;initString&quot;:null,&quot;Index&quot;:0},{&quot;ObjectGuid&quot;:&quot;75f4b0fd-9721-47b1-99e7-9c098b342e67&quot;,&quot;initString&quot;:null,&quot;Index&quot;:1},{&quot;ObjectGuid&quot;:&quot;9d8dec9c-3fd1-481c-9c3d-75ea5e15 [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string quickwires {
-            get {
-                return ResourceManager.GetString("quickwires", resourceCulture);
             }
         }
         

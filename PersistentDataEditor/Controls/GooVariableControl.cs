@@ -64,8 +64,18 @@ namespace PersistentDataEditor
                 //    guid = new Param_Time().ComponentGuid;
                 else if (ShouldUse<GH_Number>() && (_owner.TypeHint is GH_DoubleHint_CS || _owner.TypeHint is GH_DoubleHint_VB))
                     return new BaseControlItem[]{
-                        new GooNumberControl(() => (GH_Number)ShowValue, _isNull, null),
+                        new GooNumberControl(() => {
+                            if(ShowValue is GH_Integer)
+                            {
+                                return new GH_Number(((GH_Integer)ShowValue).Value);
+                            }
+                            else
+                            {
+                                return (GH_Number)ShowValue;
+                            }
+                        }, _isNull, null),
                     };
+
                 //else if (script.TypeHint is GH_GeometryBaseHint)
                 //    guid = new Param_Geometry().ComponentGuid;
                 //else if (script.TypeHint is GH_GuidHint)

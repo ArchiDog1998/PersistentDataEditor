@@ -127,20 +127,11 @@
   <data name="ComponentToolkitIcon_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ComponentToolkitIcon_24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="EditIcon_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\EditIcon_24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="ParamControlIcon_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ParamControlIcon_24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ParametersIcon_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ParametersIcon_24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="QuickwireIcon_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\QuickwireIcon_24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="quickwires" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\quickwires.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="ResetIcons_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ResetIcons_24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

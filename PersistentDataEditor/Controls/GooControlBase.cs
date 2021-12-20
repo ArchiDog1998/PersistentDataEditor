@@ -60,21 +60,17 @@ namespace PersistentDataEditor
 
         public IGH_DocumentObject CreateObject(IGH_Param param, Guid componentGuid, ushort index, string init, bool isinput, Action<IGH_DocumentObject> action = null)
         {
+            int width = 100;
+
             IGH_DocumentObject obj = Grasshopper.Instances.ComponentServer.EmitObject(componentGuid);
             if (obj == null) return null;
 
             if (action != null) action(obj);
 
-            RectangleF outBound = param.Attributes.GetTopLevel.Bounds;
-            RectangleF thisBound = param.Attributes.Bounds;
-
-            PointF objCenter = new PointF(outBound.Left + (isinput ? -100 : (140 + outBound.Width)),
-                   thisBound.Top + thisBound.Height / 2);
-
+            //Add Sources
             if (obj is IGH_Component)
             {
                 IGH_Component com = obj as IGH_Component;
-                AddAObjectToCanvas(obj, objCenter, init);
 
                 if (isinput)
                 {
@@ -84,13 +80,10 @@ namespace PersistentDataEditor
                 {
                     com.Params.Input[index].AddSource(param);
                 }
-
-                Grasshopper.Instances.ActiveCanvas.Document.NewSolution(false);
             }
             else if (obj is IGH_Param)
             {
                 IGH_Param par = obj as IGH_Param;
-                AddAObjectToCanvas(obj, objCenter, init);
 
                 if (isinput)
                 {
@@ -100,11 +93,23 @@ namespace PersistentDataEditor
                 {
                     par.AddSource(param);
                 }
-
-                Grasshopper.Instances.ActiveCanvas.Document.NewSolution(false);
             }
 
+            //Get Aimed Point.  
+            RectangleF outBound = param.Attributes.GetTopLevel.Bounds;
+            RectangleF thisBound = param.Attributes.Bounds;
+
+            PointF objCenter = new PointF(outBound.Left + (isinput ? - width : (width + outBound.Width)),
+                   thisBound.Top + thisBound.Height / 2);
+
+            AddAObjectToCanvas(obj, objCenter, init);
+            Grasshopper.Instances.ActiveCanvas.Document.NewSolution(false);
             return obj;
+        }
+
+        private static PointF Subtract(PointF A, PointF B)
+        {
+            return new PointF(A.X - B.X, A.Y - B.Y);
         }
 
         public static void AddAObjectToCanvas(IGH_DocumentObject obj, PointF pivot, string init, bool update = false)

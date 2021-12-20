@@ -1,27 +1,17 @@
 ﻿using Grasshopper;
 using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
-using Grasshopper.GUI.Canvas.Interaction;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
-using Grasshopper.Kernel.Components;
 using Grasshopper.Kernel.Data;
-using Grasshopper.Kernel.Parameters;
-using Grasshopper.Kernel.Parameters.Hints;
 using Grasshopper.Kernel.Special;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
-using System.Windows.Forms;
+using System.Threading;
 
 namespace PersistentDataEditor
 {
@@ -92,15 +82,15 @@ namespace PersistentDataEditor
 
         private static void ActiveCanvas_DocumentObjectMouseDown(object sender, GH_CanvasObjectMouseDownEventArgs e)
         {
-            if(OnGumballComponent != e.Object.TopLevelObject)
+            if (OnGumballComponent != e.Object.TopLevelObject)
             {
                 CloseGumball();
             }
 
-            if ( e.Object.TopLevelObject is IGH_Component)
+            if (e.Object.TopLevelObject is IGH_Component)
             {
                 IGH_Component gH_Component = (IGH_Component)e.Object.TopLevelObject;
-                e.Document.ScheduleSolution(50, (doc) =>
+                Instances.ActiveCanvas.Document.ScheduleSolution(50, (doc) =>
                 {
                     if (!gH_Component.Attributes.Selected) return;
 
@@ -113,7 +103,7 @@ namespace PersistentDataEditor
                         }
                     }
                 });
-            } 
+            }
         }
 
         private static void CloseGumball()

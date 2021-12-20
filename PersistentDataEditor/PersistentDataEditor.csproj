@@ -2,7 +2,7 @@
 	
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Title>ComponentToolkit</Title>
     <Description>Extra information and control for grasshopper component.</Description>
     <TargetExt>.gha</TargetExt>
@@ -15,11 +15,6 @@
   
   <ItemGroup>
     <PackageReference Include="Grasshopper" Version="6.12.19029.6381" IncludeAssets="compile;build" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   
   <ItemGroup>
