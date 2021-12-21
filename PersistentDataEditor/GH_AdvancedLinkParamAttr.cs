@@ -16,7 +16,7 @@ using System.Windows.Forms;
 
 namespace PersistentDataEditor
 {
-    internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr
+    internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr, IDisposable
     {
         public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
         public int ControlWidth => Control?.Width ?? 0;
@@ -54,7 +54,7 @@ namespace PersistentDataEditor
             }
         }
 
-        public void CloseAllGumballs()
+        public void Dispose()
         {
             if (_gumball != null)
             {

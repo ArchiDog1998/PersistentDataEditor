@@ -30,7 +30,7 @@ namespace PersistentDataEditor
         //Return a string representing your preferred contact details.
         public override string AuthorContact => "1123993881@qq.com";
 
-        public override string Version => "1.0.2";
+        public override string Version => "1.0.3";
     }
 
     public class ComponentToolkitAssemblyPriority : GH_AssemblyPriority
@@ -61,7 +61,7 @@ namespace PersistentDataEditor
             GH_DocumentEditor editor = Grasshopper.Instances.DocumentEditor;
             if (editor == null)
             {
-                MessageBox.Show("ComponentToolkit can't find the menu!");
+                MessageBox.Show("Persistent Data Editor can't find the menu!");
                 return;
             }
             DoingSomethingFirst(editor);

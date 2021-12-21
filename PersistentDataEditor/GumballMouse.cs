@@ -270,7 +270,8 @@ namespace PersistentDataEditor
 				Height = 100,
 				FormBorderStyle = FormBorderStyle.FixedToolWindow,
 				Text = caption,
-				StartPosition = FormStartPosition.CenterScreen
+				StartPosition = FormStartPosition.CenterScreen,
+				TopMost = true,
 			};
 			TextBox textBox = new TextBox() { Width = 200, Top = 5, Left = 5 };
 			Button confirmation = new Button() { Text = "Ok", Left = 5, Top = 30, Width = 100, DialogResult = DialogResult.OK };
@@ -302,12 +303,13 @@ namespace PersistentDataEditor
 					_conduits[_index].PickResult.Mode == GumballMode.RotateY || _conduits[_index].PickResult.Mode == GumballMode.RotateZ ||
 					 _conduits[_index].PickResult.Mode == GumballMode.ScaleX || _conduits[_index].PickResult.Mode == GumballMode.ScaleY ||
 					  _conduits[_index].PickResult.Mode == GumballMode.ScaleZ)
-					if(GH_Convert.ToDouble(ShowDialog(_conduits[_index].PickResult.Mode.ToString()), out double number, GH_Conversion.Both))
-                    {
+                {
+					if (GH_Convert.ToDouble(ShowDialog(_conduits[_index].PickResult.Mode.ToString()), out double number, GH_Conversion.Both))
+					{
 						Plane plane = _conduits[_index].Gumball.Frame.Plane;
 
 						switch (_conduits[_index].PickResult.Mode)
-                        {
+						{
 							case GumballMode.TranslateX:
 								trans = Transform.Translation(plane.XAxis * number);
 								break;
@@ -340,7 +342,9 @@ namespace PersistentDataEditor
 								break;
 						}
 						UpdateGumball(_index, trans);
-                    }
+					}
+				}
+
 			}
 			if (trans.IsIdentity) return;
 

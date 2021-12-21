@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Windows;
 
 namespace PersistentDataEditor
 {
@@ -71,8 +72,17 @@ namespace PersistentDataEditor
                     {
                         if (item.Attributes is GH_AdvancedLinkParamAttr)
                         {
-                            ((GH_AdvancedLinkParamAttr)item.Attributes).CloseAllGumballs();
+                            ((GH_AdvancedLinkParamAttr)item.Attributes).Dispose();
                         }
+                    }
+                }
+                if(component is IGH_Param)
+                {
+                    IGH_Param param = (IGH_Param)component;
+                    if(param.Attributes is GH_AdvancedFloatingParamAttr)
+                    {
+                        GH_AdvancedFloatingParamAttr floating = (GH_AdvancedFloatingParamAttr)(param.Attributes);
+                        floating.Dispose();
                     }
                 }
             }
@@ -118,7 +128,7 @@ namespace PersistentDataEditor
                     {
                         if (item.Attributes is GH_AdvancedLinkParamAttr)
                         {
-                            ((GH_AdvancedLinkParamAttr)item.Attributes).CloseAllGumballs();
+                            ((GH_AdvancedLinkParamAttr)item.Attributes).Dispose();
                         }
                     }
                     OnGumballComponent = null;
@@ -140,7 +150,6 @@ namespace PersistentDataEditor
 
         private static void ActiveCanvas_Document_ObjectsAdded(GH_Document sender, GH_DocObjectEventArgs e)
         {
-
             foreach (var item in e.Objects)
             {
                 if(item is IGH_Component)
