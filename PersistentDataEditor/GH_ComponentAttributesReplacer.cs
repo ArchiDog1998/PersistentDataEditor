@@ -24,7 +24,6 @@ namespace PersistentDataEditor
         private static readonly FieldInfo _tagsInfo = typeof(GH_LinkedParamAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_renderTags")).First();
         private static readonly MethodInfo _pathMapperCreate = typeof(GH_PathMapper).GetRuntimeMethods().Where(m => m.Name.Contains("GetInputMapping")).First();
 
-
         public GH_ComponentAttributesReplacer(IGH_Component component): base(component)
         {
 
@@ -32,11 +31,8 @@ namespace PersistentDataEditor
 
         public static void Init()
         {
-            Instances.ActiveCanvas.Document_ObjectsAdded += ActiveCanvas_Document_ObjectsAdded;
-            Instances.ActiveCanvas.Document_ObjectsDeleted += ActiveCanvas_Document_ObjectsDeleted;
             Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
-            Instances.ActiveCanvas.MouseDown += (sender, e) => CloseGumball();
-            Instances.ActiveCanvas.DocumentObjectMouseDown += ActiveCanvas_DocumentObjectMouseDown;
+            Instances.ActiveCanvas.MouseDown += ActiveCanvas_MouseDown;
 
             new MoveShowConduit().Enabled = true;
 
@@ -61,12 +57,33 @@ namespace PersistentDataEditor
             );
         }
 
+
+        private static void ActiveCanvas_DocumentChanged(GH_Canvas sender, GH_CanvasDocumentChangedEventArgs e)
+        {
+            if(e.OldDocument != null)
+            {
+                e.OldDocument.ObjectsAdded -= Document_ObjectsAdded;
+                e.OldDocument.ObjectsDeleted -= Document_ObjectsDeleted;
+            }
+
+            if (e.NewDocument == null) return;
+
+            e.NewDocument.ObjectsAdded += Document_ObjectsAdded;
+            e.NewDocument.ObjectsDeleted += Document_ObjectsDeleted;
+            foreach (var item in e.NewDocument.Objects)
+            {
+                ChangeFloatParam(item);
+            }
+            e.NewDocument.DestroyAttributeCache();
+        }
+
+
         #region Gumball
-        private static void ActiveCanvas_Document_ObjectsDeleted(GH_Document sender, GH_DocObjectEventArgs e)
+        private static void Document_ObjectsDeleted(object sender, GH_DocObjectEventArgs e)
         {
             foreach (var component in e.Objects)
             {
-                if(component is IGH_Component)
+                if (component is IGH_Component)
                 {
                     foreach (var item in ((IGH_Component)component).Params.Input)
                     {
@@ -76,10 +93,10 @@ namespace PersistentDataEditor
                         }
                     }
                 }
-                if(component is IGH_Param)
+                if (component is IGH_Param)
                 {
                     IGH_Param param = (IGH_Param)component;
-                    if(param.Attributes is GH_AdvancedFloatingParamAttr)
+                    if (param.Attributes is GH_AdvancedFloatingParamAttr)
                     {
                         GH_AdvancedFloatingParamAttr floating = (GH_AdvancedFloatingParamAttr)(param.Attributes);
                         floating.Dispose();
@@ -87,77 +104,96 @@ namespace PersistentDataEditor
                 }
             }
         }
-
-        private static IGH_Component OnGumballComponent;
-
-        private static void ActiveCanvas_DocumentObjectMouseDown(object sender, GH_CanvasObjectMouseDownEventArgs e)
+        private static IGH_DocumentObject OnGumballComponent;
+        private static void ActiveCanvas_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            if (OnGumballComponent != e.Object.TopLevelObject)
+            PointF canvasLocation = Instances.ActiveCanvas.Viewport.UnprojectPoint(e.Location);
+            GH_RelevantObjectData obj = Instances.ActiveCanvas.Document.RelevantObjectAtPoint(canvasLocation, GH_RelevantObjectFilter.Attributes);
+            if(obj != null)
+            {
+                if (OnGumballComponent != obj.TopLevelObject)
+                {
+                    CloseGumball();
+                }
+
+                if (obj.TopLevelObject is IGH_Component)
+                {
+                    IGH_Component gH_Component = (IGH_Component)obj.TopLevelObject;
+                    new Thread(() =>
+                    {
+                        Thread.Sleep(5);
+
+                        if (!gH_Component.Attributes.Selected) return;
+
+                        OnGumballComponent = gH_Component;
+                        foreach (var item in gH_Component.Params.Input)
+                        {
+                            if (item.Attributes is GH_AdvancedLinkParamAttr)
+                            {
+                                ((GH_AdvancedLinkParamAttr)item.Attributes).ShowAllGumballs();
+                            }
+                        }
+
+                    }).Start();
+                }
+                else if (obj.TopLevelObject is IGH_Param)
+                {
+                    IGH_Param gH_Param = (IGH_Param)obj.TopLevelObject;
+                    new Thread(() =>
+                    {
+                        Thread.Sleep(5);
+
+                        if (!gH_Param.Attributes.Selected) return;
+
+                        if (!(gH_Param.Attributes is GH_AdvancedFloatingParamAttr)) return;
+
+                        OnGumballComponent = gH_Param;
+                        GH_AdvancedFloatingParamAttr attr = (GH_AdvancedFloatingParamAttr)gH_Param.Attributes;
+                        attr.RedrawGumballs();
+
+                    }).Start();
+                }
+            }
+            else
             {
                 CloseGumball();
-            }
-
-            if (e.Object.TopLevelObject is IGH_Component)
-            {
-                IGH_Component gH_Component = (IGH_Component)e.Object.TopLevelObject;
-                Instances.ActiveCanvas.Document.ScheduleSolution(50, (doc) =>
-                {
-                    if (!gH_Component.Attributes.Selected) return;
-
-                    OnGumballComponent = gH_Component;
-                    foreach (var item in gH_Component.Params.Input)
-                    {
-                        if (item.Attributes is GH_AdvancedLinkParamAttr)
-                        {
-                            ((GH_AdvancedLinkParamAttr)item.Attributes).ShowAllGumballs();
-                        }
-                    }
-                });
             }
         }
 
         private static void CloseGumball()
         {
-            if (OnGumballComponent != null)
-            {
-                Instances.ActiveCanvas.Document.ScheduleSolution(50, (doc) =>
-                {
-                    if (OnGumballComponent == null || OnGumballComponent.Attributes.Selected) return;
+            if (OnGumballComponent == null) return;
 
-                    foreach (var item in OnGumballComponent.Params.Input)
+            if (OnGumballComponent is IGH_Component)
+            {
+                foreach (var item in ((IGH_Component)OnGumballComponent).Params.Input)
+                {
+                    if (item.Attributes is GH_AdvancedLinkParamAttr)
                     {
-                        if (item.Attributes is GH_AdvancedLinkParamAttr)
-                        {
-                            ((GH_AdvancedLinkParamAttr)item.Attributes).Dispose();
-                        }
+                        ((GH_AdvancedLinkParamAttr)item.Attributes).Dispose();
                     }
-                    OnGumballComponent = null;
-                });
+                }
             }
+            else
+            {
+                ((GH_AdvancedFloatingParamAttr)((IGH_Param)OnGumballComponent).Attributes).Dispose();
+            }
+
+            OnGumballComponent = null;
         }
 
         #endregion
 
-        private static void ActiveCanvas_DocumentChanged(GH_Canvas sender, GH_CanvasDocumentChangedEventArgs e)
-        {
-            if (e.NewDocument == null) return;
-            foreach (var item in e.NewDocument.Objects)
-            {
-                ChangeFloatParam(item);
-            }
-            e.NewDocument?.DestroyAttributeCache();
-        }
-
-        private static void ActiveCanvas_Document_ObjectsAdded(GH_Document sender, GH_DocObjectEventArgs e)
+        private static void Document_ObjectsAdded(object sender, GH_DocObjectEventArgs e)
         {
             foreach (var item in e.Objects)
             {
-                if(item is IGH_Component)
+                if (item is IGH_Component)
                 {
                     item.Attributes.ExpireLayout();
                 }
                 ChangeFloatParam(item);
-                if(item is GH_PathMapper)
+                if (item is GH_PathMapper)
                 {
                     GH_PathMapper pathMapper = (GH_PathMapper)item;
 
@@ -174,7 +210,7 @@ namespace PersistentDataEditor
                         }
                     });
                 }
-                else if (item is GH_NumberSlider && item.Attributes is GH_NumberSliderAttributes && !(item.Attributes is GH_AdvancedNumberSliderAttr))
+                else if (item is GH_NumberSlider)
                 {
                     GH_NumberSlider slider = (GH_NumberSlider)item;
                     if (slider.Slider.Type == Grasshopper.GUI.Base.GH_SliderAccuracy.Integer)
@@ -182,16 +218,9 @@ namespace PersistentDataEditor
                         slider.Slider.DecimalPlaces = 0;
                         slider.Slider.Type = Grasshopper.GUI.Base.GH_SliderAccuracy.Float;
                     }
-
-                    PointF point = item.Attributes.Pivot;
-                    bool isSelected = item.Attributes.Selected;
-                    item.Attributes = new GH_AdvancedNumberSliderAttr((GH_NumberSlider)item);
-                    item.Attributes.Pivot = point;
-                    item.Attributes.Selected = isSelected;
-                    item.Attributes.ExpireLayout();
                 }
             }
-            sender?.DestroyAttributeCache();
+            e.Document?.DestroyAttributeCache();
         }
 
         private static void ChangeFloatParam(IGH_DocumentObject item)
@@ -217,6 +246,17 @@ namespace PersistentDataEditor
                     param.Attributes.Pivot = point;
                     param.Attributes.Selected = isSelected;
                     param.Attributes.ExpireLayout();
+                }
+                else if (item is GH_NumberSlider && item.Attributes is GH_NumberSliderAttributes && !(item.Attributes is GH_AdvancedNumberSliderAttr))
+                {
+                    GH_NumberSlider slider = (GH_NumberSlider)item;
+
+                    PointF point = item.Attributes.Pivot;
+                    bool isSelected = item.Attributes.Selected;
+                    item.Attributes = new GH_AdvancedNumberSliderAttr((GH_NumberSlider)item);
+                    item.Attributes.Pivot = point;
+                    item.Attributes.Selected = isSelected;
+                    item.Attributes.ExpireLayout();
                 }
             }
         }

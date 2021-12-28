@@ -23,23 +23,11 @@ namespace PersistentDataEditor
         private IGumball _gumball;
         private Rectangle _iconTextBound;
 
-        public override bool Selected 
-        { 
-            get => base.Selected;
-            set 
-            {
-                base.Selected = value;
-                if(_gumball != null)
-                {
-                    _gumball.ShowAllGumballs();
-                }
-            } 
-        }
         public BaseControlItem Control { get; private set; } = null;
         public GH_AdvancedFloatingParamAttr(IGH_Param param): base(param)
         {
             _gumball = SetGumball(param);
-            if(_gumball != null)
+            if (_gumball != null)
             {
                 param.SolutionExpired += Param_SolutionExpired;
             }
