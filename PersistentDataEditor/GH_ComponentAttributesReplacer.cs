@@ -108,6 +108,9 @@ namespace PersistentDataEditor
         private static void ActiveCanvas_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             PointF canvasLocation = Instances.ActiveCanvas.Viewport.UnprojectPoint(e.Location);
+
+            if (!Instances.ActiveCanvas.IsDocument) return;
+
             GH_RelevantObjectData obj = Instances.ActiveCanvas.Document.RelevantObjectAtPoint(canvasLocation, GH_RelevantObjectFilter.Attributes);
             if(obj != null)
             {

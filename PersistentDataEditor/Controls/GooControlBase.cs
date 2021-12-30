@@ -67,6 +67,15 @@ namespace PersistentDataEditor
 
             if (action != null) action(obj);
 
+            //Get Aimed Point.  
+            RectangleF outBound = param.Attributes.GetTopLevel.Bounds;
+            RectangleF thisBound = param.Attributes.Bounds;
+
+            PointF objCenter = new PointF(outBound.Left + (isinput ? - width : (width + outBound.Width)),
+                   thisBound.Top + thisBound.Height / 2);
+
+            AddAObjectToCanvas(obj, objCenter, init);
+
             //Add Sources
             if (obj is IGH_Component)
             {
@@ -95,14 +104,6 @@ namespace PersistentDataEditor
                 }
             }
 
-            //Get Aimed Point.  
-            RectangleF outBound = param.Attributes.GetTopLevel.Bounds;
-            RectangleF thisBound = param.Attributes.Bounds;
-
-            PointF objCenter = new PointF(outBound.Left + (isinput ? - width : (width + outBound.Width)),
-                   thisBound.Top + thisBound.Height / 2);
-
-            AddAObjectToCanvas(obj, objCenter, init);
             Grasshopper.Instances.ActiveCanvas.Document.NewSolution(false);
             return obj;
         }

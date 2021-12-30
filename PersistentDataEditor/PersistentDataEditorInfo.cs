@@ -30,7 +30,7 @@ namespace PersistentDataEditor
         //Return a string representing your preferred contact details.
         public override string AuthorContact => "1123993881@qq.com";
 
-        public override string Version => "1.0.4";
+        public override string Version => "1.0.5";
     }
 
     public class ComponentToolkitAssemblyPriority : GH_AssemblyPriority
