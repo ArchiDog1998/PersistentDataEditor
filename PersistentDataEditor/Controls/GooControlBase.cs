@@ -108,11 +108,6 @@ namespace PersistentDataEditor
             return obj;
         }
 
-        private static PointF Subtract(PointF A, PointF B)
-        {
-            return new PointF(A.X - B.X, A.Y - B.Y);
-        }
-
         public static void AddAObjectToCanvas(IGH_DocumentObject obj, PointF pivot, string init, bool update = false)
         {
             functions.Invoke(Grasshopper.Instances.ActiveCanvas, new object[] { obj, init, pivot, update });
