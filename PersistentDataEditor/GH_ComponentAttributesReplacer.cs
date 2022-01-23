@@ -454,8 +454,8 @@ namespace PersistentDataEditor
 
             }
 
-
             int additionforTag = tagsCount == 0 ? 0 : tagsCount * 20 - 4;
+
             //LayoutForRender
             foreach (IGH_Param param in gH_Params)
             {

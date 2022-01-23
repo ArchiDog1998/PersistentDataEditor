@@ -27,10 +27,10 @@ namespace PersistentDataEditor
         public GH_AdvancedFloatingParamAttr(IGH_Param param): base(param)
         {
             _gumball = SetGumball(param);
-            if (_gumball != null)
-            {
-                param.SolutionExpired += Param_SolutionExpired;
-            }
+            //if (_gumball != null)
+            //{
+            //    param.SolutionExpired += Param_SolutionExpired;
+            //}
             SetControl();
         }
 
@@ -64,19 +64,19 @@ namespace PersistentDataEditor
             return IsGeometricGoo(type.BaseType);
         }
 
-        private void Param_SolutionExpired(IGH_DocumentObject sender, GH_SolutionExpiredEventArgs e)
-        {
-            if (base.Owner == null)
-            {
-                Owner.SolutionExpired -= Param_SolutionExpired;
-            }
-            else if (base.Owner.OnPingDocument() == null)
-            {
-                Owner.SolutionExpired -= Param_SolutionExpired;
-            }
-            if (_gumball != null && !_gumball.IsMouseUp)
-                _gumball.ShowAllGumballs();
-        }
+        //private void Param_SolutionExpired(IGH_DocumentObject sender, GH_SolutionExpiredEventArgs e)
+        //{
+        //    if (base.Owner == null)
+        //    {
+        //        Owner.SolutionExpired -= Param_SolutionExpired;
+        //    }
+        //    else if (base.Owner.OnPingDocument() == null)
+        //    {
+        //        Owner.SolutionExpired -= Param_SolutionExpired;
+        //    }
+        //    if (_gumball != null && !_gumball.IsMouseUp)
+        //        _gumball.ShowAllGumballs();
+        //}
 
         public void SetControl()
         {
@@ -232,7 +232,7 @@ namespace PersistentDataEditor
 
         public void Dispose()
         {
-            if(_gumball != null)
+            if (_gumball != null)
             {
                 _gumball.Dispose();
             }

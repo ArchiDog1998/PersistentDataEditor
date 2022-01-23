@@ -72,8 +72,8 @@ namespace PersistentDataEditor
             {
                 Owner.SolutionExpired -= Param_SolutionExpired;
             }
-            if (_gumball != null && !_gumball.IsMouseUp)
-                _gumball.ShowAllGumballs();
+            //if (_gumball != null && !_gumball.IsMouseUp)
+            //    _gumball.ShowAllGumballs();
         }
 
         public void SetControl()
