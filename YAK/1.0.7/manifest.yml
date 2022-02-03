@@ -4,7 +4,7 @@ version: 1.0.7
 authors:
 - 秋水
 description: >
-  Make persistent data much easier to ser. Settings are under Display Menu.
+  Make persistent data much easier to set. Settings are under Display Menu.
   
   
   It contains three features, Component/Parameter's layout changes, Parameter's Persistent data Control and Advanced Gumball. The latter two are the most important.
