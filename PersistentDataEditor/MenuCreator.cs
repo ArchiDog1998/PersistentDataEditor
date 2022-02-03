@@ -156,7 +156,7 @@ namespace PersistentDataEditor
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
             CreateNumberBox(major, "Params' Icon to Control", Datas.ParamsCoreDistance, (v) => Datas.ParamsCoreDistance = (int)v, Datas._paramsCoreDistanceDefault, 20, 0);
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
-            CreateNumberBox(major, "Max InputBox Width", Datas.InputBoxControlMaxWidth, (v) => Datas.InputBoxControlMaxWidth = (int)v, Datas._inputBoxControlMaxWidthDefault, 500, 20);
+            CreateNumberBox(major, "Max Text Box Width", Datas.InputBoxControlMaxWidth, (v) => Datas.InputBoxControlMaxWidth = (int)v, Datas._inputBoxControlMaxWidthDefault, 500, 20);
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 

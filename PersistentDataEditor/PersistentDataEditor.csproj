@@ -2,7 +2,7 @@
 	
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <Version>1.0.7</Version>
+    <Version>1.0.8</Version>
     <Title>ComponentToolkit</Title>
     <Description>Extra information and control for grasshopper component.</Description>
     <TargetExt>.gha</TargetExt>
