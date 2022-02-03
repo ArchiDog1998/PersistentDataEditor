@@ -1,6 +1,6 @@
 ---
 name: PersistentDataEditor
-version: 1.0.7
+version: 1.0.8
 authors:
 - 秋水
 description: >
@@ -19,11 +19,11 @@ description: >
   Advanced Gumball can be use in any geometry persistent param.
   
   
-  1.0.7 Notes:
+  1.0.8 Notes:
   
-  1. Fix the bug that preview mesh will twinkle when document is looping or using kangaroo.
+  1. Make Enum control's width can be controlled by text max width.
   
-  2. Make Control irresponsible when zoom is less than 0.6. 
+  2. Expression editor will open when double click on the pression param.
   
 url: https://github.com/ArchiDog1998/PersistentDataEditor
 keywords:
