@@ -13,6 +13,7 @@ using System.Drawing;
 using Grasshopper;
 using Rhino;
 using Grasshopper.Kernel.Types;
+using Grasshopper.Kernel.Parameters;
 
 namespace PersistentDataEditor
 {
@@ -23,15 +24,19 @@ namespace PersistentDataEditor
         private IGumball _gumball;
         private Rectangle _iconTextBound;
 
+        private MethodInfo _expressionInfo;
+
         public BaseControlItem Control { get; private set; } = null;
         public GH_AdvancedFloatingParamAttr(IGH_Param param): base(param)
         {
             _gumball = SetGumball(param);
-            //if (_gumball != null)
-            //{
-            //    param.SolutionExpired += Param_SolutionExpired;
-            //}
             SetControl();
+
+            if (GH_AdvancedLinkParamAttr.IsExpressionParam(Owner.GetType(), out Type dataType))
+            {
+                Type type = typeof(GH_ExpressionParam<>).MakeGenericType(new Type[] { dataType });
+                _expressionInfo = type.GetRuntimeMethods().Where(m => m.Name.Contains("Menu_ExpressionEditorClick")).First();
+            }
         }
 
         internal static IGumball SetGumball(IGH_Param param)
@@ -45,38 +50,6 @@ namespace PersistentDataEditor
             }
             return gumball;
         }
-
-        private static bool IsGeometricGoo(Type type)
-        {
-            if (type == null)
-            {
-                return false;
-            }
-            else if (type.IsGenericType)
-            {
-                if (type.GetGenericTypeDefinition() == typeof(GH_GeometricGoo<>))
-                {
-                    return true;
-                }
-                else if (type.GetGenericTypeDefinition() == typeof(GH_Goo<>))
-                    return false;
-            }
-            return IsGeometricGoo(type.BaseType);
-        }
-
-        //private void Param_SolutionExpired(IGH_DocumentObject sender, GH_SolutionExpiredEventArgs e)
-        //{
-        //    if (base.Owner == null)
-        //    {
-        //        Owner.SolutionExpired -= Param_SolutionExpired;
-        //    }
-        //    else if (base.Owner.OnPingDocument() == null)
-        //    {
-        //        Owner.SolutionExpired -= Param_SolutionExpired;
-        //    }
-        //    if (_gumball != null && !_gumball.IsMouseUp)
-        //        _gumball.ShowAllGumballs();
-        //}
 
         public void SetControl()
         {
@@ -100,6 +73,16 @@ namespace PersistentDataEditor
                 return GH_ObjectResponse.Release;
             }
             return base.RespondToMouseUp(sender, e);
+        }
+
+        public override GH_ObjectResponse RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)
+        {
+            if (_expressionInfo != null)
+            {
+                _expressionInfo.Invoke(Owner, new object[] { Instances.DocumentEditor, new EventArgs() });
+                return GH_ObjectResponse.Release;
+            }
+            return base.RespondToMouseDoubleClick(sender, e);
         }
 
         protected override void Layout()

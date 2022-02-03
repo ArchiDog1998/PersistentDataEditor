@@ -534,7 +534,6 @@ namespace PersistentDataEditor
 
         }
 
-
         private static void RenderComponentParametersPr(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
 

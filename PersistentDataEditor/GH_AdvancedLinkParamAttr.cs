@@ -8,10 +8,11 @@ using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Parameters.Hints;
 using Grasshopper.Kernel.Types;
 using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace PersistentDataEditor
@@ -34,6 +35,7 @@ namespace PersistentDataEditor
 
         private IGumball _gumball;
 
+        private MethodInfo _expressionInfo;
 
         public GH_AdvancedLinkParamAttr(IGH_Param param, IGH_Attributes parent) : base(param, parent)
         {
@@ -44,6 +46,12 @@ namespace PersistentDataEditor
             }
             SetControl();
             SetParamIcon();
+
+            if (IsExpressionParam(Owner.GetType(), out Type dataType))
+            {
+                Type type = typeof(GH_ExpressionParam<>).MakeGenericType(new Type[] { dataType });
+                _expressionInfo = type.GetRuntimeMethods().Where(m => m.Name.Contains("Menu_ExpressionEditorClick")).First();
+            }
         }
 
         public void ShowAllGumballs()
@@ -72,8 +80,6 @@ namespace PersistentDataEditor
             {
                 Owner.SolutionExpired -= Param_SolutionExpired;
             }
-            //if (_gumball != null && !_gumball.IsMouseUp)
-            //    _gumball.ShowAllGumballs();
         }
 
         public void SetControl()
@@ -250,6 +256,26 @@ namespace PersistentDataEditor
             return IsPersistentParam(type.BaseType, out dataType);
         }
 
+        internal static bool IsExpressionParam(Type type, out Type dataType)
+        {
+            dataType = null;
+            if (type == null)
+            {
+                return false;
+            }
+            else if (type.IsGenericType)
+            {
+                if (type.GetGenericTypeDefinition() == typeof(GH_ExpressionParam<>))
+                {
+                    dataType = type.GenericTypeArguments[0];
+                    return true;
+                }
+                else if (type.GetGenericTypeDefinition() == typeof(GH_PersistentParam<>))
+                    return false;
+            }
+            return IsExpressionParam(type.BaseType, out dataType);
+        }
+
         public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             if (Control != null && Control.Bounds.Contains(e.CanvasLocation) && sender.Viewport.Zoom >= 0.6)
@@ -259,6 +285,16 @@ namespace PersistentDataEditor
                 return GH_ObjectResponse.Release;
             }
             return base.RespondToMouseUp(sender, e);
+        }
+
+        public override GH_ObjectResponse RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)
+        {
+            if (_expressionInfo != null)
+            {
+                _expressionInfo.Invoke(Owner, new object[] { Instances.DocumentEditor, new EventArgs() });
+                return GH_ObjectResponse.Release;
+            }
+            return base.RespondToMouseDoubleClick(sender, e);
         }
     }
 }
