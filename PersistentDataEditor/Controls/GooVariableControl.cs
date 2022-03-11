@@ -26,6 +26,9 @@ namespace PersistentDataEditor
         {
             if(e.Tag is IGH_TypeHint)
             {
+                //For some case, the value type have changed. So the Value must be null for avoiding casting exception.
+                ShowValue = null;
+
                 ChangeControlItems();
             }
         }
@@ -34,6 +37,7 @@ namespace PersistentDataEditor
         {
             if (_owner!= null && _owner.TypeHint != null)
             {
+
                 //if (script.TypeHint is GH_ArcHint)
                 //    guid = new Param_Arc().ComponentGuid;
                 if (ShouldUse<GH_Boolean>() && (_owner.TypeHint is GH_BooleanHint_CS || _owner.TypeHint is GH_BooleanHint_VB))
