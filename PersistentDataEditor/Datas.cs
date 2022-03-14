@@ -13,18 +13,20 @@ namespace PersistentDataEditor
     internal static class Datas
     {
         #region Colors
+        public static bool IsCurrectObjectLock { private get; set; } = false;
+
         public static readonly Color _controlForegroundColorDefault = Color.FromArgb(40, 40, 40);
         public static Color ControlForegroundColor
         {
             get
             {
-                Color color = Grasshopper.Instances.Settings.GetValue(nameof(ControlForegroundColor), _controlForegroundColorDefault);
-                return Color.FromArgb((int)(GH_Canvas.ZoomFadeLow / 255f * color.A), color);
+                Color color = Instances.Settings.GetValue(nameof(ControlForegroundColor), _controlForegroundColorDefault);
+                return ChangeColourAlpha(color);
             }
             set
             {
-                Grasshopper.Instances.Settings.SetValue(nameof(ControlForegroundColor), value);
-                Grasshopper.Instances.RedrawCanvas();
+                Instances.Settings.SetValue(nameof(ControlForegroundColor), value);
+                Instances.RedrawCanvas();
             }
         }
 
@@ -33,13 +35,13 @@ namespace PersistentDataEditor
         {
             get
             {
-                Color color = Grasshopper.Instances.Settings.GetValue(nameof(ControlTextgroundColor), _controlTextgroundColorDefault);
-                return Color.FromArgb((int)(GH_Canvas.ZoomFadeLow / 255f * color.A), color);
+                Color color = Instances.Settings.GetValue(nameof(ControlTextgroundColor), _controlTextgroundColorDefault);
+                return ChangeColourAlpha(color);
             }
             set
             {
-                Grasshopper.Instances.Settings.SetValue(nameof(ControlTextgroundColor), value);
-                Grasshopper.Instances.RedrawCanvas();
+                Instances.Settings.SetValue(nameof(ControlTextgroundColor), value);
+                Instances.RedrawCanvas();
             }
         }
 
@@ -48,13 +50,13 @@ namespace PersistentDataEditor
         {
             get
             {
-                Color color = Grasshopper.Instances.Settings.GetValue(nameof(ControlBackgroundColor), _controlBackgroundColorDefault);
-                return Color.FromArgb((int)(GH_Canvas.ZoomFadeLow / 255f * color.A), color);
+                Color color = Instances.Settings.GetValue(nameof(ControlBackgroundColor), _controlBackgroundColorDefault);
+                return ChangeColourAlpha(color);
             }
             set
             {
-                Grasshopper.Instances.Settings.SetValue(nameof(ControlBackgroundColor), value);
-                Grasshopper.Instances.RedrawCanvas();
+                Instances.Settings.SetValue(nameof(ControlBackgroundColor), value);
+                Instances.RedrawCanvas();
             }
         }
 
@@ -63,14 +65,18 @@ namespace PersistentDataEditor
         {
             get
             {
-                Color color = Grasshopper.Instances.Settings.GetValue(nameof(ControlBorderColor), _controlBorderColorDefault);
-                return Color.FromArgb((int)(GH_Canvas.ZoomFadeLow / 255f * color.A), color);
+                Color color = Instances.Settings.GetValue(nameof(ControlBorderColor), _controlBorderColorDefault);
+                return ChangeColourAlpha(color);
             }
             set
             {
-                Grasshopper.Instances.Settings.SetValue(nameof(ControlBorderColor), value);
-                Grasshopper.Instances.RedrawCanvas();
+                Instances.Settings.SetValue(nameof(ControlBorderColor), value);
+                Instances.RedrawCanvas();
             }
+        }
+        private static Color ChangeColourAlpha(Color color)
+        {
+            return Color.FromArgb((int)(GH_Canvas.ZoomFadeLow / 255f * color.A * (IsCurrectObjectLock ? 0.5 : 1)), color);
         }
         #endregion
 

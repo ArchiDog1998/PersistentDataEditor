@@ -278,7 +278,7 @@ namespace PersistentDataEditor
 
         public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            if (Control != null && Control.Bounds.Contains(e.CanvasLocation) && sender.Viewport.Zoom >= 0.6)
+            if (Control != null && Control.Bounds.Contains(e.CanvasLocation))
             {
                 Control.Clicked(sender, e);
 

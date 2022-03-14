@@ -150,7 +150,7 @@ namespace PersistentDataEditor
 
         public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left && _controlItems != null)
             {
                 foreach (var item in _controlItems)
                 {

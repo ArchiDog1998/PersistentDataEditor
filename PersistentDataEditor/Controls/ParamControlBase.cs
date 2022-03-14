@@ -94,16 +94,17 @@ namespace PersistentDataEditor
         internal sealed override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
             if (!Valid) return;
+            Datas.IsCurrectObjectLock = owner.Locked;
             _gooControl.RenderObject(canvas, graphics, owner, style);
         }
-        internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
+        internal sealed override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            if (!Valid || !ShouldRespond) return;
+            if (!Valid || !ShouldRespond || Owner.Locked || sender.Viewport.Zoom < 0.6) return;
             if(e.Button == System.Windows.Forms.MouseButtons.Left) _isSaveUndo = true;
             _gooControl.Clicked(sender, e);
         }
 
-        internal override void ChangeControlItems()
+        internal sealed override void ChangeControlItems()
         {
             this._gooControl.ChangeControlItems();
         }
