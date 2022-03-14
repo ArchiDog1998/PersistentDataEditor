@@ -30,25 +30,25 @@ namespace PersistentDataEditor
         //Return a string representing your preferred contact details.
         public override string AuthorContact => "1123993881@qq.com";
 
-        public override string Version => "1.0.8";
+        public override string Version => "1.0.9";
     }
 
     public class ComponentToolkitAssemblyPriority : GH_AssemblyPriority
     {
         public override GH_LoadingInstruction PriorityLoad()
         {
-            Grasshopper.Instances.CanvasCreated += Instances_CanvasCreated;
+            Instances.CanvasCreated += Instances_CanvasCreated;
             return GH_LoadingInstruction.Proceed;
         }
 
         private void Instances_CanvasCreated(GH_Canvas canvas)
         {
-            Grasshopper.Instances.CanvasCreated -= Instances_CanvasCreated;
+            Instances.CanvasCreated -= Instances_CanvasCreated;
 
-            GH_DocumentEditor editor = Grasshopper.Instances.DocumentEditor;
+            GH_DocumentEditor editor = Instances.DocumentEditor;
             if (editor == null)
             {
-                Grasshopper.Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
+                Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
                 return;
             }
             DoingSomethingFirst(editor);
@@ -56,9 +56,9 @@ namespace PersistentDataEditor
 
         private void ActiveCanvas_DocumentChanged(GH_Canvas sender, GH_CanvasDocumentChangedEventArgs e)
         {
-            Grasshopper.Instances.ActiveCanvas.DocumentChanged -= ActiveCanvas_DocumentChanged;
+            Instances.ActiveCanvas.DocumentChanged -= ActiveCanvas_DocumentChanged;
 
-            GH_DocumentEditor editor = Grasshopper.Instances.DocumentEditor;
+            GH_DocumentEditor editor = Instances.DocumentEditor;
             if (editor == null)
             {
                 MessageBox.Show("Persistent Data Editor can't find the menu!");
