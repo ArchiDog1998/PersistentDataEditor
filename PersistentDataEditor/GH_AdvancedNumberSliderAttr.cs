@@ -143,7 +143,7 @@ namespace PersistentDataEditor
                 GH_PaletteStyle impliedStyle = GH_CapsuleRenderEngine.GetImpliedStyle(gH_Palette, Selected, base.Owner.Locked, true);
                 foreach (var item in _controlItems)
                 {
-                    item?.RenderObject(canvas, graphics, null, impliedStyle);
+                    item?.RenderObject(canvas, graphics, impliedStyle);
                 }
             }
         }

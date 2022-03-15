@@ -201,7 +201,7 @@ namespace PersistentDataEditor
 
                         GH_Palette gH_Palette = GH_CapsuleRenderEngine.GetImpliedPalette(base.Owner);
                         GH_PaletteStyle impliedStyle = GH_CapsuleRenderEngine.GetImpliedStyle(gH_Palette, Selected, base.Owner.Locked, hidden);
-                        Control?.RenderObject(canvas, graphics, null, impliedStyle);
+                        Control?.RenderObject(canvas, graphics, impliedStyle);
 
                         GH_StateTagList tags = (GH_StateTagList)_tagsinfo.GetValue(this);
                         if (tags != null)

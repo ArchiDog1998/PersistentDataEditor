@@ -572,7 +572,7 @@ namespace PersistentDataEditor
                         BaseControlItem control = attr.Control;
                         if (control != null && control.Bounds.Width >= 1f)
                         {
-                            attr.Control.RenderObject(canvas, graphics, owner, style);
+                            attr.Control.RenderObject(canvas, graphics, style);
                         }
 
                         //Render tags.

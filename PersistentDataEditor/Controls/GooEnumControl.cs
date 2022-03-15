@@ -116,7 +116,7 @@ namespace PersistentDataEditor
             return path;
         }
 
-        internal override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
+        internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
         {
             graphics.FillPath(new SolidBrush(Datas.ControlBackgroundColor), _roundBounds);
             graphics.DrawPath(new Pen(new SolidBrush(Datas.ControlBorderColor)), _roundBounds);

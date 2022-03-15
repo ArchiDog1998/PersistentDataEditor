@@ -58,13 +58,13 @@ namespace PersistentDataEditor
             _RespondBase = false;
         }
 
-        internal override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
+        internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
         {
             if(_start != null && _end != null && canvas.Viewport.Zoom > 0.9f)
             {
                 graphics.DrawLine(new Pen(Datas.ControlForegroundColor, 0.5f), _start, _end);
             }
-            base.RenderObject(canvas, graphics, owner, style);
+            base.RenderObject(canvas, graphics, style);
         }
 
         protected sealed override void LayoutObject(RectangleF bounds)

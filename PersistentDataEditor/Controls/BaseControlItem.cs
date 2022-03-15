@@ -34,7 +34,7 @@ namespace PersistentDataEditor
         internal abstract int Height { get; }
         protected virtual void LayoutObject(RectangleF bounds) { }
         internal virtual void ChangeControlItems() { }
-        internal abstract void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style);
+        internal abstract void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style);
         internal abstract void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e);
         protected static GraphicsPath RoundedRect(RectangleF bounds, float radius)
         {

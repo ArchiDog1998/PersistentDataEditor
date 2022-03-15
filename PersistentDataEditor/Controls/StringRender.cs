@@ -39,7 +39,7 @@ namespace PersistentDataEditor
         {
         }
 
-        internal override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
+        internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
         {
             SolidBrush solidBrush = new SolidBrush(Color.FromArgb(GH_Canvas.ZoomFadeLow, style.Text));
             graphics.DrawString(_showString, Font, solidBrush, Bounds, GH_TextRenderingConstants.CenterCenter);

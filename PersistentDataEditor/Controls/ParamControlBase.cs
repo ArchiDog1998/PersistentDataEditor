@@ -91,12 +91,13 @@ namespace PersistentDataEditor
             this._gooControl.Bounds = bounds;
             base.LayoutObject(bounds);
         }
-        internal sealed override void RenderObject(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
+        internal sealed override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
         {
             if (!Valid) return;
-            Datas.IsCurrectObjectLock = owner.Locked;
-            _gooControl.RenderObject(canvas, graphics, owner, style);
+            Datas.IsCurrectObjectLock = Owner.Locked;
+            _gooControl.RenderObject(canvas, graphics, style);
         }
+
         internal sealed override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             if (!Valid || !ShouldRespond || Owner.Locked || sender.Viewport.Zoom < 0.6) return;
