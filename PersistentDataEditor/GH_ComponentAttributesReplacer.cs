@@ -57,7 +57,6 @@ namespace PersistentDataEditor
             );
         }
 
-
         private static void ActiveCanvas_DocumentChanged(GH_Canvas sender, GH_CanvasDocumentChangedEventArgs e)
         {
             if(e.OldDocument != null)
@@ -206,7 +205,8 @@ namespace PersistentDataEditor
 
                     Instances.ActiveCanvas.Document.ScheduleSolution(50, (doc) =>
                     {
-                        pathMapper.Lexers.Clear();
+                        if (pathMapper.Lexers.Count > 0) return;
+
                         List<string> inputMapping = (List<string>)_pathMapperCreate.Invoke(pathMapper, new object[] { true });
                         if (inputMapping.Count != 0)
                         {
