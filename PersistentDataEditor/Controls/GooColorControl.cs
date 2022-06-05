@@ -37,12 +37,15 @@ namespace PersistentDataEditor
 
         internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            ToolStripDropDownMenu menu = new ToolStripDropDownMenu() { ShowImageMargin = false };
+            if (e.Button == MouseButtons.Left)
+            {
+                ToolStripDropDownMenu menu = new ToolStripDropDownMenu() { ShowImageMargin = false };
 
-            Color color = ShowValue?.Value ?? Color.Transparent;
-            GH_DocumentObject.Menu_AppendColourPicker(menu, color, ColourChanged);
-            menu.Show(sender, e.ControlLocation);
-
+                Color color = ShowValue?.Value ?? Color.Transparent;
+                GH_DocumentObject.Menu_AppendColourPicker(menu, color, ColourChanged);
+                menu.Show(sender, e.ControlLocation);
+            }
+            base.Clicked(sender, e);
 
             void ColourChanged(GH_ColourPicker sender1, GH_ColourPickerEventArgs e1)
             {
