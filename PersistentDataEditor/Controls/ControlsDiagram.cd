@@ -69,13 +69,6 @@
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
-    <NestedTypes>
-      <Class Name="PersistentDataEditor.GooInputBoxStringControl&lt;T&gt;.InputBoxBalloon">
-        <TypeIdentifier>
-          <NewMemberFileName>Controls\GooInputBoxStringControl.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAAIAABAAIAAAQEAAAAEAAAAAQACAAAAAIAAAAIAA=</HashCode>
       <FileName>Controls\GooInputBoxStringControl.cs</FileName>

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -77,33 +78,36 @@ namespace PersistentDataEditor
             Color color = _isNull() ? Color.DarkRed : Datas.ControlTextgroundColor;
             graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, new SolidBrush(color), Bounds, GH_TextRenderingConstants.NearCenter);
         }
-
-        internal class InputBoxBalloon : GH_TextBoxInputBase
-        {
-            private Action<string> _setValue;
-
-
-            internal InputBoxBalloon(RectangleF bounds, Action<string> setValue)
-            {
-
-                this._setValue = setValue;
-
-                float mul = 3.5f;
-                if (bounds.Height * mul > bounds.Width)
-                {
-                    bounds = new RectangleF(bounds.Location, new SizeF(bounds.Height * mul, bounds.Height));
-                }
-
-                Bounds = GH_Convert.ToRectangle(bounds);
-                Font = GH_FontServer.ConsoleAdjusted;
-            }
-
-            protected override void HandleTextInputAccepted(string text)
-            {
-                _setValue(text);
-            }
-        }
     }
 
+    internal class InputBoxBalloon : GH_TextBoxInputBase
+    {
+        private Action<string> _setValue;
 
+        //private static readonly MethodInfo _inputBoxInfo = typeof(InputBoxBalloon).GetRuntimeMethods().First(m => m.Name.Contains("TextOverrideLostFocus"));
+
+        internal InputBoxBalloon(RectangleF bounds, Action<string> setValue)
+        {
+            this._setValue = setValue;
+
+            float mul = 3.5f;
+            if (bounds.Height * mul > bounds.Width)
+            {
+                bounds = new RectangleF(bounds.Location, new SizeF(bounds.Height * mul, bounds.Height));
+            }
+
+            Bounds = GH_Convert.ToRectangle(bounds);
+            Font = GH_FontServer.ConsoleAdjusted;
+        }
+        private void TextOverrideLostFocusNew(object sender, EventArgs e)
+        {
+            if(Datas.TextboxInputAutoApply) RespondToEnter();
+            HideTextInputBox();
+        }
+
+        protected override void HandleTextInputAccepted(string text)
+        {
+            _setValue(text);
+        }
+    }
 }

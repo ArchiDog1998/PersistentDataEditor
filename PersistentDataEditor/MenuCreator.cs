@@ -139,6 +139,7 @@ namespace PersistentDataEditor
             major.ToolTipText = "It will show you the persistent param's value and you can change the value easily.";
 
             major.DropDownItems.Add(CreateUseControlItem());
+            major.DropDownItems.Add(CreateCheckBox("Auto Apply InputBox Value", Datas.TextboxInputAutoApply, null, (boolean) => Datas.TextboxInputAutoApply = boolean));
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 

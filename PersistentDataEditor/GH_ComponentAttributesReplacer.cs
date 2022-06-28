@@ -1,5 +1,6 @@
 ﻿using Grasshopper;
 using Grasshopper.GUI;
+using Grasshopper.GUI.Base;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
@@ -54,6 +55,11 @@ namespace PersistentDataEditor
             ExchangeMethod(
                 typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributes.LayoutOutputParams))).First(),
                 typeof(GH_ComponentAttributesReplacer).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.LayoutOutputParamsNew))).First()
+            );
+
+            ExchangeMethod(
+                typeof(GH_TextBoxInputBase).GetRuntimeMethods().Where(m => m.Name.Contains("TextOverrideLostFocus")).First(),
+                typeof(InputBoxBalloon).GetRuntimeMethods().Where(m => m.Name.Contains("TextOverrideLostFocusNew")).First()
             );
         }
 
