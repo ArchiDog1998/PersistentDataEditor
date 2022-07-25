@@ -33,7 +33,7 @@ namespace PersistentDataEditor
         public override string Version => "1.1.0";
     }
 
-    public class ComponentToolkitAssemblyPriority : GH_AssemblyPriority
+    public class PersistentDataEditorAssemblyPriority : GH_AssemblyPriority
     {
         public override GH_LoadingInstruction PriorityLoad()
         {

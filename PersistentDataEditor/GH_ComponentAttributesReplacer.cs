@@ -115,6 +115,7 @@ namespace PersistentDataEditor
             PointF canvasLocation = Instances.ActiveCanvas.Viewport.UnprojectPoint(e.Location);
 
             if (!Instances.ActiveCanvas.IsDocument) return;
+            OnGumballComponent?.Attributes.ExpireLayout();
 
             GH_RelevantObjectData obj = Instances.ActiveCanvas.Document.RelevantObjectAtPoint(canvasLocation, GH_RelevantObjectFilter.Attributes);
             if (obj != null)
@@ -124,9 +125,8 @@ namespace PersistentDataEditor
                     CloseGumball();
                 }
 
-                if (obj.TopLevelObject is IGH_Component)
+                if (obj.TopLevelObject is IGH_Component gH_Component)
                 {
-                    IGH_Component gH_Component = (IGH_Component)obj.TopLevelObject;
                     new Thread(() =>
                     {
                         Thread.Sleep(5);
@@ -134,6 +134,8 @@ namespace PersistentDataEditor
                         if (!gH_Component.Attributes.Selected) return;
 
                         OnGumballComponent = gH_Component;
+                        OnGumballComponent.Attributes.ExpireLayout();
+
                         foreach (var item in gH_Component.Params.Input)
                         {
                             if (item.Attributes is GH_AdvancedLinkParamAttr && item.SourceCount == 0)
@@ -145,10 +147,8 @@ namespace PersistentDataEditor
                     }).Start();
                     return;
                 }
-                else if (obj.TopLevelObject is IGH_Param)
+                else if (obj.TopLevelObject is IGH_Param gH_Param)
                 {
-                    IGH_Param gH_Param = (IGH_Param)obj.TopLevelObject;
-
                     if (gH_Param.SourceCount == 0)
                     {
                         new Thread(() =>
@@ -160,6 +160,8 @@ namespace PersistentDataEditor
                             if (!(gH_Param.Attributes is GH_AdvancedFloatingParamAttr)) return;
 
                             OnGumballComponent = gH_Param;
+                            OnGumballComponent.Attributes.ExpireLayout();
+
                             GH_AdvancedFloatingParamAttr attr = (GH_AdvancedFloatingParamAttr)gH_Param.Attributes;
                             attr.RedrawGumballs();
 

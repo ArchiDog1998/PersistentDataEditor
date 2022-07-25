@@ -144,6 +144,8 @@ namespace PersistentDataEditor
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 
             major.DropDownItems.Add(CreateCheckBox("Only Item Access", Datas.OnlyItemAccessControl, null, (boolean) => Datas.OnlyItemAccessControl = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Only Selected Object", Datas.OnlyShowSelectedObjectControl, null, (boolean) => Datas.OnlyShowSelectedObjectControl = boolean));
+
             major.DropDownItems.Add(CreateCheckBox("Use on Components", Datas.ComponentUseControl, Properties.Resources.ComponentIcon_24, (boolean) => Datas.ComponentUseControl = boolean));
             major.DropDownItems.Add(CreateCheckBox("Use on Parameters", Datas.ParamUseControl, Properties.Resources.ParametersIcon_24, (boolean) => Datas.ParamUseControl = boolean));
 

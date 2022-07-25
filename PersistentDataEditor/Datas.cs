@@ -231,6 +231,17 @@ namespace PersistentDataEditor
             }
         }
 
+
+        public static bool OnlyShowSelectedObjectControl
+        {
+            get => Instances.Settings.GetValue(nameof(OnlyShowSelectedObjectControl), true);
+            set
+            {
+                Instances.Settings.SetValue(nameof(OnlyShowSelectedObjectControl), value);
+                RefreshLayout();
+            }
+        }
+
         public static bool ComponentInputEdgeLayout
         {
             get => Instances.Settings.GetValue(nameof(ComponentInputEdgeLayout), false);

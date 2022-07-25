@@ -69,7 +69,8 @@ namespace PersistentDataEditor
 
             }
         }
-        protected override bool Valid => Owner.OnPingDocument() == Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2;
+        protected override bool Valid => Owner.OnPingDocument() == Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2
+            && (!Datas.OnlyShowSelectedObjectControl || Owner.Attributes.Selected);
 
         public ParamControlBase(GH_PersistentParam<T> owner)
         {
