@@ -234,7 +234,7 @@ namespace PersistentDataEditor
 
         public static bool OnlyShowSelectedObjectControl
         {
-            get => Instances.Settings.GetValue(nameof(OnlyShowSelectedObjectControl), true);
+            get => Instances.Settings.GetValue(nameof(OnlyShowSelectedObjectControl), false);
             set
             {
                 Instances.Settings.SetValue(nameof(OnlyShowSelectedObjectControl), value);

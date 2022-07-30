@@ -76,7 +76,8 @@ namespace PersistentDataEditor
             int controlDis = Datas.ParamsCoreDistance;
 
             _width = 0;
-            if(_controlItems != null && _controlItems.Length > 0)
+            if(_controlItems != null && _controlItems.Length > 0 && 
+                (!Datas.OnlyShowSelectedObjectControl || Owner.Attributes.Selected))
             {
                 _width += controlDis * 2;
                 foreach (var item in _controlItems)

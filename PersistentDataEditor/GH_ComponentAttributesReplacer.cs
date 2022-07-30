@@ -157,10 +157,10 @@ namespace PersistentDataEditor
 
                             if (!gH_Param.Attributes.Selected) return;
 
-                            if (!(gH_Param.Attributes is GH_AdvancedFloatingParamAttr)) return;
-
                             OnGumballComponent = gH_Param;
                             OnGumballComponent.Attributes.ExpireLayout();
+
+                            if (!(gH_Param.Attributes is GH_AdvancedFloatingParamAttr)) return;
 
                             GH_AdvancedFloatingParamAttr attr = (GH_AdvancedFloatingParamAttr)gH_Param.Attributes;
                             attr.RedrawGumballs();
@@ -188,9 +188,9 @@ namespace PersistentDataEditor
                     }
                 }
             }
-            else
+            else if(((IGH_Param)OnGumballComponent).Attributes is GH_AdvancedFloatingParamAttr floatParam)
             {
-                ((GH_AdvancedFloatingParamAttr)((IGH_Param)OnGumballComponent).Attributes).Dispose();
+                floatParam.Dispose();
             }
 
             OnGumballComponent = null;
