@@ -1,6 +1,6 @@
 ---
 name: PersistentDataEditor
-version: 1.1.1
+version: 1.1.1.1
 authors:
 - 秋水
 description: >
@@ -32,5 +32,4 @@ keywords:
 - persistent
 - layout
 - qiushui
-icon_url: https://static.food4rhino.com/s3fs-public/styles/thumbnail/public/users-files/qiu-shui/app/persistentdataeditor.png
-
+icon_url: https://static.food4rhino.com/s3fs-public/styles/thumbnail/public/users-files/app/persistentdataeditor.png
