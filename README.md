@@ -1,7 +1,7 @@
 # Component Toolkit For Grasshopper
 Make your Grasshopper workflow faster! Settings are under _Display_ Menu.
 
-You can download in [Food4Rhino](https://www.food4rhino.com/en/app/component-toolkit).
+You can download in [Food4Rhino](https://www.food4rhino.com/en/app/persistent-data-editor).
 
 # Layout
 
@@ -118,7 +118,7 @@ ___
 # Component Toolkit For Grasshopper
 可以使你的Grasshopper工作效率更高! 设置在 _Display_ 菜单下。
 
-你可以在[Food4Rhino](https://www.food4rhino.com/en/app/component-toolkit)中下载。
+你可以在[Food4Rhino](https://www.food4rhino.com/en/app/persistent-data-editor)中下载。
 
 # 布局
 
