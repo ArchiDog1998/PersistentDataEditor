@@ -12,7 +12,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace PersistentDataEditor
@@ -127,9 +127,9 @@ namespace PersistentDataEditor
 
                 if (obj.TopLevelObject is IGH_Component gH_Component)
                 {
-                    new Thread(() =>
+                    Task.Run(() =>
                     {
-                        Thread.Sleep(5);
+                        Task.Delay(5);
 
                         if (!gH_Component.Attributes.Selected) return;
 
@@ -144,16 +144,17 @@ namespace PersistentDataEditor
                             }
                         }
 
-                    }).Start();
+                    });
+
                     return;
                 }
                 else if (obj.TopLevelObject is IGH_Param gH_Param)
                 {
                     if (gH_Param.SourceCount == 0)
                     {
-                        new Thread(() =>
+                        Task.Run(() =>
                         {
-                            Thread.Sleep(5);
+                            Task.Delay(5);
 
                             if (!gH_Param.Attributes.Selected) return;
 
@@ -165,7 +166,7 @@ namespace PersistentDataEditor
                             GH_AdvancedFloatingParamAttr attr = (GH_AdvancedFloatingParamAttr)gH_Param.Attributes;
                             attr.RedrawGumballs();
 
-                        }).Start();
+                        });
                         return;
                     }
                 }

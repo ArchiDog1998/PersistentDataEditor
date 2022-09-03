@@ -1,4 +1,5 @@
 ﻿using Grasshopper;
+using Grasshopper.Documentation;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Parameters.Hints;
@@ -69,9 +70,17 @@ namespace PersistentDataEditor
                 else if (ShouldUse<GH_Number>() && (_owner.TypeHint is GH_DoubleHint_CS || _owner.TypeHint is GH_DoubleHint_VB))
                     return new BaseControlItem[]{
                         new GooNumberControl(() => {
-                            if(ShowValue is GH_Integer)
+                            if(ShowValue is GH_Integer integer)
                             {
-                                return new GH_Number(((GH_Integer)ShowValue).Value);
+                                return new GH_Number(integer.Value);
+                            }
+                            else if (ShowValue is GH_String str)
+                            {
+                                if(double.TryParse(str.Value, out double value))
+                                {
+                                    return new GH_Number(value);
+                                }
+                                return null;
                             }
                             else
                             {
@@ -86,7 +95,25 @@ namespace PersistentDataEditor
                 //    guid = new Param_Guid().ComponentGuid;
                 else if (ShouldUse<GH_Integer>() && (_owner.TypeHint is GH_IntegerHint_CS || _owner.TypeHint is GH_IntegerHint_VB))
                     return new BaseControlItem[]{
-                        new GooIntegerControl(() => (GH_Integer)ShowValue, _isNull, null),
+                        new GooIntegerControl(() =>
+                        {
+                            if(ShowValue is GH_Number number)
+                            {
+                                return  new GH_Integer((int)number.Value);
+                            }
+                            else if (ShowValue is GH_String str)
+                            {
+                                if(int.TryParse(str.Value, out var value))
+                                {
+                                    return new GH_Integer(value);
+                                }
+                                return null;
+                            }
+                            else
+                            {
+                                return  (GH_Integer)ShowValue;
+                            }
+                        }, _isNull, null),
                     };
                 else if (ShouldUse<GH_Interval>() && _owner.TypeHint is GH_IntervalHint)
                     return new BaseControlItem[]{
