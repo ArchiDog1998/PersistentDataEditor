@@ -49,6 +49,11 @@ namespace PersistentDataEditor
 
         }
 
+        private protected override GH_Interval CreateDefaultValue()
+        {
+            return new GH_Interval(new Interval(0, 1));
+        }
+
         protected override GH_Interval SetValue(IGH_Goo[] values)
         {
             switch ((Domain_Control)Instances.Settings.GetValue(typeof(Domain_Control).FullName, 0))

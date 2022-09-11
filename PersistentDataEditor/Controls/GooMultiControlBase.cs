@@ -5,6 +5,7 @@ using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,14 +59,33 @@ namespace PersistentDataEditor
             IGH_Goo[] goos = new IGH_Goo[_values.Length];
             for (int i = 0; i < _values.Length; i++)
             {
-                goos[i] = _values[i].SaveValue;
-                if (goos[i] == null || !goos[i].IsValid)
+                var gooValue = _values[i];
+                var g = gooValue.SaveValue;
+
+                if (!IsGooValid(g))
                 {
-                    ShowValue = null;
-                    return;
+                    //Add default value.
+                    if (Datas.UseDefaultValueToControl)
+                    {
+                        g = gooValue.GetDefaultValue();
+                    }
+
+
+                    if (!IsGooValid(g))
+                    {
+                        ShowValue = null;
+                        return;
+                    }
                 }
+
+                goos[i] = g;
             }
             ShowValue = SetValue(goos);
+        }
+
+        private static bool IsGooValid(IGH_Goo g)
+        {
+            return g != null && g.IsValid;
         }
 
         protected abstract T SetValue(IGH_Goo[] values);

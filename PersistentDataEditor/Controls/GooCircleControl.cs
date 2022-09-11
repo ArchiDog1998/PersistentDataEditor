@@ -2,6 +2,7 @@
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
+using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,11 @@ namespace PersistentDataEditor
         public GooCircleControl(Func<GH_Circle> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
 
+        }
+
+        private protected override GH_Circle CreateDefaultValue()
+        {
+            return new GH_Circle(new Circle(1));
         }
 
         protected override GH_Circle SetValue(IGH_Goo[] values)

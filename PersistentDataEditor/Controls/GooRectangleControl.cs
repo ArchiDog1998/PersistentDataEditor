@@ -2,6 +2,7 @@
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
+using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,12 @@ namespace PersistentDataEditor
         public GooRectangleControl(Func<GH_Rectangle> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
         }
+
+        private protected override GH_Rectangle CreateDefaultValue()
+        {
+            return new GH_Rectangle(new Rectangle3d(Plane.WorldXY, 1, 1));
+        }
+
         protected override BaseControlItem[] SetControlItems()
         {
             switch (type)

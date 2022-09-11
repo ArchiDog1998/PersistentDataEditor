@@ -2,6 +2,7 @@
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
+using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,12 @@ namespace PersistentDataEditor
         {
 
         }
+
+        private protected override GH_Box CreateDefaultValue()
+        {
+            return new GH_Box(new Box(Plane.WorldXY, new Interval(0, 1), new Interval(0, 1), new Interval(0, 1)));
+        }
+
         protected override BaseControlItem[] SetControlItems()
         {
             switch (type)

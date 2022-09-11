@@ -140,6 +140,7 @@ namespace PersistentDataEditor
 
             major.DropDownItems.Add(CreateUseControlItem());
             major.DropDownItems.Add(CreateCheckBox("Auto Apply InputBox Value", Datas.TextboxInputAutoApply, null, (boolean) => Datas.TextboxInputAutoApply = boolean));
+            major.DropDownItems.Add(CreateCheckBox("Auto Set Default Value", Datas.UseDefaultValueToControl, null, (boolean) => Datas.UseDefaultValueToControl = boolean));
 
             GH_DocumentObject.Menu_AppendSeparator(major.DropDown);
 

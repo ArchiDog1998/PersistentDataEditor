@@ -294,6 +294,7 @@ namespace PersistentDataEditor
 				return;
 			}
 
+			if (_conduits.Length <= _index) return;
 			Transform trans = _conduits[_index].GumballTransform;
 			if (trans == null) return;
             if (trans.IsIdentity)

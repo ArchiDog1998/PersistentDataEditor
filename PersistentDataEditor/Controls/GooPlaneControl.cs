@@ -2,6 +2,7 @@
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
+using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,15 @@ namespace PersistentDataEditor
             new Guid("bc3e379e-7206-4e7b-b63a-ff61f4b38a3e");
 
         private Plane_Control type => (Plane_Control)Instances.Settings.GetValue(typeof(Plane_Control).FullName, 0);
+
         public GooPlaneControl(Func<GH_Plane> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
 
+        }
+
+        private protected override GH_Plane CreateDefaultValue()
+        {
+            return new GH_Plane(Plane.WorldXY);
         }
 
         protected override BaseControlItem[] SetControlItems()

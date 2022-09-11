@@ -45,7 +45,6 @@ namespace PersistentDataEditor
         private int _triangleWidth = 14;
         internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(_showString, GH_FontServer.StandardAdjusted), 15), Datas.InputBoxControlMaxWidth) + _triangleWidth;
 
-
         private SortedList<int, string> _namedValues;
 
         private GraphicsPath _roundBounds;

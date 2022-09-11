@@ -112,6 +112,18 @@ namespace PersistentDataEditor
         {
             functions.Invoke(Grasshopper.Instances.ActiveCanvas, new object[] { obj, init, pivot, update });
         }
+
+        private protected virtual T CreateDefaultValue()
+        {
+            return Activator.CreateInstance<T>();
+        }
+
+        public IGH_Goo GetDefaultValue()
+        {
+            _savedValue = CreateDefaultValue();
+
+            return _savedValue;
+        }
     }
 
     public interface IGooValue
@@ -120,5 +132,6 @@ namespace PersistentDataEditor
         Action ValueChange { set; }
         Guid AddCompnentGuid { get; }
         void DosomethingWhenCreate(IGH_DocumentObject obj);
+        IGH_Goo GetDefaultValue();
     }
 }

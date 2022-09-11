@@ -59,6 +59,11 @@ namespace PersistentDataEditor
             }
         }
 
+        private protected override GH_Vector CreateDefaultValue()
+        {
+            return new GH_Vector(Vector3d.ZAxis);
+        }
+
         protected override GH_Vector SetValue(IGH_Goo[] values)
         {
             switch ((Vector_Control)Instances.Settings.GetValue(typeof(Vector_Control).FullName, 0))

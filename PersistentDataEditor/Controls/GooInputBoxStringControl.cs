@@ -27,6 +27,7 @@ namespace PersistentDataEditor
 
         private GraphicsPath _roundRect;
         protected virtual bool IsReadOnly { get; }
+
         public GooInputBoxStringControl(Func<T> valueGetter, Func<bool> isNull, bool readOnly = false) : base(valueGetter, isNull)
         {
             IsReadOnly = readOnly;

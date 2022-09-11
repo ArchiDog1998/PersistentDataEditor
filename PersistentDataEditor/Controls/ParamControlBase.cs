@@ -4,6 +4,7 @@ using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using System.Drawing;
+using System.Linq;
 
 namespace PersistentDataEditor
 {
@@ -70,7 +71,7 @@ namespace PersistentDataEditor
             }
         }
         protected override bool Valid => Owner.OnPingDocument() == Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2
-            && (!Datas.OnlyShowSelectedObjectControl || Owner.Attributes.Selected);
+            && (!Datas.OnlyShowSelectedObjectControl || Owner.Attributes.Selected) && !Owner.PersistentData.Any(d => d is IGH_GeometricGoo g && g.IsReferencedGeometry);
 
         public ParamControlBase(GH_PersistentParam<T> owner)
         {

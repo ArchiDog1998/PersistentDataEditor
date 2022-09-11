@@ -2,6 +2,7 @@
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
+using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,11 @@ namespace PersistentDataEditor
 {
     internal class GooInterval2DControl : GooVerticalControlBase<GH_Interval2D>
     {
+        private protected override GH_Interval2D CreateDefaultValue()
+        {
+            return new GH_Interval2D(new UVInterval(new Interval(0, 1), new Interval(0, 1)));
+        }
+
         internal class GooInterval2DControlHor : GooHorizonalControlBase<GH_Interval2D>
         {
             public override Guid AddCompnentGuid => default(Guid);
@@ -20,6 +26,10 @@ namespace PersistentDataEditor
             {
             }
 
+            private protected override GH_Interval2D CreateDefaultValue()
+            {
+                return new GH_Interval2D(new UVInterval(new Interval(0, 1), new Interval(0, 1)));
+            }
 
             protected override BaseControlItem[] SetControlItems()
             {
@@ -65,6 +75,7 @@ namespace PersistentDataEditor
 
         public override Guid AddCompnentGuid => type == Domain2D_Control.U0_U1_V0_V1 ? 
             new Guid("9083b87f-a98c-4e41-9591-077ae4220b19"): new Guid("8555a743-36c1-42b8-abcc-06d9cb94519f");
+
         public GooInterval2DControl(Func<GH_Interval2D> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
         }

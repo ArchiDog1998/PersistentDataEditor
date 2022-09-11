@@ -13,6 +13,7 @@ namespace PersistentDataEditor
         public override Guid AddCompnentGuid => new Guid("57da07bd-ecab-415d-9d86-af36d7073abc");
 
         protected override string AddCompnentInit => base.AddCompnentInit ?? "0..100";
+
         public GooIntegerControl(Func<GH_Integer> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
 

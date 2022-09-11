@@ -10,7 +10,7 @@
   <Class Name="PersistentDataEditor.GooControlBase&lt;T&gt;">
     <Position X="9" Y="5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAgAAAKAAEEIAAAAAgAIAAgAAEAAAiAABAAAAAAKAAA=</HashCode>
+      <HashCode>AAgAAAKAAEEIBAAABgAIAAgAAEAAAiAABAAAAAAKAAA=</HashCode>
       <FileName>Controls\GooControlBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -25,7 +25,7 @@
   <Class Name="PersistentDataEditor.GooMultiControlBase&lt;T&gt;">
     <Position X="19" Y="11" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAgAKAAAACAAAgAAAAAAAAAEAAAAACAABAAIAAAAACA=</HashCode>
+      <HashCode>AAgAKAAAACAAAgAAAAAAAAAEAAAAACIABAAIAAAAACA=</HashCode>
       <FileName>Controls\GooMultiControlBase.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -117,7 +117,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="PersistentDataEditor.GooGeneralControl&lt;T&gt;">
-    <Position X="12.75" Y="15.25" Width="2" />
+    <Position X="9.75" Y="15.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAIAAAQAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Controls\GooGeneralControl.cs</FileName>
@@ -125,8 +125,11 @@
   </Class>
   <Class Name="PersistentDataEditor.GooInterval2DControl">
     <Position X="21.75" Y="20" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
     <NestedTypes>
-      <Class Name="PersistentDataEditor.GooInterval2DControl.GooInterval2DControlHor" Collapsed="true">
+      <Class Name="PersistentDataEditor.GooInterval2DControl.GooInterval2DControlHor">
         <TypeIdentifier>
           <NewMemberFileName>Controls\GooInterval2DControl.cs</NewMemberFileName>
         </TypeIdentifier>
@@ -320,7 +323,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="PersistentDataEditor.ParamVariableControl" Collapsed="true">
-    <Position X="36" Y="12" Width="1.5" />
+    <Position X="36" Y="12" Width="2" />
     <TypeIdentifier>
       <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Controls\ParamControls.cs</FileName>
@@ -329,7 +332,7 @@
   <Interface Name="PersistentDataEditor.IGooValue">
     <Position X="11.25" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAgAAAAAAEAIAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAgAAAAAAEAIAAAABAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Controls\GooControlBase.cs</FileName>
     </TypeIdentifier>
   </Interface>

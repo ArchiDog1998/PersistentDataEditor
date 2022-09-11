@@ -2,6 +2,7 @@
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
+using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,11 @@ namespace PersistentDataEditor
 
         public GooLineControl(Func<GH_Line> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
+        }
+
+        private protected override GH_Line CreateDefaultValue()
+        {
+            return new GH_Line(new Line(Point3d.Origin, new Point3d(1, 0, 0)));
         }
 
         protected override BaseControlItem[] SetControlItems()

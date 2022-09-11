@@ -15,6 +15,7 @@ namespace PersistentDataEditor
     internal class GooVariableControl : GooHorizonalControlBase<IGH_Goo>
     {
         public override Guid AddCompnentGuid => _values[0].AddCompnentGuid;
+
         private Param_ScriptVariable _owner;
         public GooVariableControl(Func<IGH_Goo> valueGetter, Func<bool> isNull, Param_ScriptVariable owner) : base(valueGetter, isNull, null)
         {

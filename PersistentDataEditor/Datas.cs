@@ -201,6 +201,12 @@ namespace PersistentDataEditor
             set => Instances.Settings.SetValue(nameof(TextboxInputAutoApply), value);
         }
 
+        public static bool UseDefaultValueToControl
+        {
+            get => Instances.Settings.GetValue(nameof(UseDefaultValueToControl), true);
+            set => Instances.Settings.SetValue(nameof(UseDefaultValueToControl), value);
+        }
+
         public static bool OnlyItemAccessControl
         {
             get => Grasshopper.Instances.Settings.GetValue(nameof(OnlyItemAccessControl), true);

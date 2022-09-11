@@ -2,6 +2,7 @@
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
+using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,11 @@ namespace PersistentDataEditor
         public GooArcControl(Func<GH_Arc> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
 
+        }
+
+        private protected override GH_Arc CreateDefaultValue()
+        {
+            return new GH_Arc(new Arc(Plane.WorldXY, 1, Math.PI / 2));
         }
 
         protected override BaseControlItem[] SetControlItems()

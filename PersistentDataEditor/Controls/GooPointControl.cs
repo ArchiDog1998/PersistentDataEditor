@@ -15,6 +15,7 @@ namespace PersistentDataEditor
     {
         public override Guid AddCompnentGuid => new Guid("3581f42a-9592-4549-bd6b-1c0fc39d067b");
 
+
         public GooPointControl(Func<GH_Point> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
 
