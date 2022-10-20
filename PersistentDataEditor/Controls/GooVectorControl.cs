@@ -4,10 +4,6 @@ using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PersistentDataEditor
 {
@@ -34,35 +30,21 @@ namespace PersistentDataEditor
                     {
                         new StringRender("X"),
 
-                        new GooInputBoxStringControl<GH_Number>(()=>
-                        {
-                            if(ShowValue == null) return null;
-                            return new GH_Number(ShowValue.Value.X);
-                        }, _isNull),
+                        new GooInputBoxStringControl<GH_Number>(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.X), _isNull),
 
                         new StringRender("Y"),
 
-                        new GooInputBoxStringControl<GH_Number>(()=>
-                        {
-                            if(ShowValue == null) return null;
-                            return new GH_Number(ShowValue.Value.Y);
-                        }, _isNull),
+                        new GooInputBoxStringControl<GH_Number>(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.Y), _isNull),
 
                         new StringRender("Z"),
 
-                        new GooInputBoxStringControl<GH_Number>(()=>
-                        {
-                            if(ShowValue == null) return null;
-                            return new GH_Number(ShowValue.Value.Z);
-                        }, _isNull),
+                        new GooInputBoxStringControl<GH_Number>(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.Z), _isNull),
                     };
             }
         }
 
-        private protected override GH_Vector CreateDefaultValue()
-        {
-            return new GH_Vector(Vector3d.ZAxis);
-        }
+        private protected override GH_Vector CreateDefaultValue() 
+            => new GH_Vector(Vector3d.ZAxis);
 
         protected override GH_Vector SetValue(IGH_Goo[] values)
         {
@@ -84,41 +66,25 @@ namespace PersistentDataEditor
         {
             if (obj == null) return;
             GH_Component com = (GH_Component)obj;
-            if (com == null) return;
 
             if (com.Params.Input.Count < 3) return;
 
-            if (com.Params.Input[0] is Param_Number)
+            if (com.Params.Input[0] is Param_Number param0 && _values[0].SaveValue is GH_Number Value0)
             {
-                Param_Number param = (Param_Number)com.Params.Input[0];
-                GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[0])._savedValue;
-                if (number != null)
-                {
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(number);
-                }
+                param0.PersistentData.Clear();
+                param0.PersistentData.Append(Value0);
             }
 
-            if (com.Params.Input[1] is Param_Number)
+            if (com.Params.Input[1] is Param_Number param1 && _values[1].SaveValue is GH_Number Value1)
             {
-                Param_Number param = (Param_Number)com.Params.Input[1];
-                GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[1])._savedValue;
-                if (number != null)
-                {
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(number);
-                }
+                param1.PersistentData.Clear();
+                param1.PersistentData.Append(Value1);
             }
 
-            if (com.Params.Input[2] is Param_Number)
+            if (com.Params.Input[2] is Param_Number param2 && _values[2].SaveValue is GH_Number Value2)
             {
-                Param_Number param = (Param_Number)com.Params.Input[2];
-                GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[2])._savedValue;
-                if (number != null)
-                {
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(number);
-                }
+                param2.PersistentData.Clear();
+                param2.PersistentData.Append(Value2);
             }
         }
     }

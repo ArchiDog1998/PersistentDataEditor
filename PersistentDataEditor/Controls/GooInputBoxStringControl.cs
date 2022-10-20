@@ -3,15 +3,9 @@ using Grasshopper.GUI.Base;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Rhino.Geometry;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PersistentDataEditor
@@ -81,17 +75,17 @@ namespace PersistentDataEditor
         }
     }
 
-    internal class InputBoxBalloon : GH_TextBoxInputBase
+    internal sealed class InputBoxBalloon : GH_TextBoxInputBase
     {
         private Action<string> _setValue;
 
-        //private static readonly MethodInfo _inputBoxInfo = typeof(InputBoxBalloon).GetRuntimeMethods().First(m => m.Name.Contains("TextOverrideLostFocus"));
+        //private static readonly MethodInfo _inputBoxInfo = typeof(InputBoxBalloon).FindMethod("TextOverrideLostFocus"));
 
         internal InputBoxBalloon(RectangleF bounds, Action<string> setValue)
         {
-            this._setValue = setValue;
+            _setValue = setValue;
 
-            float mul = 3.5f;
+            const float mul = 3.5f;
             if (bounds.Height * mul > bounds.Width)
             {
                 bounds = new RectangleF(bounds.Location, new SizeF(bounds.Height * mul, bounds.Height));

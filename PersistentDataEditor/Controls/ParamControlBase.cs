@@ -46,11 +46,9 @@ namespace PersistentDataEditor
                 {
                     return _gooControl.Width;
                 }
-                else
-                {
-                    _gooControl.Bounds = RectangleF.Empty;
-                    return 0;
-                }
+
+                _gooControl.Bounds = RectangleF.Empty;
+                return 0;
 
             }
         }
@@ -62,18 +60,16 @@ namespace PersistentDataEditor
                 {
                     return _gooControl.Height;
                 }
-                else
-                {
-                    _gooControl.Bounds = RectangleF.Empty;
-                    return 0;
-                }
+
+                _gooControl.Bounds = RectangleF.Empty;
+                return 0;
 
             }
         }
         protected override bool Valid => Owner.OnPingDocument() == Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2
             && (!Datas.OnlyShowSelectedObjectControl || Owner.Attributes.Selected) && !Owner.PersistentData.Any(d => d is IGH_GeometricGoo g && g.IsReferencedGeometry);
 
-        public ParamControlBase(GH_PersistentParam<T> owner)
+        protected ParamControlBase(GH_PersistentParam<T> owner)
         {
             Owner = owner;
             _gooControl = SetUpControl(owner);
@@ -83,14 +79,14 @@ namespace PersistentDataEditor
 
         private void SetValue()
         {
-            OwnerGooData = (T)(object)_gooControl.SaveValue;
+            OwnerGooData = (T)_gooControl.SaveValue;
         }
         protected abstract GooControlBase<T> SetUpControl(IGH_Param param);
 
 
         protected sealed override void LayoutObject(RectangleF bounds)
         {
-            this._gooControl.Bounds = bounds;
+            _gooControl.Bounds = bounds;
             base.LayoutObject(bounds);
         }
         internal sealed override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
@@ -109,7 +105,7 @@ namespace PersistentDataEditor
 
         internal sealed override void ChangeControlItems()
         {
-            this._gooControl.ChangeControlItems();
+            _gooControl.ChangeControlItems();
         }
 
     }

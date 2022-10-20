@@ -4,10 +4,6 @@ using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PersistentDataEditor
 {
@@ -40,44 +36,20 @@ namespace PersistentDataEditor
                 case Arc_Control.Plane_Radius_Angle:
                     return new BaseControlItem[]
                     {
-                         new GooPlaneControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Plane(ShowValue.Value.Plane);
-                         }, _isNull, "P"),
+                         new GooPlaneControl(()=> ShowValue == null ? null : new GH_Plane(ShowValue.Value.Plane), _isNull, "P"),
 
-                         new GooNumberControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Number(ShowValue.Value.Radius);
-                         }, _isNull, "R"),
+                         new GooNumberControl(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.Radius), _isNull, "R"),
 
-                         new GooIntervalControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Interval(ShowValue.Value.AngleDomain);
-                         }, _isNull, "D"),
+                         new GooIntervalControl(()=> ShowValue == null ? null : new GH_Interval(ShowValue.Value.AngleDomain), _isNull, "D"),
                     };
                 case Arc_Control.SED:
                     return new BaseControlItem[]
                     {
-                         new GooPointControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Point(ShowValue.Value.StartPoint);
-                         }, _isNull, "S"),
+                         new GooPointControl(()=> ShowValue == null ? null : new GH_Point(ShowValue.Value.StartPoint), _isNull, "S"),
 
-                         new GooPointControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Point(ShowValue.Value.EndPoint);
-                         }, _isNull, "E"),
+                         new GooPointControl(()=> ShowValue == null ? null : new GH_Point(ShowValue.Value.EndPoint), _isNull, "E"),
 
-                         new GooVectorControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Vector(ShowValue.Value.TangentAt(0));
-                         }, _isNull, "D"),
+                         new GooVectorControl(()=> ShowValue == null ? null : new GH_Vector(ShowValue.Value.TangentAt(0)), _isNull, "D"),
                     };
             }
         }
@@ -88,10 +60,10 @@ namespace PersistentDataEditor
                 default:
                     return (GH_Arc)values[0];
                 case Arc_Control.Plane_Radius_Angle:
-                    return new GH_Arc(new Rhino.Geometry.Arc(
-                        new Rhino.Geometry.Circle(((GH_Plane)values[0]).Value, ((GH_Number)values[1]).Value), ((GH_Interval)values[2]).Value));
+                    return new GH_Arc(new Arc(
+                        new Circle(((GH_Plane)values[0]).Value, ((GH_Number)values[1]).Value), ((GH_Interval)values[2]).Value));
                 case Arc_Control.SED:
-                    return new GH_Arc(new Rhino.Geometry.Arc(((GH_Point)values[0]).Value, ((GH_Vector)values[2]).Value, ((GH_Point)values[1]).Value));
+                    return new GH_Arc(new Arc(((GH_Point)values[0]).Value, ((GH_Vector)values[2]).Value, ((GH_Point)values[1]).Value));
 
             }
         }
@@ -100,83 +72,50 @@ namespace PersistentDataEditor
         {
             if (obj == null) return;
             GH_Component com = (GH_Component)obj;
-            if (com == null) return;
 
             switch (type)
             {
                 case Arc_Control.Plane_Radius_Angle:
                     if (com.Params.Input.Count < 3) return;
 
-                    if (com.Params.Input[0] is Param_Plane)
+                    if (com.Params.Input[0] is Param_Plane param0 && _values[0].SaveValue is GH_Plane value0)
                     {
-                        Param_Plane param = (Param_Plane)com.Params.Input[0];
-                        GH_Plane plane = ((GooPlaneControl)_values[0])._savedValue;
-                        if (plane != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(plane);
-                        }
+                            param0.PersistentData.Clear();
+                            param0.PersistentData.Append(value0);
                     }
 
-                    if (com.Params.Input[1] is Param_Number)
+                    if (com.Params.Input[1] is Param_Number param1 && _values[1].SaveValue is GH_Number value1)
                     {
-                        Param_Number param = (Param_Number)com.Params.Input[1];
-                        GH_Number interval = ((GooNumberControl)_values[1])._savedValue;
-                        if (interval != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(interval);
-                        }
+                        param1.PersistentData.Clear();
+                        param1.PersistentData.Append(value1);
                     }
-
-                    if (com.Params.Input[2] is Param_Interval)
+                    if (com.Params.Input[2] is Param_Interval param2 && _values[2].SaveValue is GH_Interval value2)
                     {
-                        Param_Interval param = (Param_Interval)com.Params.Input[2];
-                        GH_Interval interval = ((GooIntervalControl)_values[2])._savedValue;
-                        if (interval != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(interval);
-                        }
+                        param2.PersistentData.Clear();
+                        param2.PersistentData.Append(value2);
                     }
 
                     break;
 
                 case Arc_Control.SED:
                     if (com.Params.Input.Count < 4) return;
-
-                    if (com.Params.Input[0] is Param_Point)
+                    if (com.Params.Input[0] is Param_Point param00 && _values[0].SaveValue is GH_Point value00)
                     {
-                        Param_Point param = (Param_Point)com.Params.Input[0];
-                        GH_Point plane = ((GooPointControl)_values[0])._savedValue;
-                        if (plane != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(plane);
-                        }
+                        param00.PersistentData.Clear();
+                        param00.PersistentData.Append(value00);
                     }
 
-                    if (com.Params.Input[1] is Param_Point)
+                    if (com.Params.Input[1] is Param_Point param01 && _values[1].SaveValue is GH_Point value01)
                     {
-                        Param_Point param = (Param_Point)com.Params.Input[1];
-                        GH_Point number = ((GooPointControl)_values[1])._savedValue;
-                        if (number != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(number);
-                        }
+                        param01.PersistentData.Clear();
+                        param01.PersistentData.Append(value01);
                     }
-
-                    if (com.Params.Input[2] is Param_Vector)
+                    if (com.Params.Input[2] is Param_Vector param02 && _values[2].SaveValue is GH_Vector value02)
                     {
-                        Param_Vector param = (Param_Vector)com.Params.Input[2];
-                        GH_Vector number = ((GooVectorControl)_values[2])._savedValue;
-                        if (number != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(number);
-                        }
+                        param02.PersistentData.Clear();
+                        param02.PersistentData.Append(value02);
                     }
+                    
                     break;
 
             }

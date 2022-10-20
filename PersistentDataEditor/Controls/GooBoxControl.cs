@@ -4,10 +4,6 @@ using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PersistentDataEditor
 {
@@ -30,7 +26,7 @@ namespace PersistentDataEditor
             }
         }
 
-        private Box_Control type => (Box_Control)Instances.Settings.GetValue(typeof(Box_Control).FullName, 0);
+        private static Box_Control type => (Box_Control)Instances.Settings.GetValue(typeof(Box_Control).FullName, 0);
 
         public GooBoxControl(Func<GH_Box> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
@@ -54,73 +50,34 @@ namespace PersistentDataEditor
                 case Box_Control.Domain_Box:
                     return new BaseControlItem[]
                     {
-                         new GooPlaneControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Plane(ShowValue.Value.Plane);
-                         }, _isNull, "P"),
+                         new GooPlaneControl(()=> ShowValue == null ? null : new GH_Plane(ShowValue.Value.Plane), _isNull, "P"),
 
-                         new GooIntervalControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Interval(ShowValue.Value.X);
-                         }, _isNull, "X"),
+                         new GooIntervalControl(()=> ShowValue == null ? null : new GH_Interval(ShowValue.Value.X), _isNull, "X"),
 
-                         new GooIntervalControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Interval(ShowValue.Value.Y);
-                         }, _isNull, "Y"),
+                         new GooIntervalControl(()=> ShowValue == null ? null : new GH_Interval(ShowValue.Value.Y), _isNull, "Y"),
 
-                         new GooIntervalControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Interval(ShowValue.Value.Z);
-                         }, _isNull, "Z"),
+                         new GooIntervalControl(()=> ShowValue == null ? null : new GH_Interval(ShowValue.Value.Z), _isNull, "Z"),
                     };
                 case Box_Control.Center_Box:
                     return new BaseControlItem[]
                     {
-                         new GooPlaneControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Plane(ShowValue.Value.Plane);
-                         }, _isNull, "P"),
+                         new GooPlaneControl(()=> ShowValue == null ? null : new GH_Plane(ShowValue.Value.Plane), _isNull, "P"),
 
-                         new GooNumberControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Number(ShowValue.Value.X.Length/2);
-                         }, _isNull, "X"),
+                         new GooNumberControl(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.X.Length/2), _isNull, "X"),
 
-                         new GooNumberControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Number(ShowValue.Value.Y.Length/2);
-                         }, _isNull, "Y"),
+                         new GooNumberControl(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.Y.Length/2), _isNull, "Y"),
 
-                         new GooNumberControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Number(ShowValue.Value.Z.Length/2);
-                         }, _isNull, "Z"),
+                         new GooNumberControl(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.Z.Length/2), _isNull, "Z"),
                     };
 
                 case Box_Control.Box_Rectangle:
                     return new BaseControlItem[]
                     {
-                         new GooRectangleControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Rectangle(new Rhino.Geometry.Rectangle3d(
-                                 ShowValue.Value.Plane, ShowValue.Value.X, ShowValue.Value.Y));
-                         }, _isNull, "R"),
+                         new GooRectangleControl(()=> ShowValue == null ? null
+                             : new GH_Rectangle(new Rectangle3d(
+                                 ShowValue.Value.Plane, ShowValue.Value.X, ShowValue.Value.Y)), _isNull, "R"),
 
-                        new GooIntervalControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Interval(ShowValue.Value.Z);
-                         }, _isNull, "H"),
+                        new GooIntervalControl(()=> ShowValue == null ? null : new GH_Interval(ShowValue.Value.Z), _isNull, "H"),
                     };
             }
         }
@@ -131,16 +88,16 @@ namespace PersistentDataEditor
                 default:
                     return (GH_Box)values[0];
                 case Box_Control.Domain_Box:
-                    return new GH_Box(new Rhino.Geometry.Box(((GH_Plane)values[0]).Value, ((GH_Interval)values[1]).Value, ((GH_Interval)values[2]).Value, ((GH_Interval)values[3]).Value));
+                    return new GH_Box(new Box(((GH_Plane)values[0]).Value, ((GH_Interval)values[1]).Value, ((GH_Interval)values[2]).Value, ((GH_Interval)values[3]).Value));
                 case Box_Control.Center_Box:
                     double x = ((GH_Number)values[1]).Value;
                     double y = ((GH_Number)values[2]).Value;
                     double z = ((GH_Number)values[3]).Value;
-                    return new GH_Box(new Rhino.Geometry.Box(((GH_Plane)values[0]).Value, new Rhino.Geometry.Interval(-x, x), new Rhino.Geometry.Interval(-y, y), new Rhino.Geometry.Interval(-z, z)));
+                    return new GH_Box(new Box(((GH_Plane)values[0]).Value, new Interval(-x, x), new Interval(-y, y), new Interval(-z, z)));
                 case Box_Control.Box_Rectangle:
-                    Rhino.Geometry.Rectangle3d rect = ((GH_Rectangle)values[0]).Value;
-                    Rhino.Geometry.Interval height = ((GH_Interval)values[1]).Value;
-                    return new GH_Box(new Rhino.Geometry.Box(rect.Plane, rect.X, rect.Y, height));
+                    Rectangle3d rect = ((GH_Rectangle)values[0]).Value;
+                    Interval height = ((GH_Interval)values[1]).Value;
+                    return new GH_Box(new Box(rect.Plane, rect.X, rect.Y, height));
 
             }
         }
@@ -149,129 +106,78 @@ namespace PersistentDataEditor
         {
             if (obj == null) return;
             GH_Component com = (GH_Component)obj;
-            if (com == null) return;
 
             switch (type)
             {
                 case Box_Control.Domain_Box:
                     if (com.Params.Input.Count < 4) return;
 
-                    if (com.Params.Input[0] is Param_Plane)
+                    if (com.Params.Input[0] is Param_Plane param0 && _values[0].SaveValue is GH_Plane Value0)
                     {
-                        Param_Plane param = (Param_Plane)com.Params.Input[0];
-                        GH_Plane plane = ((GooPlaneControl)_values[0])._savedValue;
-                        if (plane != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(plane);
-                        }
+                        param0.PersistentData.Clear();
+                        param0.PersistentData.Append(Value0);
                     }
 
-                    if (com.Params.Input[1] is Param_Interval)
+                    if (com.Params.Input[1] is Param_Interval param1 && _values[1].SaveValue is GH_Interval Value1)
                     {
-                        Param_Interval param = (Param_Interval)com.Params.Input[1];
-                        GH_Interval interval = ((GooIntervalControl)_values[1])._savedValue;
-                        if (interval != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(interval);
-                        }
+                        param1.PersistentData.Clear();
+                        param1.PersistentData.Append(Value1);
                     }
 
-                    if (com.Params.Input[2] is Param_Interval)
+                    if (com.Params.Input[2] is Param_Interval param2 && _values[2].SaveValue is GH_Interval Value2)
                     {
-                        Param_Interval param = (Param_Interval)com.Params.Input[2];
-                        GH_Interval interval = ((GooIntervalControl)_values[2])._savedValue;
-                        if (interval != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(interval);
-                        }
+                        param2.PersistentData.Clear();
+                        param2.PersistentData.Append(Value2);
                     }
 
-                    if (com.Params.Input[3] is Param_Interval)
+                    if (com.Params.Input[3] is Param_Interval param3 && _values[3].SaveValue is GH_Interval Value3)
                     {
-                        Param_Interval param = (Param_Interval)com.Params.Input[3];
-                        GH_Interval interval = ((GooIntervalControl)_values[3])._savedValue;
-                        if (interval != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(interval);
-                        }
+                        param3.PersistentData.Clear();
+                        param3.PersistentData.Append(Value3);
                     }
                     break;
 
                 case Box_Control.Center_Box:
                     if (com.Params.Input.Count < 4) return;
 
-                    if (com.Params.Input[0] is Param_Plane)
+                    if (com.Params.Input[0] is Param_Plane param00 && _values[0].SaveValue is GH_Plane Value00)
                     {
-                        Param_Plane param = (Param_Plane)com.Params.Input[0];
-                        GH_Plane plane = ((GooPlaneControl)_values[0])._savedValue;
-                        if (plane != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(plane);
-                        }
+                        param00.PersistentData.Clear();
+                        param00.PersistentData.Append(Value00);
                     }
 
-                    if (com.Params.Input[1] is Param_Number)
+                    if (com.Params.Input[1] is Param_Number param01 && _values[1].SaveValue is GH_Number Value01)
                     {
-                        Param_Number param = (Param_Number)com.Params.Input[1];
-                        GH_Number number = ((GooNumberControl)_values[1])._savedValue;
-                        if (number != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(number);
-                        }
+                        param01.PersistentData.Clear();
+                        param01.PersistentData.Append(Value01);
                     }
 
-                    if (com.Params.Input[2] is Param_Number)
+                    if (com.Params.Input[2] is Param_Number param02 && _values[2].SaveValue is GH_Number Value02)
                     {
-                        Param_Number param = (Param_Number)com.Params.Input[2];
-                        GH_Number number = ((GooNumberControl)_values[2])._savedValue;
-                        if (number != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(number);
-                        }
+                        param02.PersistentData.Clear();
+                        param02.PersistentData.Append(Value02);
                     }
 
-                    if (com.Params.Input[3] is Param_Number)
+                    if (com.Params.Input[3] is Param_Number param03 && _values[3].SaveValue is GH_Number Value03)
                     {
-                        Param_Number param = (Param_Number)com.Params.Input[3];
-                        GH_Number number = ((GooNumberControl)_values[3])._savedValue;
-                        if (number != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(number);
-                        }
+                        param03.PersistentData.Clear();
+                        param03.PersistentData.Append(Value03);
                     }
                     break;
 
                 case Box_Control.Box_Rectangle:
                     if (com.Params.Input.Count < 2) return;
 
-                    if (com.Params.Input[0] is Param_Rectangle)
+                    if (com.Params.Input[0] is Param_Rectangle param10 && _values[0].SaveValue is GH_Rectangle Value10)
                     {
-                        Param_Rectangle param = (Param_Rectangle)com.Params.Input[0];
-                        GH_Rectangle rect = ((GooRectangleControl)_values[0])._savedValue;
-                        if (rect != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(rect);
-                        }
+                        param10.PersistentData.Clear();
+                        param10.PersistentData.Append(Value10);
                     }
 
-                    if (com.Params.Input[1] is Param_Interval)
+                    if (com.Params.Input[1] is Param_Interval param11 && _values[1].SaveValue is GH_Interval Value11)
                     {
-                        Param_Interval param = (Param_Interval)com.Params.Input[1];
-                        GH_Interval interval = ((GooIntervalControl)_values[1])._savedValue;
-                        if (interval != null)
-                        {
-                            param.PersistentData.Clear();
-                            param.PersistentData.Append(interval);
-                        }
+                        param11.PersistentData.Clear();
+                        param11.PersistentData.Append(Value11);
                     }
 
                     break;

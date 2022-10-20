@@ -4,10 +4,6 @@ using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PersistentDataEditor
 {
@@ -31,19 +27,11 @@ namespace PersistentDataEditor
                 case Domain_Control.T0_T1:
                     return new BaseControlItem[]
                     {
-                        new GooInputBoxStringControl<GH_Number>(()=>
-                        {
-                            if(ShowValue == null) return null;
-                            return new GH_Number(ShowValue.Value.T0);
-                        }, _isNull),
+                        new GooInputBoxStringControl<GH_Number>(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.T0), _isNull),
 
                         new StringRender("To"),
 
-                        new GooInputBoxStringControl<GH_Number>(()=>
-                        {
-                            if(ShowValue == null) return null;
-                            return new GH_Number(ShowValue.Value.T1);
-                        }, _isNull),
+                        new GooInputBoxStringControl<GH_Number>(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.T1), _isNull),
                     };
             }
 
@@ -69,30 +57,19 @@ namespace PersistentDataEditor
         {
             if (obj == null) return;
             GH_Component com = (GH_Component)obj;
-            if (com == null) return;
 
             if (com.Params.Input.Count < 2) return;
 
-            if (com.Params.Input[0] is Param_Number)
+            if (com.Params.Input[0] is Param_Number para0 && _values[0].SaveValue is GH_Number Value0)
             {
-                Param_Number param = (Param_Number)com.Params.Input[0];
-                GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[0])._savedValue;
-                if (number != null)
-                {
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(number);
-                }
+                para0.PersistentData.Clear();
+                para0.PersistentData.Append(Value0);
             }
 
-            if (com.Params.Input[1] is Param_Number)
+            if (com.Params.Input[1] is Param_Number param1 && _values[1].SaveValue is GH_Number Value1)
             {
-                Param_Number param = (Param_Number)com.Params.Input[1];
-                GH_Number number = ((GooInputBoxStringControl<GH_Number>)_values[1])._savedValue;
-                if (number != null)
-                {
-                    param.PersistentData.Clear();
-                    param.PersistentData.Append(number);
-                }
+                param1.PersistentData.Clear();
+                param1.PersistentData.Append(Value1);
             }
         }
     }

@@ -4,14 +4,9 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
 using System;
 using System.Reflection;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Drawing;
 using Grasshopper;
-using Rhino;
 using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
 
@@ -19,14 +14,14 @@ namespace PersistentDataEditor
 {
     internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IControlAttr, IDisposable
     {
-        private static FieldInfo _tagsinfo = typeof(GH_FloatingParamAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_stateTags")).First();
+        private static FieldInfo _tagsinfo = typeof(GH_FloatingParamAttributes).FindField("m_stateTags");
 
         private IGumball _gumball;
         private Rectangle _iconTextBound;
 
         private MethodInfo _expressionInfo;
 
-        public BaseControlItem Control { get; private set; } = null;
+        public BaseControlItem Control { get; private set; }
         public GH_AdvancedFloatingParamAttr(IGH_Param param): base(param)
         {
             _gumball = SetGumball(param);
@@ -34,8 +29,8 @@ namespace PersistentDataEditor
 
             if (GH_AdvancedLinkParamAttr.IsExpressionParam(Owner.GetType(), out Type dataType))
             {
-                Type type = typeof(GH_ExpressionParam<>).MakeGenericType(new Type[] { dataType });
-                _expressionInfo = type.GetRuntimeMethods().Where(m => m.Name.Contains("Menu_ExpressionEditorClick")).First();
+                Type type = typeof(GH_ExpressionParam<>).MakeGenericType(dataType);
+                _expressionInfo = type.FindMethod("Menu_ExpressionEditorClick");
             }
         }
 
@@ -79,7 +74,7 @@ namespace PersistentDataEditor
         {
             if (_expressionInfo != null)
             {
-                _expressionInfo.Invoke(Owner, new object[] { Instances.DocumentEditor, new EventArgs() });
+                _expressionInfo.Invoke(Owner, new object[] { Instances.DocumentEditor, EventArgs.Empty });
                 return GH_ObjectResponse.Release;
             }
             return base.RespondToMouseDoubleClick(sender, e);
@@ -92,13 +87,13 @@ namespace PersistentDataEditor
             int controlDis = Datas.ParamsCoreDistance;
 
             //Get Icon/Text Bound.
-            if (IsIconMode(base.Owner.IconDisplayMode))
+            if (IsIconMode(Owner.IconDisplayMode))
             {
                 _iconTextBound = new Rectangle((int)Pivot.X - 12, (int)Pivot.Y - 12, 24, 24);
             }
             else
             {
-                float stringWidth = GH_FontServer.MeasureString(base.Owner.NickName, GH_FontServer.StandardAdjusted).Width + 1;
+                float stringWidth = GH_FontServer.MeasureString(Owner.NickName, GH_FontServer.StandardAdjusted).Width + 1;
                 _iconTextBound = new Rectangle((int)(Pivot.X - stringWidth/2), (int)Pivot.Y - 10, (int)stringWidth, 20);
             }
             Bounds = _iconTextBound;
@@ -146,9 +141,9 @@ namespace PersistentDataEditor
             switch (channel)
             {
                 case GH_CanvasChannel.Wires:
-                    if (base.Owner.SourceCount > 0)
+                    if (Owner.SourceCount > 0)
                     {
-                        RenderIncomingWires(canvas.Painter, base.Owner.Sources, base.Owner.WireDisplay);
+                        RenderIncomingWires(canvas.Painter, Owner.Sources, Owner.WireDisplay);
                     }
                     break;
 
@@ -161,13 +156,12 @@ namespace PersistentDataEditor
                         Bounds = rec;
 
                         bool hidden = true;
-                        if (base.Owner is IGH_PreviewObject)
+                        if (Owner is IGH_PreviewObject previewObject)
                         {
-                            hidden = ((IGH_PreviewObject)base.Owner).Hidden;
+                            hidden = previewObject.Hidden;
                         }
-                        GH_Capsule gH_Capsule = null;
-                        gH_Capsule = ((!IsIconMode(base.Owner.IconDisplayMode)) ? GH_Capsule.CreateTextCapsule(Bounds, _iconTextBound, GH_CapsuleRenderEngine.GetImpliedPalette(base.Owner), base.Owner.NickName) : 
-                            GH_Capsule.CreateCapsule(Bounds, GH_CapsuleRenderEngine.GetImpliedPalette(base.Owner)));
+                        GH_Capsule gH_Capsule = !IsIconMode(Owner.IconDisplayMode) ? GH_Capsule.CreateTextCapsule(Bounds, _iconTextBound, GH_CapsuleRenderEngine.GetImpliedPalette(Owner), Owner.NickName) : 
+                            GH_Capsule.CreateCapsule(Bounds, GH_CapsuleRenderEngine.GetImpliedPalette(Owner));
                         if (HasInputGrip)
                         {
                             gH_Capsule.AddInputGrip(InputGrip.Y);
@@ -176,38 +170,35 @@ namespace PersistentDataEditor
                         {
                             gH_Capsule.AddOutputGrip(OutputGrip.Y);
                         }
-                        if (IsIconMode(base.Owner.IconDisplayMode))
+                        if (IsIconMode(Owner.IconDisplayMode))
                         {
-                            if (base.Owner.Locked)
+                            if (Owner.Locked)
                             {
                                 gH_Capsule.Render(graphics, Selected, locked: true, hidden);
-                                gH_Capsule.RenderEngine.RenderIcon(graphics, base.Owner.Icon_24x24_Locked, _iconTextBound, 0, 1);
+                                gH_Capsule.RenderEngine.RenderIcon(graphics, Owner.Icon_24x24_Locked, _iconTextBound, 0, 1);
                             }
                             else
                             {
                                 gH_Capsule.Render(graphics, Selected, locked: false, hidden);
-                                gH_Capsule.RenderEngine.RenderIcon(graphics, base.Owner.Icon_24x24, _iconTextBound, 0, 1);
+                                gH_Capsule.RenderEngine.RenderIcon(graphics, Owner.Icon_24x24, _iconTextBound, 0, 1);
                             }
-                            if (base.Owner.Obsolete && CentralSettings.CanvasObsoleteTags)
+                            if (Owner.Obsolete && CentralSettings.CanvasObsoleteTags)
                             {
-                                GH_GraphicsUtil.RenderObjectOverlay(graphics, base.Owner, _iconTextBound);
+                                GH_GraphicsUtil.RenderObjectOverlay(graphics, Owner, _iconTextBound);
                             }
                         }
                         else
                         {
-                            gH_Capsule.Render(graphics, Selected, base.Owner.Locked, hidden);
+                            gH_Capsule.Render(graphics, Selected, Owner.Locked, hidden);
                         }
                         gH_Capsule.Dispose();
 
-                        GH_Palette gH_Palette = GH_CapsuleRenderEngine.GetImpliedPalette(base.Owner);
-                        GH_PaletteStyle impliedStyle = GH_CapsuleRenderEngine.GetImpliedStyle(gH_Palette, Selected, base.Owner.Locked, hidden);
+                        GH_Palette gH_Palette = GH_CapsuleRenderEngine.GetImpliedPalette(Owner);
+                        GH_PaletteStyle impliedStyle = GH_CapsuleRenderEngine.GetImpliedStyle(gH_Palette, Selected, Owner.Locked, hidden);
                         Control?.RenderObject(canvas, graphics, impliedStyle);
 
                         GH_StateTagList tags = (GH_StateTagList)_tagsinfo.GetValue(this);
-                        if (tags != null)
-                        {
-                            tags.RenderStateTags(graphics);
-                        }
+                        tags?.RenderStateTags(graphics);
                         break;
                     }
             }
@@ -215,18 +206,12 @@ namespace PersistentDataEditor
 
         public void Dispose()
         {
-            if (_gumball != null)
-            {
-                _gumball.Dispose();
-            }
+            _gumball?.Dispose();
         }
 
         public void RedrawGumballs()
         {
-            if (_gumball != null)
-            {
-                _gumball.ShowAllGumballs();
-            }
+            _gumball?.ShowAllGumballs();
         }
     }
 }

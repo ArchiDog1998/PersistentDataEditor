@@ -1,44 +1,19 @@
-﻿using Grasshopper.GUI;
-using Grasshopper.GUI.Canvas;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
+﻿using Grasshopper.Kernel.Types;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace PersistentDataEditor
 {
     internal abstract class GooHorizonalControlBase<T> : GooMultiControlBase<T> where T : class, IGH_Goo
     {
-        internal sealed override int Width
-        {
-            get
-            {
-                int all = 0;
-                foreach (var control in _controlItems)
-                {
-                    all += control.Width;
-                }
-                return all;
-            }
-        }
-        internal sealed override int Height
-        {
-            get
-            {
-                int max = 0;
-                foreach (var control in _controlItems)
-                {
-                    max = Math.Max(max, control.Height);
-                }
-                return max;
-            }
-        }
-        public GooHorizonalControlBase(Func<T> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
+        internal sealed override int Width 
+            => _controlItems.Sum(control => control.Width);
+
+        internal sealed override int Height 
+            => _controlItems.Select(control => control.Height).Prepend(0).Max();
+
+        protected GooHorizonalControlBase(Func<T> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
         }
 

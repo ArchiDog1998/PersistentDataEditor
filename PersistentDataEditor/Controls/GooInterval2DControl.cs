@@ -4,10 +4,6 @@ using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PersistentDataEditor
 {
@@ -20,7 +16,7 @@ namespace PersistentDataEditor
 
         internal class GooInterval2DControlHor : GooHorizonalControlBase<GH_Interval2D>
         {
-            public override Guid AddCompnentGuid => default(Guid);
+            public override Guid AddCompnentGuid => default;
 
             public GooInterval2DControlHor(Func<GH_Interval2D> valueGetter, Func<bool> isNull) : base(valueGetter, isNull, null)
             {
@@ -36,30 +32,14 @@ namespace PersistentDataEditor
                 return new BaseControlItem[]
                 {
 
-                    new GooNumberControl(()=>
-                    {
-                        if(ShowValue == null) return null;
-                        return new GH_Number(ShowValue.Value.U0);
-                    }, _isNull, "U0"),
+                    new GooNumberControl(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.U0), _isNull, "U0"),
 
-                    new GooNumberControl(()=>
-                    {
-                        if(ShowValue == null) return null;
-                        return new GH_Number(ShowValue.Value.U1);
-                    }, _isNull, "U1"),
+                    new GooNumberControl(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.U1), _isNull, "U1"),
 
 
-                    new GooNumberControl(()=>
-                    {
-                        if(ShowValue == null) return null;
-                        return new GH_Number(ShowValue.Value.V0);
-                    }, _isNull, "V0"),
+                    new GooNumberControl(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.V0), _isNull, "V0"),
 
-                    new GooNumberControl(()=>
-                    {
-                        if(ShowValue == null) return null;
-                        return new GH_Number(ShowValue.Value.V1);
-                    }, _isNull, "V1"),
+                    new GooNumberControl(()=> ShowValue == null ? null : new GH_Number(ShowValue.Value.V1), _isNull, "V1"),
 
                 };
             }
@@ -67,11 +47,11 @@ namespace PersistentDataEditor
             protected override GH_Interval2D SetValue(IGH_Goo[] values)
             {
                 return new GH_Interval2D(new UVInterval(
-                    new Rhino.Geometry.Interval( ((GH_Number)values[0]).Value, ((GH_Number)values[1]).Value),
-                    new Rhino.Geometry.Interval(((GH_Number)values[2]).Value, ((GH_Number)values[3]).Value)));
+                    new Interval( ((GH_Number)values[0]).Value, ((GH_Number)values[1]).Value),
+                    new Interval(((GH_Number)values[2]).Value, ((GH_Number)values[3]).Value)));
             }
         }
-        private Domain2D_Control type => (Domain2D_Control)Instances.Settings.GetValue(typeof(Domain2D_Control).FullName, 0);
+        private static Domain2D_Control type => (Domain2D_Control)Instances.Settings.GetValue(typeof(Domain2D_Control).FullName, 0);
 
         public override Guid AddCompnentGuid => type == Domain2D_Control.U0_U1_V0_V1 ? 
             new Guid("9083b87f-a98c-4e41-9591-077ae4220b19"): new Guid("8555a743-36c1-42b8-abcc-06d9cb94519f");
@@ -92,17 +72,9 @@ namespace PersistentDataEditor
                 case Domain2D_Control.U_V:
                     return new BaseControlItem[]
                     {
-                         new GooIntervalControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Interval(ShowValue.Value.U);
-                         }, _isNull, "U"),
+                         new GooIntervalControl(()=> ShowValue == null ? null : new GH_Interval(ShowValue.Value.U), _isNull, "U"),
                     
-                         new GooIntervalControl(()=>
-                         {
-                             if(ShowValue == null) return null;
-                             return new GH_Interval(ShowValue.Value.V);
-                         }, _isNull, "V"),
+                         new GooIntervalControl(()=> ShowValue == null ? null : new GH_Interval(ShowValue.Value.V), _isNull, "V"),
                     };
                 case Domain2D_Control.U0_U1_V0_V1:
                     return new BaseControlItem[]
@@ -121,85 +93,46 @@ namespace PersistentDataEditor
         {
             if (obj == null) return;
             GH_Component com = (GH_Component)obj;
-            if (com == null) return;
 
             if (type == Domain2D_Control.U0_U1_V0_V1)
             {
                 if (com.Params.Input.Count < 4) return;
 
-                var values = ((GooInterval2DControlHor)_values[0])._values;
-
-                if (com.Params.Input[0] is Param_Number)
+                if (com.Params.Input[0] is Param_Number param0 && _values[0].SaveValue is GH_Number value0)
                 {
-                    Param_Number param = (Param_Number)com.Params.Input[0];
-                    GH_Number number = ((GooInputBoxStringControl<GH_Number>)values[0])._savedValue;
-                    if (number != null)
-                    {
-                        param.PersistentData.Clear();
-                        param.PersistentData.Append(number);
-                    }
+                    param0.PersistentData.Clear();
+                    param0.PersistentData.Append(value0);
                 }
-
-                if (com.Params.Input[1] is Param_Number)
+                if (com.Params.Input[1] is Param_Number param1 && _values[1].SaveValue is GH_Number value1)
                 {
-                    Param_Number param = (Param_Number)com.Params.Input[1];
-                    GH_Number number = ((GooInputBoxStringControl<GH_Number>)values[1])._savedValue;
-                    if (number != null)
-                    {
-                        param.PersistentData.Clear();
-                        param.PersistentData.Append(number);
-                    }
+                    param1.PersistentData.Clear();
+                    param1.PersistentData.Append(value1);
                 }
-
-                if (com.Params.Input[2] is Param_Number)
+                if (com.Params.Input[2] is Param_Number param2 && _values[2].SaveValue is GH_Number value2)
                 {
-                    Param_Number param = (Param_Number)com.Params.Input[2];
-                    GH_Number number = ((GooInputBoxStringControl<GH_Number>)values[2])._savedValue;
-                    if (number != null)
-                    {
-                        param.PersistentData.Clear();
-                        param.PersistentData.Append(number);
-                    }
+                    param2.PersistentData.Clear();
+                    param2.PersistentData.Append(value2);
                 }
-
-                if (com.Params.Input[3] is Param_Number)
+                if (com.Params.Input[3] is Param_Number param3 && _values[3].SaveValue is GH_Number value3)
                 {
-                    Param_Number param = (Param_Number)com.Params.Input[3];
-                    GH_Number number = ((GooInputBoxStringControl<GH_Number>)values[3])._savedValue;
-                    if (number != null)
-                    {
-                        param.PersistentData.Clear();
-                        param.PersistentData.Append(number);
-                    }
+                    param3.PersistentData.Clear();
+                    param3.PersistentData.Append(value3);
                 }
             }
             else
             {
                 if (com.Params.Input.Count < 2) return;
-
-                if (com.Params.Input[0] is Param_Interval)
+                if (com.Params.Input[0] is Param_Interval param0 && _values[0].SaveValue is GH_Interval value0)
                 {
-                    Param_Interval param = (Param_Interval)com.Params.Input[0];
-                    GH_Interval interval = ((GooIntervalControl)_values[0])._savedValue;
-                    if (interval != null)
-                    {
-                        param.PersistentData.Clear();
-                        param.PersistentData.Append(interval);
-                    }
+                    param0.PersistentData.Clear();
+                    param0.PersistentData.Append(value0);
                 }
-
-                if (com.Params.Input[1] is Param_Interval)
+                if (com.Params.Input[1] is Param_Interval param1 && _values[1].SaveValue is GH_Interval value1)
                 {
-                    Param_Interval param = (Param_Interval)com.Params.Input[1];
-                    GH_Interval interval = ((GooIntervalControl)_values[1])._savedValue;
-                    if (interval != null)
-                    {
-                        param.PersistentData.Clear();
-                        param.PersistentData.Append(interval);
-                    }
+                    param1.PersistentData.Clear();
+                    param1.PersistentData.Append(value1);
                 }
             }
-
         }
 }
 }
