@@ -1,14 +1,9 @@
 ﻿using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
-using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PersistentDataEditor
@@ -18,9 +13,10 @@ namespace PersistentDataEditor
         protected BaseControlItem[] _controlItems;
         internal IGooValue[] _values;
         private string _name;
-        protected bool _hasName = false;
+        protected bool _hasName;
         protected bool _RespondBase = true;
-        public GooMultiControlBase(Func<T> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull)
+
+        protected GooMultiControlBase(Func<T> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull)
         {
             _name = name;
             ChangeControlItems();
@@ -28,7 +24,7 @@ namespace PersistentDataEditor
 
         internal sealed override void ChangeControlItems()
         {
-            BaseControlItem[] addcontrolItems = SetControlItems() ?? new BaseControlItem[0];
+            BaseControlItem[] addcontrolItems = SetControlItems() ?? Array.Empty<BaseControlItem>();
             if (string.IsNullOrEmpty(_name))
             {
                 _controlItems = addcontrolItems;
@@ -45,13 +41,13 @@ namespace PersistentDataEditor
             foreach (var control in _controlItems)
             {
                 control.ChangeControlItems();
-                if (control is IGooValue)
+                if (control is IGooValue value)
                 {
-                    ((IGooValue)control).ValueChange = SetValue;
-                    gooValues.Add((IGooValue)control);
+                    value.ValueChange = SetValue;
+                    gooValues.Add(value);
                 }
             }
-            _values = gooValues.ToArray(); ;
+            _values = gooValues.ToArray();
         }
 
         private void SetValue()

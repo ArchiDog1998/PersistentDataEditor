@@ -3,19 +3,16 @@ using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PersistentDataEditor
 {
     internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T : class, IGH_Goo
     {
-        public static MethodInfo functions = typeof(GH_Canvas).GetRuntimeMethods().Where(m => m.Name.Contains("InstantiateNewObject") && !m.IsPublic).First();
+        public static MethodInfo functions = typeof(GH_Canvas).GetRuntimeMethods().First(m => m.Name.Contains("InstantiateNewObject") && !m.IsPublic);
 
         public abstract Guid AddCompnentGuid { get; }
         protected virtual ushort AddCompnentIndex => 0;
@@ -60,12 +57,12 @@ namespace PersistentDataEditor
 
         public IGH_DocumentObject CreateObject(IGH_Param param, Guid componentGuid, ushort index, string init, bool isinput, Action<IGH_DocumentObject> action = null)
         {
-            int width = 100;
+            const int width = 100;
 
             IGH_DocumentObject obj = Grasshopper.Instances.ComponentServer.EmitObject(componentGuid);
             if (obj == null) return null;
 
-            if (action != null) action(obj);
+            action?.Invoke(obj);
 
             //Get Aimed Point.  
             RectangleF outBound = param.Attributes.GetTopLevel.Bounds;
@@ -77,10 +74,8 @@ namespace PersistentDataEditor
             AddAObjectToCanvas(obj, objCenter, init);
 
             //Add Sources
-            if (obj is IGH_Component)
+            if (obj is IGH_Component com)
             {
-                IGH_Component com = obj as IGH_Component;
-
                 if (isinput)
                 {
                     param.AddSource(com.Params.Output[index]);
@@ -90,10 +85,8 @@ namespace PersistentDataEditor
                     com.Params.Input[index].AddSource(param);
                 }
             }
-            else if (obj is IGH_Param)
+            else if (obj is IGH_Param par)
             {
-                IGH_Param par = obj as IGH_Param;
-
                 if (isinput)
                 {
                     param.AddSource(par);

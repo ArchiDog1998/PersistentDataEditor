@@ -5,20 +5,17 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PersistentDataEditor
 {
     internal class GooColorControl : GooControlBase<GH_Colour>
     {
-        internal static readonly FieldInfo SwatchColorInfo = typeof(GH_ColourSwatch).GetRuntimeFields().Where(m => m.Name.Contains("m_SwatchColour")).First();
+        internal static readonly FieldInfo SwatchColorInfo = typeof(GH_ColourSwatch).FindField("m_SwatchColour");
 
         public override Guid AddCompnentGuid => new Guid("9c53bac0-ba66-40bd-8154-ce9829b9db1a");
 

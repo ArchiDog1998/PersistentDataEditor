@@ -4,11 +4,7 @@ using Grasshopper.GUI.Base;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Special;
@@ -373,7 +369,7 @@ namespace PersistentDataEditor
             GH_ColourPicker picker = GH_DocumentObject.Menu_AppendColourPicker(item.DropDown, rightColor, (sender, e) =>
             {
                 changeColor.Invoke(e.Colour);
-                Grasshopper.Instances.ActiveCanvas.Refresh();
+                Instances.ActiveCanvas.Refresh();
             });
 
             //Add a Reset Item.
@@ -382,7 +378,7 @@ namespace PersistentDataEditor
             {
                 picker.Colour = defaultColor;
                 changeColor.Invoke(defaultColor);
-                Grasshopper.Instances.ActiveCanvas.Refresh();
+                Instances.ActiveCanvas.Refresh();
             };
             item.DropDownItems.Add(resetItem);
 
@@ -436,19 +432,16 @@ namespace PersistentDataEditor
                 {
                     foreach (IGH_DocumentObject @object in doc.Objects)
                     {
-                        if(@object is IGH_Param && @object.Attributes is GH_AdvancedFloatingParamAttr)
+                        if(@object is IGH_Param && @object.Attributes is GH_AdvancedFloatingParamAttr attr)
                         {
-                            GH_AdvancedFloatingParamAttr att = (GH_AdvancedFloatingParamAttr)@object.Attributes;
-                            att.Control?.ChangeControlItems();
+                            attr.Control?.ChangeControlItems();
                         }
-                        if (@object is IGH_Component)
+                        if (@object is IGH_Component com)
                         {
-                            IGH_Component com = (IGH_Component)@object;
                             foreach (var param in com.Params)
                             {
-                                if(param.Attributes is GH_AdvancedLinkParamAttr)
+                                if(param.Attributes is GH_AdvancedLinkParamAttr att)
                                 {
-                                    GH_AdvancedLinkParamAttr att = (GH_AdvancedLinkParamAttr)param.Attributes;
                                     att.Control?.ChangeControlItems();
                                 }
                             }

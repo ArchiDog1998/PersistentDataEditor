@@ -1,11 +1,8 @@
-﻿using Grasshopper.Kernel.Special;
-using System;
+﻿using System;
+using Grasshopper.Kernel.Special;
 using System.Drawing;
 using System.Reflection;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grasshopper.Kernel;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel.Types;
@@ -16,8 +13,8 @@ namespace PersistentDataEditor
 {
     internal class GH_AdvancedNumberSliderAttr : GH_NumberSliderAttributes, IControlAttr
     {
-        private static readonly FieldInfo _nameBoundInfo = typeof(GH_NumberSliderAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_boundsName")).First();
-        private static readonly FieldInfo _sliderBoundInfo = typeof(GH_NumberSliderAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_boundsSlider")).First();
+        private static readonly FieldInfo _nameBoundInfo = typeof(GH_NumberSliderAttributes).FindField("m_boundsName");
+        private static readonly FieldInfo _sliderBoundInfo = typeof(GH_NumberSliderAttributes).FindField("m_boundsSlider");
 
         private Rectangle _controlBounds;
         private int _width;
@@ -36,29 +33,26 @@ namespace PersistentDataEditor
                 {
                     new StringRender("m"),
 
-                    new GooInputBoxStringControl<GH_Number>(()=>
-                    {
-                        return new GH_Number((double)Owner.Slider.Minimum);
-                    }, () => false) { ValueChange = SetValue},
+                    new GooInputBoxStringControl<GH_Number>
+                        (()=> new GH_Number((double)Owner.Slider.Minimum), () => false) 
+                        { ValueChange = SetValue},
 
                     new StringRender("M"),
 
-                    new GooInputBoxStringControl<GH_Number>(()=>
-                    {
-                        return new GH_Number((double)Owner.Slider.Maximum);
-                    },  () => false) { ValueChange = SetValue},
+                    new GooInputBoxStringControl<GH_Number>
+                        (()=> new GH_Number((double)Owner.Slider.Maximum),  () => false)
+                        { ValueChange = SetValue},
 
                     new StringRender("D"),
 
-                    new GooInputBoxStringControl<GH_Integer>(()=>
-                    {
-                        return new GH_Integer(Owner.Slider.DecimalPlaces);
-                    },  () => false) { ValueChange = SetValue},
+                    new GooInputBoxStringControl<GH_Integer>
+                        (()=> new GH_Integer(Owner.Slider.DecimalPlaces),  () => false) 
+                        { ValueChange = SetValue},
                 };
             }
             else
             {
-                _controlItems = new BaseControlItem[0];
+                _controlItems = Array.Empty<BaseControlItem>();
             }
         }
 
@@ -79,11 +73,7 @@ namespace PersistentDataEditor
             if(_controlItems != null && _controlItems.Length > 0 && 
                 (!Datas.OnlyShowSelectedObjectControl || Owner.Attributes.Selected))
             {
-                _width += controlDis * 2;
-                foreach (var item in _controlItems)
-                {
-                    _width += item.Width;
-                }
+                _width += controlDis * 2+ _controlItems.Sum(t=>t.Width);
             }
 
 
@@ -122,30 +112,28 @@ namespace PersistentDataEditor
                 return;
             }
 
-            if(_controlBounds != Rectangle.Empty)
+            if (_controlBounds == Rectangle.Empty) return;
+            GH_Capsule gH_Capsule;
+            switch (Owner.RuntimeMessageLevel)
             {
-                GH_Capsule gH_Capsule;
-                switch (base.Owner.RuntimeMessageLevel)
-                {
-                    case GH_RuntimeMessageLevel.Warning:
-                        gH_Capsule = GH_Capsule.CreateCapsule(_controlBounds, GH_Palette.Warning, 0, 5);
-                        break;
-                    case GH_RuntimeMessageLevel.Error:
-                        gH_Capsule = GH_Capsule.CreateCapsule(_controlBounds, GH_Palette.Error, 0, 5);
-                        break;
-                    default:
-                        gH_Capsule = GH_Capsule.CreateCapsule(_controlBounds, GH_Palette.Hidden, 0, 5);
-                        break;
-                };
-                gH_Capsule.Render(graphics, Selected, base.Owner.Locked, hidden: true);
-                gH_Capsule.Dispose();
+                case GH_RuntimeMessageLevel.Warning:
+                    gH_Capsule = GH_Capsule.CreateCapsule(_controlBounds, GH_Palette.Warning, 0, 5);
+                    break;
+                case GH_RuntimeMessageLevel.Error:
+                    gH_Capsule = GH_Capsule.CreateCapsule(_controlBounds, GH_Palette.Error, 0, 5);
+                    break;
+                default:
+                    gH_Capsule = GH_Capsule.CreateCapsule(_controlBounds, GH_Palette.Hidden, 0, 5);
+                    break;
+            };
+            gH_Capsule.Render(graphics, Selected, Owner.Locked, hidden: true);
+            gH_Capsule.Dispose();
 
-                GH_Palette gH_Palette = GH_CapsuleRenderEngine.GetImpliedPalette(base.Owner);
-                GH_PaletteStyle impliedStyle = GH_CapsuleRenderEngine.GetImpliedStyle(gH_Palette, Selected, base.Owner.Locked, true);
-                foreach (var item in _controlItems)
-                {
-                    item?.RenderObject(canvas, graphics, impliedStyle);
-                }
+            GH_Palette gH_Palette = GH_CapsuleRenderEngine.GetImpliedPalette(Owner);
+            GH_PaletteStyle impliedStyle = GH_CapsuleRenderEngine.GetImpliedStyle(gH_Palette, Selected, Owner.Locked, true);
+            foreach (var item in _controlItems)
+            {
+                item?.RenderObject(canvas, graphics, impliedStyle);
             }
         }
 
