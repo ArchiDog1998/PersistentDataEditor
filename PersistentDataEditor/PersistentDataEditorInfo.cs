@@ -2,12 +2,11 @@
 using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Attributes;
+using Grasshopper.Kernel.Special;
 using System;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace PersistentDataEditor
@@ -73,7 +72,7 @@ namespace PersistentDataEditor
             ToolStripItem[] gumballs = displayItem.DropDownItems.Find("mnuGumballs", false);
 
             ToolStripMenuItem gumball = null;
-            if(gumballs == null || gumballs.Length == 0)
+            if(gumballs.Length == 0)
             {
                 MessageBox.Show("ComponentToolkit can't find the Gumballs Item!");
             }
@@ -87,5 +86,13 @@ namespace PersistentDataEditor
 
             CentralSettings.PreviewGumballs = false;
         }
+    }
+
+    public static class PD
+    {
+        public static FieldInfo FindField(this Type type, string name)
+            => type.GetRuntimeFields().First(m => m.Name.Contains(name));
+        public static MethodInfo FindMethod(this Type type, string name)
+            => type.GetRuntimeMethods().First(m => m.Name.Contains(name));
     }
 }

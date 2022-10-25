@@ -13,19 +13,17 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace PersistentDataEditor
 {
     public abstract class GH_ComponentAttributesReplacer: GH_ComponentAttributes
     {
-        private static readonly MethodInfo _renderInfo = typeof(GH_FloatingParamAttributes).GetRuntimeMethods().Where(m => m.Name.Contains("Render")).First();
+        private static readonly MethodInfo _renderInfo = typeof(GH_FloatingParamAttributes).FindMethod("Render");
 
+        private static readonly FieldInfo _tagsInfo = typeof(GH_LinkedParamAttributes).FindField("m_renderTags");
+        private static readonly MethodInfo _pathMapperCreate = typeof(GH_PathMapper).FindMethod("GetInputMapping");
 
-        private static readonly FieldInfo _tagsInfo = typeof(GH_LinkedParamAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_renderTags")).First();
-        private static readonly MethodInfo _pathMapperCreate = typeof(GH_PathMapper).GetRuntimeMethods().Where(m => m.Name.Contains("GetInputMapping")).First();
-
-        public GH_ComponentAttributesReplacer(IGH_Component component): base(component)
+        protected GH_ComponentAttributesReplacer(IGH_Component component): base(component)
         {
 
         }
@@ -38,28 +36,28 @@ namespace PersistentDataEditor
             new MoveShowConduit().Enabled = true;
 
             ExchangeMethod(
-                typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributes.RenderComponentParameters))).First(),
-                typeof(GH_ComponentAttributesReplacer).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.RenderComponentParametersNew))).First()
+                typeof(GH_ComponentAttributes).FindMethod(nameof(RenderComponentParameters)),
+                typeof(GH_ComponentAttributesReplacer).FindMethod(nameof(RenderComponentParametersNew))
             );
 
             ExchangeMethod(
-                typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributes.LayoutComponentBox))).First(),
-                typeof(GH_ComponentAttributesReplacer).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.LayoutComponentBoxNew))).First()
+                typeof(GH_ComponentAttributes).FindMethod(nameof(LayoutComponentBox)),
+                typeof(GH_ComponentAttributesReplacer).FindMethod(nameof(LayoutComponentBoxNew))
             );
 
             ExchangeMethod(
-                typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributes.LayoutInputParams))).First(),
-                typeof(GH_ComponentAttributesReplacer).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.LayoutInputParamsNew))).First()
+                typeof(GH_ComponentAttributes).FindMethod(nameof(LayoutInputParams)),
+                typeof(GH_ComponentAttributesReplacer).FindMethod(nameof(LayoutInputParamsNew))
             );
 
             ExchangeMethod(
-                typeof(GH_ComponentAttributes).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributes.LayoutOutputParams))).First(),
-                typeof(GH_ComponentAttributesReplacer).GetRuntimeMethods().Where(m => m.Name.Contains(nameof(GH_ComponentAttributesReplacer.LayoutOutputParamsNew))).First()
+                typeof(GH_ComponentAttributes).FindMethod(nameof(LayoutOutputParams)),
+                typeof(GH_ComponentAttributesReplacer).FindMethod(nameof(LayoutOutputParamsNew))
             );
 
             ExchangeMethod(
-                typeof(GH_TextBoxInputBase).GetRuntimeMethods().Where(m => m.Name.Contains("TextOverrideLostFocus")).First(),
-                typeof(InputBoxBalloon).GetRuntimeMethods().Where(m => m.Name.Contains("TextOverrideLostFocusNew")).First()
+                typeof(GH_TextBoxInputBase).FindMethod("TextOverrideLostFocus"),
+                typeof(InputBoxBalloon).FindMethod("TextOverrideLostFocusNew")
             );
         }
 
@@ -88,22 +86,21 @@ namespace PersistentDataEditor
         {
             foreach (var component in e.Objects)
             {
-                if (component is IGH_Component)
+                if (component is IGH_Component ghComponent)
                 {
-                    foreach (var item in ((IGH_Component)component).Params.Input)
+                    foreach (var item in ghComponent.Params.Input)
                     {
-                        if (item.Attributes is GH_AdvancedLinkParamAttr)
+                        if (item.Attributes is GH_AdvancedLinkParamAttr attr)
                         {
-                            ((GH_AdvancedLinkParamAttr)item.Attributes).Dispose();
+                            attr.Dispose();
                         }
                     }
                 }
-                if (component is IGH_Param)
+                if (component is IGH_Param param)
                 {
-                    IGH_Param param = (IGH_Param)component;
-                    if (param.Attributes is GH_AdvancedFloatingParamAttr)
+                    if (param.Attributes is GH_AdvancedFloatingParamAttr attr)
                     {
-                        GH_AdvancedFloatingParamAttr floating = (GH_AdvancedFloatingParamAttr)(param.Attributes);
+                        GH_AdvancedFloatingParamAttr floating = attr;
                         floating.Dispose();
                     }
                 }
@@ -138,9 +135,9 @@ namespace PersistentDataEditor
 
                         foreach (var item in gH_Component.Params.Input)
                         {
-                            if (item.Attributes is GH_AdvancedLinkParamAttr && item.SourceCount == 0)
+                            if (item.Attributes is GH_AdvancedLinkParamAttr attr && item.SourceCount == 0)
                             {
-                                ((GH_AdvancedLinkParamAttr)item.Attributes).ShowAllGumballs();
+                                attr.ShowAllGumballs();
                             }
                         }
 
@@ -161,9 +158,8 @@ namespace PersistentDataEditor
                             OnGumballComponent = gH_Param;
                             OnGumballComponent.Attributes.ExpireLayout();
 
-                            if (!(gH_Param.Attributes is GH_AdvancedFloatingParamAttr)) return;
+                            if (!(gH_Param.Attributes is GH_AdvancedFloatingParamAttr attr)) return;
 
-                            GH_AdvancedFloatingParamAttr attr = (GH_AdvancedFloatingParamAttr)gH_Param.Attributes;
                             attr.RedrawGumballs();
 
                         });
@@ -179,13 +175,13 @@ namespace PersistentDataEditor
         {
             if (OnGumballComponent == null) return;
 
-            if (OnGumballComponent is IGH_Component)
+            if (OnGumballComponent is IGH_Component component)
             {
-                foreach (var item in ((IGH_Component)OnGumballComponent).Params.Input)
+                foreach (var item in component.Params.Input)
                 {
-                    if (item.Attributes is GH_AdvancedLinkParamAttr)
+                    if (item.Attributes is GH_AdvancedLinkParamAttr attr)
                     {
-                        ((GH_AdvancedLinkParamAttr)item.Attributes).Dispose();
+                        attr.Dispose();
                     }
                 }
             }
@@ -208,10 +204,8 @@ namespace PersistentDataEditor
                     item.Attributes.ExpireLayout();
                 }
                 ChangeFloatParam(item);
-                if (item is GH_PathMapper)
+                if (item is GH_PathMapper pathMapper)
                 {
-                    GH_PathMapper pathMapper = (GH_PathMapper)item;
-
                     Instances.ActiveCanvas.Document.ScheduleSolution(50, (doc) =>
                     {
                         if (pathMapper.Lexers.Count > 0) return;
@@ -226,13 +220,12 @@ namespace PersistentDataEditor
                         }
                     });
                 }
-                else if (item is GH_NumberSlider)
+                else if (item is GH_NumberSlider slider)
                 {
-                    GH_NumberSlider slider = (GH_NumberSlider)item;
-                    if (slider.Slider.Type == Grasshopper.GUI.Base.GH_SliderAccuracy.Integer)
+                    if (slider.Slider.Type == GH_SliderAccuracy.Integer)
                     {
                         slider.Slider.DecimalPlaces = 0;
-                        slider.Slider.Type = Grasshopper.GUI.Base.GH_SliderAccuracy.Float;
+                        slider.Slider.Type = GH_SliderAccuracy.Float;
                     }
                 }
             }
@@ -241,13 +234,12 @@ namespace PersistentDataEditor
 
         private static void ChangeFloatParam(IGH_DocumentObject item)
         {
-            if (item is IGH_Param)
+            if (item is IGH_Param o)
             {
-                var param = (IGH_Param)item;
-                if (param.Kind == GH_ParamKind.floating && param.Attributes is GH_FloatingParamAttributes && !(param.Attributes is GH_AdvancedFloatingParamAttr))
+                if (o.Kind == GH_ParamKind.floating && o.Attributes is GH_FloatingParamAttributes && !(o.Attributes is GH_AdvancedFloatingParamAttr))
                 {
 
-                    MethodInfo renderplus = param.Attributes.GetType().GetRuntimeMethods().Where(m => m.Name.Contains("Render")).First();
+                    MethodInfo renderplus = o.Attributes.GetType().FindMethod("Render");
 
                     RuntimeHelpers.PrepareMethod(_renderInfo.MethodHandle);
                     RuntimeHelpers.PrepareMethod(renderplus.MethodHandle);
@@ -256,23 +248,21 @@ namespace PersistentDataEditor
                         if (_renderInfo.MethodHandle.Value.ToPointer() != renderplus.MethodHandle.Value.ToPointer()) return;
                     }
 
-                    PointF point = param.Attributes.Pivot;
-                    bool isSelected = param.Attributes.Selected;
-                    param.Attributes = new GH_AdvancedFloatingParamAttr(param);
-                    param.Attributes.Pivot = point;
-                    param.Attributes.Selected = isSelected;
-                    param.Attributes.ExpireLayout();
+                    PointF point = o.Attributes.Pivot;
+                    bool isSelected = o.Attributes.Selected;
+                    o.Attributes = new GH_AdvancedFloatingParamAttr(o);
+                    o.Attributes.Pivot = point;
+                    o.Attributes.Selected = isSelected;
+                    o.Attributes.ExpireLayout();
                 }
-                else if (item is GH_NumberSlider && item.Attributes is GH_NumberSliderAttributes && !(item.Attributes is GH_AdvancedNumberSliderAttr))
+                else if (o is GH_NumberSlider slider && o.Attributes is GH_NumberSliderAttributes && !(o.Attributes is GH_AdvancedNumberSliderAttr))
                 {
-                    GH_NumberSlider slider = (GH_NumberSlider)item;
-
-                    PointF point = item.Attributes.Pivot;
-                    bool isSelected = item.Attributes.Selected;
-                    item.Attributes = new GH_AdvancedNumberSliderAttr((GH_NumberSlider)item);
-                    item.Attributes.Pivot = point;
-                    item.Attributes.Selected = isSelected;
-                    item.Attributes.ExpireLayout();
+                    PointF point = o.Attributes.Pivot;
+                    bool isSelected = o.Attributes.Selected;
+                    o.Attributes = new GH_AdvancedNumberSliderAttr(slider);
+                    o.Attributes.Pivot = point;
+                    o.Attributes.Selected = isSelected;
+                    o.Attributes.ExpireLayout();
                 }
             }
         }
@@ -559,18 +549,15 @@ namespace PersistentDataEditor
                 RectangleF bounds = item.Attributes.Bounds;
                 if (!(bounds.Width < 1f))
                 {
-                    if(item.Attributes is GH_AdvancedLinkParamAttr)
+                    if(item.Attributes is GH_AdvancedLinkParamAttr attr)
                     {
-                        GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)item.Attributes;
-
                         //Render names.
                         graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, attr.StringRect, GH_TextRenderingConstants.CenterCenter);
 
                         //Render Icon;
                         if (Datas.ShowLinkParamIcon)
                         {
-                            Bitmap icon;
-                            if (!GH_AdvancedLinkParamAttr.IconSet.TryGetValue(item.ComponentGuid, out icon))
+                            if (!GH_AdvancedLinkParamAttr.IconSet.TryGetValue(item.ComponentGuid, out Bitmap icon))
                             {
                                 icon = attr.SetParamIcon();
                             }
@@ -586,7 +573,7 @@ namespace PersistentDataEditor
 
                         //Render tags.
                         GH_StateTagList tags = (GH_StateTagList)_tagsInfo.GetValue(item.Attributes);
-                        if (tags != null) tags.RenderStateTags(graphics);
+                        tags?.RenderStateTags(graphics);
                     }
                     else
                     {
@@ -598,10 +585,7 @@ namespace PersistentDataEditor
                         GH_LinkedParamAttributes gH_LinkedParamAttributes = (GH_LinkedParamAttributes)item.Attributes;
 
                         GH_StateTagList tags = (GH_StateTagList)_tagsInfo.GetValue(gH_LinkedParamAttributes);
-                        if (tags != null)
-                        {
-                            tags.RenderStateTags(graphics);
-                        }
+                        tags?.RenderStateTags(graphics);
                     }
                 }
             }

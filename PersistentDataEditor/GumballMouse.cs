@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Grasshopper;
 using Grasshopper.GUI.Canvas;
@@ -23,7 +20,7 @@ namespace PersistentDataEditor
     internal class GumballMouse<T> : MouseCallback, IGumball where T : class, IGH_GeometricGoo
     {
 
-		public bool IsMouseUp { get; private set; } = false;
+		public bool IsMouseUp { get; private set; }
 
 		private GH_PersistentParam<T> _owner;
 
@@ -39,24 +36,26 @@ namespace PersistentDataEditor
 			_owner = owner;
 		}
 
-        private GumballAppearanceSettings settings
+        private static GumballAppearanceSettings settings
         {
             get
             {
-				GumballAppearanceSettings gumballAppearanceSettings = new GumballAppearanceSettings();
-				gumballAppearanceSettings.MenuEnabled = false;
-				gumballAppearanceSettings.RotateXEnabled = Datas.GeoParamGumballRotate;
-				gumballAppearanceSettings.RotateYEnabled = Datas.GeoParamGumballRotate;
-				gumballAppearanceSettings.RotateZEnabled = Datas.GeoParamGumballRotate;
-				gumballAppearanceSettings.ScaleXEnabled = Datas.GeoParamGumballScale;
-				gumballAppearanceSettings.ScaleYEnabled = Datas.GeoParamGumballScale;
-				gumballAppearanceSettings.ScaleZEnabled = Datas.GeoParamGumballScale;
-				gumballAppearanceSettings.TranslateXYEnabled = true;
-				gumballAppearanceSettings.TranslateYZEnabled = true;
-				gumballAppearanceSettings.TranslateZXEnabled = true;
-				gumballAppearanceSettings.RelocateEnabled = false;
-				gumballAppearanceSettings.Radius = Datas.ParamGumballRadius;
-				return gumballAppearanceSettings;
+                GumballAppearanceSettings gumballAppearanceSettings = new GumballAppearanceSettings
+                {
+                    MenuEnabled = false,
+                    RotateXEnabled = Datas.GeoParamGumballRotate,
+                    RotateYEnabled = Datas.GeoParamGumballRotate,
+                    RotateZEnabled = Datas.GeoParamGumballRotate,
+                    ScaleXEnabled = Datas.GeoParamGumballScale,
+                    ScaleYEnabled = Datas.GeoParamGumballScale,
+                    ScaleZEnabled = Datas.GeoParamGumballScale,
+                    TranslateXYEnabled = true,
+                    TranslateYZEnabled = true,
+                    TranslateZXEnabled = true,
+                    RelocateEnabled = false,
+                    Radius = Datas.ParamGumballRadius
+                };
+                return gumballAppearanceSettings;
 			}
         }
 
@@ -72,12 +71,12 @@ namespace PersistentDataEditor
 					_gumballs[i].Dispose();
 				}
 			}
-			_conduits = new GumballDisplayConduit[0];
-			_gumballs = new GumballObject[0];
-			_geometries = new T[0];
-			this.Enabled = false;
+			_conduits = Array.Empty<GumballDisplayConduit>();
+			_gumballs = Array.Empty<GumballObject>();
+			_geometries = Array.Empty<T>();
+			Enabled = false;
 
-			Rhino.RhinoDoc.ActiveDoc?.Views?.Redraw();
+			RhinoDoc.ActiveDoc?.Views?.Redraw();
 		}
 
 		public void ShowAllGumballs()
@@ -87,8 +86,8 @@ namespace PersistentDataEditor
 			if (!Datas.UseGeoParamGumball) return;
 			if (_owner == null || _owner.OnPingDocument() == null) return;
 			if (_owner.Locked || !_owner.Attributes.Selected) return;
-			if (_owner is IGH_PreviewObject && ((IGH_PreviewObject)_owner).Hidden) return;
-			if (_owner.Attributes.GetTopLevel.DocObject is IGH_PreviewObject && ((IGH_PreviewObject)_owner.Attributes.GetTopLevel.DocObject).Hidden) return;
+			if (_owner is IGH_PreviewObject previewObject && previewObject.Hidden) return;
+			if (_owner.Attributes.GetTopLevel.DocObject is IGH_PreviewObject ghPreviewObject && ghPreviewObject.Hidden) return;
 
 
 			//Get PersistentData.
@@ -108,8 +107,8 @@ namespace PersistentDataEditor
 				GumballDisplayConduit gumballDisplayConduit = new GumballDisplayConduit();
 				gumballDisplayConduit.SetBaseGumball(gumballObject, settings);
 				gumballDisplayConduit.Enabled = true;
-				_gumballs = new GumballObject[] { gumballObject };
-				_conduits = new GumballDisplayConduit[] { gumballDisplayConduit };
+				_gumballs = new[] { gumballObject };
+				_conduits = new[] { gumballDisplayConduit };
 			}
             else
             {
@@ -131,8 +130,8 @@ namespace PersistentDataEditor
 			}
 
 
-			Rhino.RhinoDoc.ActiveDoc?.Views?.Redraw();
-			this.Enabled = true;
+			RhinoDoc.ActiveDoc?.Views?.Redraw();
+			Enabled = true;
 		}
 
 		private void UpdateGumball(int index)
@@ -212,14 +211,7 @@ namespace PersistentDataEditor
 						if(_geometries[i] is IGH_PreviewData)
                         {
                             IGH_GeometricGoo addObj = _geometries[i].DuplicateGeometry();
-                            if (addObj != null)
-                            {
-                                MoveShowConduit.MoveObjects = new IGH_GeometricGoo[] { addObj };
-                            }
-                            else
-                            {
-                                MoveShowConduit.MoveObjects = new IGH_GeometricGoo[0];
-                            }
+                            MoveShowConduit.MoveObjects = addObj != null ? new[] { addObj } : Array.Empty<IGH_GeometricGoo>();
                         }
                     }
 
@@ -292,7 +284,6 @@ namespace PersistentDataEditor
 
 			if (_conduits.Length <= _index) return;
 			Transform trans = _conduits[_index].GumballTransform;
-			if (trans == null) return;
             if (trans.IsIdentity)
             {
                 if (_conduits[_index].PickResult.Mode == GumballMode.TranslateX || _conduits[_index].PickResult.Mode == GumballMode.TranslateY ||
@@ -368,7 +359,7 @@ namespace PersistentDataEditor
 			e.Cancel = true;
 
 			//Empty Preview.
-			MoveShowConduit.MoveObjects = new IGH_GeometricGoo[0];
+			MoveShowConduit.MoveObjects = Array.Empty<IGH_GeometricGoo>();
 			RhinoDoc.ActiveDoc.Views.Redraw();
 		}
 

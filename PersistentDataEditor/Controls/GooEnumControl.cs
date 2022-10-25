@@ -7,9 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PersistentDataEditor
@@ -26,23 +23,14 @@ namespace PersistentDataEditor
                 {
                     return null;
                 }
-                else
-                {
-                    int index = ShowValue.Value;
-                    if (_namedValues.ContainsKey(index))
-                    {
-                        return _namedValues[index];
-                    }
-                    else
-                    {
-                        return index.ToString();
-                    }
-                }
+
+                int index = ShowValue.Value;
+                return _namedValues.ContainsKey(index) ? _namedValues[index] : index.ToString();
             }
         }
         internal override int Height => 14;
 
-        private int _triangleWidth = 14;
+        private const int _triangleWidth = 14;
         internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(_showString, GH_FontServer.StandardAdjusted), 15), Datas.InputBoxControlMaxWidth) + _triangleWidth;
 
         private SortedList<int, string> _namedValues;
@@ -73,29 +61,28 @@ namespace PersistentDataEditor
 
         private void Menu_NamedValueClicked(object sender, EventArgs e)
         {
-            ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
-            if (toolStripMenuItem != null && toolStripMenuItem.Tag != null && toolStripMenuItem.Tag is int)
+            if (sender is ToolStripMenuItem toolStripMenuItem && toolStripMenuItem.Tag is int tag)
             {
-                ShowValue = new GH_Integer((int)toolStripMenuItem.Tag);
+                ShowValue = new GH_Integer(tag);
             }
         }
 
         protected override void LayoutObject(RectangleF bounds)
         {
-            this._roundBounds = RoundedRect(GH_Convert.ToRectangle(bounds), 2);
-            this._stringBounds = new RectangleF(bounds.X, bounds.Y, bounds.Width - _triangleWidth, bounds.Height);
+            _roundBounds = RoundedRect(GH_Convert.ToRectangle(bounds), 2);
+            _stringBounds = new RectangleF(bounds.X, bounds.Y, bounds.Width - _triangleWidth, bounds.Height);
 
             RectangleF triBounds = new RectangleF(bounds.Right - _triangleWidth, bounds.Y, _triangleWidth, bounds.Height);
-            this._triangle = Triangle(triBounds);
+            _triangle = Triangle(triBounds);
 
             base.LayoutObject(bounds);
         }
 
         private static GraphicsPath Triangle(RectangleF rect)
         {
-            float radius = 1.5f;
+            const float radius = 1.5f;
 
-            float width = 12;
+            const float width = 12;
             float height = width / 2 * (float)Math.Sqrt(3);
             PointF center = new PointF(rect.X + width / 2, rect.Y + rect.Height / 2);
 

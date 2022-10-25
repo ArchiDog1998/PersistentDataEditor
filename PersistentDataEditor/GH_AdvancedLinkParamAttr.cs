@@ -3,9 +3,7 @@ using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
-using Grasshopper.Kernel.Components;
 using Grasshopper.Kernel.Parameters;
-using Grasshopper.Kernel.Parameters.Hints;
 using Grasshopper.Kernel.Types;
 using System;
 using System.Linq;
@@ -13,7 +11,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
-using System.Windows.Forms;
 
 namespace PersistentDataEditor
 {
@@ -25,7 +22,7 @@ namespace PersistentDataEditor
             (Datas.ShowLinkParamIcon ? Datas.ComponentParamIconSize + Datas.ComponentIconDistance : 0);
         public int ParamHeight => Math.Max(20, (Control?.Height ?? 0) + 3);
 
-        public BaseControlItem Control { get; private set; } = null;
+        public BaseControlItem Control { get; private set; }
 
         public RectangleF StringRect { get; set; }
 
@@ -49,34 +46,28 @@ namespace PersistentDataEditor
 
             if (IsExpressionParam(Owner.GetType(), out Type dataType))
             {
-                Type type = typeof(GH_ExpressionParam<>).MakeGenericType(new Type[] { dataType });
-                _expressionInfo = type.GetRuntimeMethods().Where(m => m.Name.Contains("Menu_ExpressionEditorClick")).First();
+                Type type = typeof(GH_ExpressionParam<>).MakeGenericType(dataType);
+                _expressionInfo = type.FindMethod("Menu_ExpressionEditorClick");
             }
         }
 
         public void ShowAllGumballs()
         {
-            if (_gumball != null)
-            {
-                _gumball.ShowAllGumballs();
-            }
+            _gumball?.ShowAllGumballs();
         }
 
         public void Dispose()
         {
-            if (_gumball != null)
-            {
-                _gumball.Dispose();
-            }
+            _gumball?.Dispose();
         }
 
         private void Param_SolutionExpired(IGH_DocumentObject sender, GH_SolutionExpiredEventArgs e)
         {
-            if (base.Owner == null)
+            if (Owner == null)
             {
                 Owner.SolutionExpired -= Param_SolutionExpired;
             }
-            else if (base.Owner.OnPingDocument() == null)
+            else if (Owner.OnPingDocument() == null)
             {
                 Owner.SolutionExpired -= Param_SolutionExpired;
             }
@@ -99,7 +90,7 @@ namespace PersistentDataEditor
             SortedList<Guid, Bitmap> iconset = new SortedList<Guid, Bitmap>();
             foreach (var item in IconSet)
             {
-                IGH_ObjectProxy proxy = Grasshopper.Instances.ComponentServer.EmitObjectProxy(item.Key);
+                IGH_ObjectProxy proxy = Instances.ComponentServer.EmitObjectProxy(item.Key);
                 iconset[item.Key] = BitmapConvert(proxy.Icon);
             }
             IconSet = iconset;
@@ -122,7 +113,7 @@ namespace PersistentDataEditor
                 new float[]{1,0,0,0,0},
                 new float[]{0,1,0,0,0},
                 new float[]{0,0,1,0,0},
-                new float[]{0,0,0,opacity,0},
+                new[]{0,0,0,opacity,0},
                 new float[]{0,0,0,0,1},
             };
 
@@ -139,9 +130,9 @@ namespace PersistentDataEditor
 
         internal static BaseControlItem GetControl(IGH_Param param)
         {
-            if(param is Param_ScriptVariable)
+            if(param is Param_ScriptVariable variable)
             {
-                return GetUse("Script") ? new ParamVariableControl((Param_ScriptVariable)param) : null;
+                return GetUse("Script") ? new ParamVariableControl(variable) : null;
             }
             if(Datas.OnlyItemAccessControl && param.Access != GH_ParamAccess.item) return null;
 

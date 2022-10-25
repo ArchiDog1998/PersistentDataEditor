@@ -1,29 +1,14 @@
 ﻿using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PersistentDataEditor
 {
     internal class StringRender : BaseControlItem
     {
         private static Font _font;
-        private static Font Font
-        {
-            get
-            {
-                if (_font == null)
-                {
-                    _font = new Font(GH_FontServer.StandardAdjusted.FontFamily, 6);
-                }
-                return _font;
-            }
-        }
+        private static Font Font => _font ?? (_font = new Font(GH_FontServer.StandardAdjusted.FontFamily, 6));
         internal override int Width => GH_FontServer.StringWidth(_showString, Font);
 
         internal override int Height => 17;

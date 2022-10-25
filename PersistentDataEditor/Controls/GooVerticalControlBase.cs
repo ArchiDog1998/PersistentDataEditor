@@ -1,12 +1,7 @@
 ﻿using Grasshopper.GUI.Canvas;
-using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PersistentDataEditor
 {
@@ -53,14 +48,14 @@ namespace PersistentDataEditor
         PointF _start;
         PointF _end;
 
-        public GooVerticalControlBase(Func<T> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
+        protected GooVerticalControlBase(Func<T> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
             _RespondBase = false;
         }
 
         internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
         {
-            if(_start != null && _end != null && canvas.Viewport.Zoom > 0.9f)
+            if(canvas.Viewport.Zoom > 0.9f)
             {
                 graphics.DrawLine(new Pen(Datas.ControlForegroundColor, 0.5f), _start, _end);
             }

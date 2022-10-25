@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.GUI.Canvas;
@@ -187,7 +182,7 @@ namespace PersistentDataEditor
 
         public static bool UseParamControl
         {
-            get => Grasshopper.Instances.Settings.GetValue(nameof(UseParamControl), true);
+            get => Instances.Settings.GetValue(nameof(UseParamControl), true);
             set
             {
                 Instances.Settings.SetValue(nameof(UseParamControl), value);
@@ -209,7 +204,7 @@ namespace PersistentDataEditor
 
         public static bool OnlyItemAccessControl
         {
-            get => Grasshopper.Instances.Settings.GetValue(nameof(OnlyItemAccessControl), true);
+            get => Instances.Settings.GetValue(nameof(OnlyItemAccessControl), true);
             set
             {
                 Instances.Settings.SetValue(nameof(OnlyItemAccessControl), value);
@@ -219,7 +214,7 @@ namespace PersistentDataEditor
 
         public static bool ComponentUseControl
         {
-            get => Grasshopper.Instances.Settings.GetValue(nameof(ComponentUseControl), true);
+            get => Instances.Settings.GetValue(nameof(ComponentUseControl), true);
             set
             {
                 Instances.Settings.SetValue(nameof(ComponentUseControl), value);
@@ -229,7 +224,7 @@ namespace PersistentDataEditor
 
         public static bool ParamUseControl
         {
-            get => Grasshopper.Instances.Settings.GetValue(nameof(ParamUseControl), true);
+            get => Instances.Settings.GetValue(nameof(ParamUseControl), true);
             set
             {
                 Instances.Settings.SetValue(nameof(ParamUseControl), value);
@@ -296,9 +291,9 @@ namespace PersistentDataEditor
             {
                 foreach (IGH_Attributes attr in doc.Attributes)
                 {
-                    if (attr is IControlAttr)
+                    if (attr is IControlAttr controlAttr)
                     {
-                        ((IControlAttr)attr).SetControl();
+                        controlAttr.SetControl();
                     }
                     attr.ExpireLayout();
                 }
@@ -312,9 +307,9 @@ namespace PersistentDataEditor
             {
                 foreach (IGH_Attributes attr in doc.Attributes)
                 {
-                    if (attr is GH_AdvancedFloatingParamAttr)
+                    if (attr is GH_AdvancedFloatingParamAttr paramAttr)
                     {
-                        ((GH_AdvancedFloatingParamAttr)attr).RedrawGumballs();
+                        paramAttr.RedrawGumballs();
                     }
                 }
             }
@@ -327,9 +322,8 @@ namespace PersistentDataEditor
                 foreach (IGH_Attributes attr in doc.Attributes)
                 {
                     //Refresh Variable Control.
-                    if (attr is GH_AdvancedLinkParamAttr)
+                    if (attr is GH_AdvancedLinkParamAttr att)
                     {
-                        GH_AdvancedLinkParamAttr att = (GH_AdvancedLinkParamAttr)attr;
                         if (att.Control is ParamVariableControl)
                             att.Control?.ChangeControlItems();
                     }
@@ -557,36 +551,21 @@ namespace PersistentDataEditor
         public static int ParamGumballWirePreviewThickness
         {
             get => Instances.Settings.GetValue(nameof(ParamGumballWirePreviewThickness), _paramGumballWirePreviewThicknessDefault);
-            set
-            {
-                Instances.Settings.SetValue(nameof(ParamGumballWirePreviewThickness), value);
-            }
+            set => Instances.Settings.SetValue(nameof(ParamGumballWirePreviewThickness), value);
         }
 
         public static readonly Color _paramGumballPreviewWireColorDefault = Color.DarkBlue;
         public static Color ParamGumballPreviewWireColor
         {
-            get
-            {
-                return Instances.Settings.GetValue(nameof(ParamGumballPreviewWireColor), _paramGumballPreviewWireColorDefault);
-            }
-            set
-            {
-                Grasshopper.Instances.Settings.SetValue(nameof(ParamGumballPreviewWireColor), value);
-            }
+            get => Instances.Settings.GetValue(nameof(ParamGumballPreviewWireColor), _paramGumballPreviewWireColorDefault);
+            set => Instances.Settings.SetValue(nameof(ParamGumballPreviewWireColor), value);
         }
 
         public static readonly Color _paramGumballPreviewMeshColorDefault = Color.DarkBlue;
         public static Color ParamGumballPreviewMeshColor
         {
-            get
-            {
-                return Instances.Settings.GetValue(nameof(ParamGumballPreviewMeshColor), _paramGumballPreviewMeshColorDefault);
-            }
-            set
-            {
-                Grasshopper.Instances.Settings.SetValue(nameof(ParamGumballPreviewMeshColor), value);
-            }
+            get => Instances.Settings.GetValue(nameof(ParamGumballPreviewMeshColor), _paramGumballPreviewMeshColorDefault);
+            set => Instances.Settings.SetValue(nameof(ParamGumballPreviewMeshColor), value);
         }
     }
 }
