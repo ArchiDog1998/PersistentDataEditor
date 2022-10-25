@@ -2,7 +2,7 @@
 	
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <Version>1.1.3</Version>
+    <Version>1.1.4</Version>
     <Title>ComponentToolkit</Title>
     <Description>Extra information and control for grasshopper component.</Description>
     <TargetExt>.gha</TargetExt>
@@ -46,7 +46,7 @@
   </PropertyGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;C:\Users\ArchiTed\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).gha&quot;" />
+    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(AppData)\Grasshopper\Libraries\$(ProjectName).gha&quot;" />
   </Target>
 
 </Project>

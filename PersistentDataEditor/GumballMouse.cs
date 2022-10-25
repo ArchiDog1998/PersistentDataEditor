@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Grasshopper;
+using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Rhino;
@@ -57,11 +58,6 @@ namespace PersistentDataEditor
 				gumballAppearanceSettings.Radius = Datas.ParamGumballRadius;
 				return gumballAppearanceSettings;
 			}
-        }
-
-		public void CreateGumballs()
-        {
-
         }
 
         #region Show and Off
