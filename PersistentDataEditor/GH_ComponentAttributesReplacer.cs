@@ -6,6 +6,7 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Special;
+using Rhino;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -284,7 +285,7 @@ namespace PersistentDataEditor
                     var relay = *tar;
                     *tar = *inj;
                     *inj = relay;
-                }
+                } 
                 else
                 {
                     long* tar = (long*)targetMethod.MethodHandle.Value.ToPointer() + 1;
@@ -530,7 +531,6 @@ namespace PersistentDataEditor
         public static void RenderComponentParametersNew(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
         {
             RenderComponentParametersPr(canvas, graphics, owner, style);
-
         }
 
         private static void RenderComponentParametersPr(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
