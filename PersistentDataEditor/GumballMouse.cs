@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using Grasshopper;
-using Grasshopper.GUI.Canvas;
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Rhino;
 using Rhino.Display;
@@ -14,12 +7,16 @@ using Rhino.Geometry.Intersect;
 using Rhino.Input.Custom;
 using Rhino.UI;
 using Rhino.UI.Gumball;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace PersistentDataEditor
 {
     internal class GumballMouse<T> : MouseCallback, IGumball where T : class, IGH_GeometricGoo
     {
-
 		public bool IsMouseUp { get; private set; }
 
 		private GH_PersistentParam<T> _owner;

@@ -1,21 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 	
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <Version>1.1.4</Version>
-    <Title>ComponentToolkit</Title>
+    <Title>PersistentDataEditor</Title>
     <Description>Extra information and control for grasshopper component.</Description>
     <TargetExt>.gha</TargetExt>
     <UseWpf>true</UseWpf>
     <UseWindowsForms>true</UseWindowsForms>
-    <PackageLicenseFile>D:\OneDrive - stu.zafu.edu.cn\Rhino Share Files\07 Grasshopper Developments 蚱蜢开发\# 项目案例\ComponentToolkit\LICENSE</PackageLicenseFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<LangVersion>latest</LangVersion>
     <PackageIcon>ComponentToolkitIcon_128.png</PackageIcon>
   </PropertyGroup>
-  
+	
   <ItemGroup>
-    <PackageReference Include="Grasshopper" Version="6.12.19029.6381" IncludeAssets="compile;build" />
-    <PackageReference Include="Lib.Harmony" Version="2.2.2" />
+    <PackageReference Include="SimpleGrasshopper" Version="0.10.6" />
   </ItemGroup>
   
   <ItemGroup>

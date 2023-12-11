@@ -14,7 +14,7 @@ namespace PersistentDataEditor
     public static class MenuCreator
     {
 
-        private static ToolStrip _canvasToolbar = Instances.DocumentEditor.Controls[0].Controls[1] as ToolStrip;
+        private static readonly ToolStrip _canvasToolbar = Instances.DocumentEditor.Controls[0].Controls[1] as ToolStrip;
 
         public static ToolStripMenuItem CreateMajorMenu(Image gumballIcon)
         {
@@ -52,15 +52,15 @@ namespace PersistentDataEditor
 
             major.Checked = toolbar.Checked = Datas.UseGeoParamGumball;
 
-            Action<bool> action = (boolean) =>
+            void action(bool boolean)
             {
                 Datas.UseGeoParamGumball = major.Checked = toolbar.Checked = boolean;
-            };
+            }
             CreateCheckBox(ref major, action);
             toolbar.Click += (sender, e) =>
             {
                 toolbar.Checked = !toolbar.Checked;
-                action.Invoke(toolbar.Checked);
+                action(toolbar.Checked);
             };
 
             _canvasToolbar.Items.Add(toolbar);

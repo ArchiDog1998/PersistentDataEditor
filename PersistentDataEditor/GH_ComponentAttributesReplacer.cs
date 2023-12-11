@@ -237,7 +237,7 @@ namespace PersistentDataEditor
         {
             if (item is IGH_Param o)
             {
-                if (o.Kind == GH_ParamKind.floating && o.Attributes is GH_FloatingParamAttributes && !(o.Attributes is GH_AdvancedFloatingParamAttr))
+                if (o.Kind == GH_ParamKind.floating && o.Attributes is GH_FloatingParamAttributes && o.Attributes is not GH_AdvancedFloatingParamAttr)
                 {
 
                     MethodInfo renderplus = o.Attributes.GetType().FindMethod("Render");
@@ -251,12 +251,14 @@ namespace PersistentDataEditor
 
                     PointF point = o.Attributes.Pivot;
                     bool isSelected = o.Attributes.Selected;
-                    o.Attributes = new GH_AdvancedFloatingParamAttr(o);
-                    o.Attributes.Pivot = point;
-                    o.Attributes.Selected = isSelected;
+                    o.Attributes = new GH_AdvancedFloatingParamAttr(o)
+                    {
+                        Pivot = point,
+                        Selected = isSelected
+                    };
                     o.Attributes.ExpireLayout();
                 }
-                else if (o is GH_NumberSlider slider && o.Attributes is GH_NumberSliderAttributes && !(o.Attributes is GH_AdvancedNumberSliderAttr))
+                else if (o is GH_NumberSlider slider && o.Attributes is GH_NumberSliderAttributes && o.Attributes is not GH_AdvancedNumberSliderAttr)
                 {
                     PointF point = o.Attributes.Pivot;
                     bool isSelected = o.Attributes.Selected;

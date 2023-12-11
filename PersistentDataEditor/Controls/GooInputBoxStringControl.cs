@@ -77,7 +77,7 @@ namespace PersistentDataEditor
 
     internal sealed class InputBoxBalloon : GH_TextBoxInputBase
     {
-        private Action<string> _setValue;
+        private readonly Action<string> _setValue;
 
         //private static readonly MethodInfo _inputBoxInfo = typeof(InputBoxBalloon).FindMethod("TextOverrideLostFocus"));
 

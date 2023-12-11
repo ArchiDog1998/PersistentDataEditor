@@ -36,7 +36,7 @@ namespace PersistentDataEditor
 
         protected bool IsNull { get; private set; }
 
-        private GooControlBase<T> _gooControl;
+        private readonly GooControlBase<T> _gooControl;
 
         internal sealed override int Width
         {
@@ -66,8 +66,10 @@ namespace PersistentDataEditor
 
             }
         }
-        protected override bool Valid => Owner.OnPingDocument() == Instances.ActiveCanvas.Document && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2
-            && (!Datas.OnlyShowSelectedObjectControl || Owner.Attributes.Selected) && !Owner.PersistentData.Any(d => d is IGH_GeometricGoo g && g.IsReferencedGeometry);
+        protected override bool Valid => Owner.OnPingDocument() == Instances.ActiveCanvas.Document 
+            && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2
+            && (!Datas.OnlyShowSelectedObjectControl || Owner.Attributes.Selected) 
+            && !Owner.PersistentData.Any(d => d is IGH_GeometricGoo g && g.IsReferencedGeometry);
 
         protected ParamControlBase(GH_PersistentParam<T> owner)
         {
@@ -83,12 +85,12 @@ namespace PersistentDataEditor
         }
         protected abstract GooControlBase<T> SetUpControl(IGH_Param param);
 
-
         protected sealed override void LayoutObject(RectangleF bounds)
         {
             _gooControl.Bounds = bounds;
             base.LayoutObject(bounds);
         }
+
         internal sealed override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
         {
             if (!Valid) return;

@@ -1,14 +1,13 @@
-﻿using Grasshopper.GUI;
+﻿using Grasshopper;
+using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
-using System;
-using System.Reflection;
-using System.Linq;
-using System.Drawing;
-using Grasshopper;
-using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
+using Grasshopper.Kernel.Types;
+using System;
+using System.Drawing;
+using System.Reflection;
 
 namespace PersistentDataEditor
 {
