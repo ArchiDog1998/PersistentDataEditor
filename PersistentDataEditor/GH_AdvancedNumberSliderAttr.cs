@@ -33,20 +33,20 @@ internal class GH_AdvancedNumberSliderAttr : GH_NumberSliderAttributes, IControl
                 new StringRender("m"),
 
                 new GooInputBoxStringControl<GH_Number>
-                    (()=> new GH_Number((double)Owner.Slider.Minimum), () => false) 
-                    { ValueChange = SetValue},
+                    (() => new GH_Number((double)Owner.Slider.Minimum), () => false)
+                { ValueChange = SetValue },
 
                 new StringRender("M"),
 
                 new GooInputBoxStringControl<GH_Number>
-                    (()=> new GH_Number((double)Owner.Slider.Maximum),  () => false)
-                    { ValueChange = SetValue},
+                    (() => new GH_Number((double)Owner.Slider.Maximum), () => false)
+                { ValueChange = SetValue },
 
                 new StringRender("D"),
 
                 new GooInputBoxStringControl<GH_Integer>
-                    (()=> new GH_Integer(Owner.Slider.DecimalPlaces),  () => false) 
-                    { ValueChange = SetValue},
+                    (() => new GH_Integer(Owner.Slider.DecimalPlaces), () => false)
+                { ValueChange = SetValue },
             ];
         }
         else
@@ -69,10 +69,10 @@ internal class GH_AdvancedNumberSliderAttr : GH_NumberSliderAttributes, IControl
         int controlDis = NewData.ParamsCoreDistance;
 
         _width = 0;
-        if(_controlItems != null && _controlItems.Length > 0 && 
+        if (_controlItems != null && _controlItems.Length > 0 &&
             (!NewData.OnlyShowSelectedObjectControl || Owner.Attributes.Selected))
         {
-            _width += controlDis * 2+ _controlItems.Sum(t=>t.Width);
+            _width += controlDis * 2 + _controlItems.Sum(t => t.Width);
         }
 
         Bounds = new Rectangle((int)Bounds.X, (int)Bounds.Y, (int)Bounds.Width - _width, (int)Bounds.Height);
@@ -111,18 +111,11 @@ internal class GH_AdvancedNumberSliderAttr : GH_NumberSliderAttributes, IControl
         }
 
         if (_controlBounds == Rectangle.Empty) return;
-        GH_Capsule gH_Capsule;
-        switch (Owner.RuntimeMessageLevel)
+        var gH_Capsule = Owner.RuntimeMessageLevel switch
         {
-            case GH_RuntimeMessageLevel.Warning:
-                gH_Capsule = GH_Capsule.CreateCapsule(_controlBounds, GH_Palette.Warning, 0, 5);
-                break;
-            case GH_RuntimeMessageLevel.Error:
-                gH_Capsule = GH_Capsule.CreateCapsule(_controlBounds, GH_Palette.Error, 0, 5);
-                break;
-            default:
-                gH_Capsule = GH_Capsule.CreateCapsule(_controlBounds, GH_Palette.Hidden, 0, 5);
-                break;
+            GH_RuntimeMessageLevel.Warning => GH_Capsule.CreateCapsule(_controlBounds, GH_Palette.Warning, 0, 5),
+            GH_RuntimeMessageLevel.Error => GH_Capsule.CreateCapsule(_controlBounds, GH_Palette.Error, 0, 5),
+            _ => GH_Capsule.CreateCapsule(_controlBounds, GH_Palette.Hidden, 0, 5),
         };
         gH_Capsule.Render(graphics, Selected, Owner.Locked, hidden: true);
         gH_Capsule.Dispose();

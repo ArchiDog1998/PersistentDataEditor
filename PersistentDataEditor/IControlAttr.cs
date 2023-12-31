@@ -1,7 +1,6 @@
-﻿namespace PersistentDataEditor
+﻿namespace PersistentDataEditor;
+
+internal interface IControlAttr
 {
-    internal interface IControlAttr
-    {
-        void SetControl();
-    }
+    void SetControl();
 }

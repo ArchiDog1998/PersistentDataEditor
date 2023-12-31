@@ -24,7 +24,7 @@ internal static partial class NewData
     [Setting, Config("Auto Set Default Value", parent: "Param's Control")]
     private static readonly bool _useDefaultValueToControl = true;
 
-    [Setting, Config("Only Item Access", parent: "Param's Control", section:1)]
+    [Setting, Config("Only Item Access", parent: "Param's Control", section: 1)]
     private static readonly bool _onlyItemAccessControl = true;
 
     [Setting, Config("Only Selected Object", parent: "Param's Control", section: 1)]
@@ -88,25 +88,37 @@ internal static partial class NewData
     [Setting, Config("Domain", icon: ParamGuids.Interval, parent: "Choose Controls", section: 1)]
     private static readonly bool _useParamDomainControl = true;
 
+    [Setting, Config("Domain Type", parent: "Domain")]
+    private static readonly Domain_Control _domainType = Domain_Control.T0_T1;
+
     [Setting, Config("Point", icon: ParamGuids.Point, parent: "Choose Controls", section: 1)]
     private static readonly bool _useParamPointControl = true;
+
+    [Setting, Config("Point Type", parent: "Point")]
+    private static readonly Point_Control _pointType = Point_Control.XYZ;
 
     [Setting, Config("Vector", icon: ParamGuids.Vector, parent: "Choose Controls", section: 1)]
     private static readonly bool _useParamVectorControl = true;
 
+    [Setting, Config("Vector Type", parent: "Vector")]
+    private static readonly Vector_Control _vectorType = Vector_Control.XYZ;
+
     [Setting, Config("Complex", icon: ParamGuids.Complex, parent: "Choose Controls", section: 1)]
     private static readonly bool _useParamComplexControl = true;
+
+    [Setting, Config("Complex Type", parent: "Complex")]
+    private static readonly Complex_Control _complexType = Complex_Control.Real_Imaginary;
 
     [Setting, Config("Domain 2", icon: ParamGuids.Interval2D, parent: "Choose Controls", section: 2)]
     private static readonly bool _useParamDomain2Control = true;
 
-    [Setting, Config("Domain 2 Type", parent:"Domain 2")]
+    [Setting, Config("Domain 2 Type", parent: "Domain 2")]
     private static readonly Domain2D_Control _domain2Type = Domain2D_Control.U_V;
 
     [Setting, Config("Line", icon: ParamGuids.Line, parent: "Choose Controls", section: 2)]
     private static readonly bool _useParamLineControl = true;
 
-    [Setting, Config("Line Type", parent:"Line")]
+    [Setting, Config("Line Type", parent: "Line")]
     private static readonly Line_Control _lineType = Line_Control.From_To;
 
     [Setting, Config("Plane", icon: ParamGuids.Plane, parent: "Choose Controls", section: 2)]
@@ -118,19 +130,19 @@ internal static partial class NewData
     [Setting, Config("Circle", icon: ParamGuids.Circle, parent: "Choose Controls", section: 2)]
     private static readonly bool _useParamCircleControl = true;
 
-    [Setting, Config("Circle Type", parent:"Circle")]
+    [Setting, Config("Circle Type", parent: "Circle")]
     private static readonly Circle_Control _circleType = Circle_Control.Plane_Radius;
 
     [Setting, Config("Rectangle", icon: ParamGuids.Rectangle, parent: "Choose Controls", section: 2)]
     private static readonly bool _useParamRectangleControl = true;
 
-    [Setting, Config("Rectangle Type", parent:"Rectangle")]
+    [Setting, Config("Rectangle Type", parent: "Rectangle")]
     private static readonly Rectangle_Control _rectangleType = Rectangle_Control.Domain_Rectangle;
 
     [Setting, Config("Box", icon: ParamGuids.Box, parent: "Choose Controls", section: 2)]
     private static readonly bool _useParamBoxControl = true;
 
-    [Setting, Config("Box Type", parent:"Box")]
+    [Setting, Config("Box Type", parent: "Box")]
     private static readonly Box_Control _boxType = Box_Control.Domain_Box;
 
     [Setting, Config("Arc", icon: ParamGuids.Arc, parent: "Choose Controls", section: 2)]
@@ -142,7 +154,7 @@ internal static partial class NewData
     [Setting, Config("General", icon: ParamGuids.GenericObject, parent: "Choose Controls", section: 3)]
     private static readonly bool _useParamGeneralControl = true;
 
-    [Setting, Config("General Type", parent:"General")]
+    [Setting, Config("General Type", parent: "General")]
     private static readonly General_Control _generalType = General_Control.ReadOnly;
 
     [Setting, Config("Script", icon: ParamGuids.ScriptVariable, parent: "Choose Controls", section: 3)]
@@ -173,7 +185,7 @@ internal static partial class NewData
     private static readonly int _componentParamIconSize = 16;
 
     [Range(0, 20, 0)]
-    [Setting, Config("Component's Params to Edge", section:2)]
+    [Setting, Config("Component's Params to Edge", section: 2)]
     private static readonly int _componentToEdgeDistance = 3;
 
     [Range(0, 20, 0)]
@@ -229,7 +241,7 @@ internal static partial class GumballData
     private static readonly bool _geoParamGumballScale = true;
 
     [Setting, Range(1, 100, 0)]
-    [Config("Max Gumball Count", parent: "Geometry Gumball", section:1)]
+    [Config("Max Gumball Count", parent: "Geometry Gumball", section: 1)]
     private static readonly int _gumballMaxShowCount = 10;
 
     [Setting, Range(1, 200, 0)]

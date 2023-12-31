@@ -19,7 +19,7 @@ public class PersistentDataEditorInfo : GH_AssemblyInfo
     //Return a short string describing the purpose of this GHA library.
     public override string Description => "Different way to change the persistent data in persistent parameters.";
 
-    public override Guid Id => new ("6CE6A8F4-539B-4F83-BF46-E02C605219AB");
+    public override Guid Id => new("6CE6A8F4-539B-4F83-BF46-E02C605219AB");
 
     //Return a string identifying you or your company.
     public override string AuthorName => "秋水";

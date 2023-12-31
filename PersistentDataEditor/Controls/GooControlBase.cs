@@ -20,12 +20,12 @@ internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T :
     internal IGH_Param Owner { private get; set; } = null;
     public IGH_Goo SaveValue => _savedValue;
     internal T _savedValue;
-    internal T ShowValue 
+    internal T ShowValue
     {
         get
         {
             T value = _valueGetter();
-            if(value != null) _savedValue = value;
+            if (value != null) _savedValue = value;
             return _savedValue;
         }
         private protected set
@@ -68,7 +68,7 @@ internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T :
         RectangleF outBound = param.Attributes.GetTopLevel.Bounds;
         RectangleF thisBound = param.Attributes.Bounds;
 
-        PointF objCenter = new PointF(outBound.Left + (isinput ? - width : (width + outBound.Width)),
+        PointF objCenter = new PointF(outBound.Left + (isinput ? -width : (width + outBound.Width)),
                thisBound.Top + thisBound.Height / 2);
 
         AddAObjectToCanvas(obj, objCenter, init);

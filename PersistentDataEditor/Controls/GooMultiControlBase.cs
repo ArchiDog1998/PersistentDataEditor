@@ -6,127 +6,125 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace PersistentDataEditor
+namespace PersistentDataEditor;
+
+internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : class, IGH_Goo
 {
-    internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : class, IGH_Goo
+    protected BaseControlItem[] _controlItems;
+    internal IGooValue[] _values;
+    private readonly string _name;
+    protected bool _hasName;
+    protected bool _RespondBase = true;
+
+    public GooMultiControlBase(Func<T> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull)
     {
-        protected BaseControlItem[] _controlItems;
-        internal IGooValue[] _values;
-        private string _name;
-        protected bool _hasName;
-        protected bool _RespondBase = true;
+        _name = name;
+        ChangeControlItems();
+    }
 
-        protected GooMultiControlBase(Func<T> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull)
+    internal sealed override void ChangeControlItems()
+    {
+        BaseControlItem[] addcontrolItems = SetControlItems() ?? Array.Empty<BaseControlItem>();
+        if (string.IsNullOrEmpty(_name))
         {
-            _name = name;
-            ChangeControlItems();
+            _controlItems = addcontrolItems;
+        }
+        else
+        {
+            _hasName = true;
+            List<BaseControlItem> items = new List<BaseControlItem> { new StringRender(_name) };
+            items.AddRange(addcontrolItems);
+            _controlItems = items.ToArray();
         }
 
-        internal sealed override void ChangeControlItems()
+        List<IGooValue> gooValues = new List<IGooValue>();
+        foreach (var control in _controlItems)
         {
-            BaseControlItem[] addcontrolItems = SetControlItems() ?? Array.Empty<BaseControlItem>();
-            if (string.IsNullOrEmpty(_name))
+            control.ChangeControlItems();
+            if (control is IGooValue value)
             {
-                _controlItems = addcontrolItems;
+                value.ValueChange = SetValue;
+                gooValues.Add(value);
             }
-            else
-            {
-                _hasName = true;
-                List<BaseControlItem> items = new List<BaseControlItem> { new StringRender(_name) };
-                items.AddRange(addcontrolItems);
-                _controlItems = items.ToArray();
-            }
+        }
+        _values = gooValues.ToArray();
+    }
 
-            List<IGooValue> gooValues = new List<IGooValue>();
-            foreach (var control in _controlItems)
+    private void SetValue()
+    {
+        IGH_Goo[] goos = new IGH_Goo[_values.Length];
+        for (int i = 0; i < _values.Length; i++)
+        {
+            var gooValue = _values[i];
+            var g = gooValue.SaveValue;
+
+            if (!IsGooValid(g))
             {
-                control.ChangeControlItems();
-                if (control is IGooValue value)
+                //Add default value.
+                if (NewData.UseDefaultValueToControl)
                 {
-                    value.ValueChange = SetValue;
-                    gooValues.Add(value);
+                    g = gooValue.GetDefaultValue();
                 }
-            }
-            _values = gooValues.ToArray();
-        }
-
-        private void SetValue()
-        {
-            IGH_Goo[] goos = new IGH_Goo[_values.Length];
-            for (int i = 0; i < _values.Length; i++)
-            {
-                var gooValue = _values[i];
-                var g = gooValue.SaveValue;
 
                 if (!IsGooValid(g))
                 {
-                    //Add default value.
-                    if (NewData.UseDefaultValueToControl)
-                    {
-                        g = gooValue.GetDefaultValue();
-                    }
-
-
-                    if (!IsGooValid(g))
-                    {
-                        ShowValue = null;
-                        return;
-                    }
+                    ShowValue = null;
+                    return;
                 }
-
-                goos[i] = g;
             }
-            ShowValue = SetValue(goos);
-        }
 
-        private static bool IsGooValid(IGH_Goo g)
+            goos[i] = g;
+        }
+        ShowValue = SetValue(goos);
+    }
+
+    private static bool IsGooValid(IGH_Goo g)
+    {
+        return g != null && g.IsValid;
+    }
+
+    protected abstract T SetValue(IGH_Goo[] values);
+    protected abstract BaseControlItem[] SetControlItems();
+
+    internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
+    {
+        foreach (var control in _controlItems)
         {
-            return g != null && g.IsValid;
+            control.RenderObject(canvas, graphics, style);
         }
-
-        protected abstract T SetValue(IGH_Goo[] values);
-        protected abstract BaseControlItem[] SetControlItems();
-
-        internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
+    }
+    internal sealed override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
+    {
+        if (e.Button == MouseButtons.Left)
         {
             foreach (var control in _controlItems)
             {
-                control.RenderObject(canvas, graphics, style);
+                if (control is StringRender) continue;
+                if (control.Bounds.Contains(e.CanvasLocation))
+                {
+                    control.Clicked(sender, e);
+                    return;
+                }
             }
-        }
-        internal sealed override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
-        {
-            if (e.Button == MouseButtons.Left)
+
+            if (!_RespondBase) return;
+
+            new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowValue?.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
+
+            void SaveString(string str)
             {
-                foreach (var control in _controlItems)
+                T value = (T)Activator.CreateInstance(typeof(T));
+                if (value.CastFrom(str))
                 {
-                    if (control is StringRender) continue;
-                    if (control.Bounds.Contains(e.CanvasLocation))
-                    {
-                        control.Clicked(sender, e);
-                        return;
-                    }
+                    ShowValue = value;
                 }
-
-                if (!_RespondBase) return;
-
-                new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowValue?.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
-
-                void SaveString(string str)
+                else
                 {
-                    T value = (T)Activator.CreateInstance(typeof(T));
-                    if (value.CastFrom(str))
-                    {
-                        ShowValue = value;
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Can't cast a {typeof(T).Name} from \"{str}\".");
-                    }
+                    MessageBox.Show($"Can't cast a {typeof(T).Name} from \"{str}\".");
                 }
-                return;
             }
-            base.Clicked(sender, e);
+            return;
         }
+        base.Clicked(sender, e);
     }
 }

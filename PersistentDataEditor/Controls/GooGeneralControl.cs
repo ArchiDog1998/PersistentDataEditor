@@ -1,21 +1,12 @@
-﻿using Grasshopper;
-using Grasshopper.Kernel.Types;
+﻿using Grasshopper.Kernel.Types;
 using System;
 
-namespace PersistentDataEditor
+namespace PersistentDataEditor;
+
+internal class GooGeneralControl<T>(Func<T> valueGetter, Func<bool> isNull)
+    : GooInputBoxStringControl<T>(valueGetter, isNull) where T : class, IGH_Goo
 {
-    internal class GooGeneralControl<T> : GooInputBoxStringControl<T> where T : class, IGH_Goo
-    {
-        private static General_Control type => (General_Control)Instances.Settings.GetValue(typeof(General_Control).FullName, 0);
+    public override Guid AddCompnentGuid => default;
 
-
-        public override Guid AddCompnentGuid => default;
-
-        protected override bool IsReadOnly => type == General_Control.ReadOnly;
-
-        public GooGeneralControl(Func<T> valueGetter, Func<bool> isNull) : base(valueGetter, isNull)
-        {
-
-        }
-    }
+    protected override bool IsReadOnly => NewData.GeneralType == General_Control.ReadOnly;
 }

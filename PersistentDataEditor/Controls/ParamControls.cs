@@ -36,11 +36,11 @@ internal class ParamIntegerControl(GH_PersistentParam<GH_Integer> owner) : Param
 
             IList list = (IList)namedValueListInfo.GetValue(param);
 
-            SortedList<int, string> _keyValues = new SortedList<int, string>();
+            SortedList<int, string> _keyValues = [];
             foreach (var item in list)
             {
-                nameInfo = nameInfo ?? item.GetType().FindField("Name");
-                valueInfo = valueInfo ?? item.GetType().FindField("Value");
+                nameInfo ??= item.GetType().FindField("Name");
+                valueInfo ??= item.GetType().FindField("Value");
 
                 _keyValues[(int)valueInfo.GetValue(item)] = (string)nameInfo.GetValue(item);
             }
@@ -50,7 +50,7 @@ internal class ParamIntegerControl(GH_PersistentParam<GH_Integer> owner) : Param
         {
             return new GooIntegerControl(() => OwnerGooData, () => IsNull, null);
         }
-        
+
     }
 }
 
