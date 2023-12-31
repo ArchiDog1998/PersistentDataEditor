@@ -2,6 +2,7 @@
 using Grasshopper.Kernel;
 using SimpleGrasshopper.Attributes;
 using SimpleGrasshopper.Data;
+using System;
 using System.Drawing;
 using System.Linq;
 
@@ -17,9 +18,6 @@ internal static partial class NewData
     [ToolButton("ParamControlIcon_24.png")]
     [Setting, Config("Param's Control", icon: "ParamControlIcon_24.png")]
     private static readonly bool _useParamControl = true;
-
-    [Setting, Config("Auto Apply InputBox Value", parent: "Param's Control")]
-    private static readonly bool _textboxInputAutoApply = true;
 
     [Setting, Config("Auto Set Default Value", parent: "Param's Control")]
     private static readonly bool _useDefaultValueToControl = true;
@@ -163,9 +161,11 @@ internal static partial class NewData
     [Setting, Config("Number Slider", icon: "{57DA07BD-ECAB-415d-9D86-AF36D7073ABC}", parent: "Choose Controls", section: 3)]
     private static readonly bool _useParamNumberSliderControl = true;
 
+    [Obsolete]
     [Setting, Config("Component Input Align Edge", section: 1)]
     private static readonly bool _componentInputEdgeLayout = false;
 
+    [Obsolete]
     [Setting, Config("Component Output Align Edge", section: 1)]
     private static readonly bool _componentOutputEdgeLayout = false;
 

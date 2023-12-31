@@ -75,8 +75,6 @@ internal sealed class InputBoxBalloon : GH_TextBoxInputBase
 {
     private readonly Action<string> _setValue;
 
-    //private static readonly MethodInfo _inputBoxInfo = typeof(InputBoxBalloon).FindMethod("TextOverrideLostFocus"));
-
     internal InputBoxBalloon(RectangleF bounds, Action<string> setValue)
     {
         _setValue = setValue;
@@ -89,11 +87,6 @@ internal sealed class InputBoxBalloon : GH_TextBoxInputBase
 
         Bounds = GH_Convert.ToRectangle(bounds);
         Font = GH_FontServer.ConsoleAdjusted;
-    }
-    private void TextOverrideLostFocusNew(object sender, EventArgs e)
-    {
-        if (NewData.TextboxInputAutoApply) RespondToEnter();
-        HideTextInputBox();
     }
 
     protected override void HandleTextInputAccepted(string text)

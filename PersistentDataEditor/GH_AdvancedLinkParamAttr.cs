@@ -23,15 +23,13 @@ internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr
 
     public BaseControlItem Control { get; private set; }
 
-    public RectangleF StringRect { get; set; }
-
     public RectangleF IconRect { get; set; }
 
     public static SortedList<Guid, Bitmap> IconSet = new SortedList<Guid, Bitmap>();
 
-    private IGumball _gumball;
+    private readonly IGumball _gumball;
 
-    private MethodInfo _expressionInfo;
+    private readonly MethodInfo _expressionInfo;
 
     public GH_AdvancedLinkParamAttr(IGH_Param param, IGH_Attributes parent) : base(param, parent)
     {
@@ -86,7 +84,7 @@ internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr
 
     public static void UpdataIcons()
     {
-        SortedList<Guid, Bitmap> iconset = new SortedList<Guid, Bitmap>();
+        SortedList<Guid, Bitmap> iconset = [];
         foreach (var item in IconSet)
         {
             IGH_ObjectProxy proxy = Instances.ComponentServer.EmitObjectProxy(item.Key);
