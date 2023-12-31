@@ -346,7 +346,7 @@ namespace PersistentDataEditor
             int nameMaxWidth = 0;
             int controlMaxWidth = 0;
             int heightCalculate = 0;
-            int iconSpaceWidth = Datas.ShowLinkParamIcon ? Datas.ComponentParamIconSize + Datas.ComponentIconDistance : 0;
+            int iconSpaceWidth = NewData.ShowLinkParamIcon ? NewData.ComponentParamIconSize + NewData.ComponentIconDistance : 0;
             foreach (IGH_Param param in gH_Params)
             {
                 if (param.Attributes == null || !(param.Attributes is GH_AdvancedLinkParamAttr))
@@ -364,12 +364,12 @@ namespace PersistentDataEditor
                 heightCalculate += attr.ParamHeight;
             }
 
-            if (Datas.SeperateCalculateWidthControl)
+            if (NewData.SeperateCalculateWidthControl)
             {
-                int controlAddition = controlMaxWidth == 0? 0 : controlMaxWidth + Datas.ComponentControlNameDistance;
-                singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + Datas.AdditionWidth + iconSpaceWidth, Datas.AdditionWidth + Datas.MiniWidth);
+                int controlAddition = controlMaxWidth == 0? 0 : controlMaxWidth + NewData.ComponentControlNameDistance;
+                singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + NewData.AdditionWidth + iconSpaceWidth, NewData.AdditionWidth + NewData.MiniWidth);
             }
-            else singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth + Datas.AdditionWidth, Datas.AdditionWidth + Datas.MiniWidth);
+            else singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth + NewData.AdditionWidth, NewData.AdditionWidth + NewData.MiniWidth);
 
 
             //Layout every param.
@@ -379,9 +379,9 @@ namespace PersistentDataEditor
             {
                 float singleParamBoxHeight = heightFloat * ((GH_AdvancedLinkParamAttr)param.Attributes).ParamHeight;
 
-                float rectX = isInput ? componentBox.X - singleParamBoxMaxWidth : componentBox.Right + Datas.ComponentToCoreDistance;
+                float rectX = isInput ? componentBox.X - singleParamBoxMaxWidth : componentBox.Right + NewData.ComponentToCoreDistance;
                 float rectY = componentBox.Y + movementY;
-                float width = singleParamBoxMaxWidth - Datas.ComponentToCoreDistance;
+                float width = singleParamBoxMaxWidth - NewData.ComponentToCoreDistance;
                 float height = singleParamBoxHeight;
                 param.Attributes.Pivot = new PointF(rectX + 0.5f * singleParamBoxMaxWidth, rectY + 0.5f * singleParamBoxHeight);
                 param.Attributes.Bounds = GH_Convert.ToRectangle(new RectangleF(rectX, rectY, width, height));
@@ -468,35 +468,35 @@ namespace PersistentDataEditor
 
                 if (isInput)
                 {
-                    float startX = attr.Bounds.X + additionforTag + Datas.ComponentToEdgeDistance;
+                    float startX = attr.Bounds.X + additionforTag + NewData.ComponentToEdgeDistance;
 
-                    if (Datas.ShowLinkParamIcon)
+                    if (NewData.ShowLinkParamIcon)
                     {
-                        float size = Datas.ComponentParamIconSize;
+                        float size = NewData.ComponentParamIconSize;
                         attr.IconRect = new RectangleF(startX, attr.Bounds.Y + attr.Bounds.Height /2 - size/2, size, size);
-                        startX += size + Datas.ComponentIconDistance;
+                        startX += size + NewData.ComponentIconDistance;
                     }
 
-                    if (Datas.SeperateCalculateWidthControl)
+                    if (NewData.SeperateCalculateWidthControl)
                     {
                         float maxStringRight = startX + nameMaxWidth;
-                        attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(startX , attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                        attr.StringRect = NewData.ComponentInputEdgeLayout ? new RectangleF(startX , attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
                             new RectangleF(maxStringRight - stringwidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
 
 
                         if (attr.Control != null)
                         {
-                            attr.Control.Bounds = new RectangleF(Datas.ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth : maxStringRight + Datas.ComponentControlNameDistance,
+                            attr.Control.Bounds = new RectangleF(NewData.ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth : maxStringRight + NewData.ComponentControlNameDistance,
                                 attr.StringRect.Top + (attr.StringRect.Height - attr.Control.Height) / 2, attr.ControlWidth, attr.Control.Height);
                         }
                     }
                     else
                     {
-                        attr.StringRect = Datas.ComponentInputEdgeLayout ? new RectangleF(startX, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                        attr.StringRect = NewData.ComponentInputEdgeLayout ? new RectangleF(startX, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
                             new RectangleF(attr.Bounds.Right - wholeWidth, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
                         if (attr.Control != null)
                         {
-                            attr.Control.Bounds = new RectangleF(Datas.ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth : attr.StringRect.Right + Datas.ComponentControlNameDistance,
+                            attr.Control.Bounds = new RectangleF(NewData.ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth : attr.StringRect.Right + NewData.ComponentControlNameDistance,
                                 attr.StringRect.Top + (attr.StringRect.Height - attr.Control.Height) / 2, attr.ControlWidth, attr.Control.Height);
                         }
 
@@ -504,13 +504,13 @@ namespace PersistentDataEditor
                 }
                 else
                 {
-                    attr.StringRect = Datas.ComponentOutputEdgeLayout ? new RectangleF(attr.Bounds.Right - additionforTag - wholeWidth - Datas.ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
+                    attr.StringRect = NewData.ComponentOutputEdgeLayout ? new RectangleF(attr.Bounds.Right - additionforTag - wholeWidth - NewData.ComponentToEdgeDistance, attr.Bounds.Y, stringwidth, attr.Bounds.Height) :
                          new RectangleF(attr.Bounds.X, attr.Bounds.Y, stringwidth, attr.Bounds.Height);
 
-                    if (Datas.ShowLinkParamIcon)
+                    if (NewData.ShowLinkParamIcon)
                     {
-                        float size = Datas.ComponentParamIconSize;
-                        attr.IconRect = new RectangleF(attr.Bounds.Right - Datas.ComponentParamIconSize - additionforTag - Datas.ComponentToEdgeDistance, 
+                        float size = NewData.ComponentParamIconSize;
+                        attr.IconRect = new RectangleF(attr.Bounds.Right - NewData.ComponentParamIconSize - additionforTag - NewData.ComponentToEdgeDistance, 
                             attr.Bounds.Y + attr.Bounds.Height / 2 - size / 2, size, size);
                     }
                 }
@@ -557,7 +557,7 @@ namespace PersistentDataEditor
                         graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, attr.StringRect, GH_TextRenderingConstants.CenterCenter);
 
                         //Render Icon;
-                        if (Datas.ShowLinkParamIcon)
+                        if (NewData.ShowLinkParamIcon)
                         {
                             if (!GH_AdvancedLinkParamAttr.IconSet.TryGetValue(item.ComponentGuid, out Bitmap icon))
                             {
@@ -580,8 +580,8 @@ namespace PersistentDataEditor
                     else
                     {
                         StringFormat format = item.Kind == GH_ParamKind.input ?
-                            ( Datas.ComponentInputEdgeLayout ? GH_TextRenderingConstants.NearCenter : GH_TextRenderingConstants.FarCenter) :
-                            ( Datas.ComponentOutputEdgeLayout ? GH_TextRenderingConstants.FarCenter : GH_TextRenderingConstants.NearCenter);
+                            (NewData.ComponentInputEdgeLayout ? GH_TextRenderingConstants.NearCenter : GH_TextRenderingConstants.FarCenter) :
+                            (NewData.ComponentOutputEdgeLayout ? GH_TextRenderingConstants.FarCenter : GH_TextRenderingConstants.NearCenter);
 
                         graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, bounds, format);
                         GH_LinkedParamAttributes gH_LinkedParamAttributes = (GH_LinkedParamAttributes)item.Attributes;

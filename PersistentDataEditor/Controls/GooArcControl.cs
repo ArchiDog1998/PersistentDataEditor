@@ -12,7 +12,7 @@ namespace PersistentDataEditor
         public override Guid AddCompnentGuid => type == Arc_Control.SED ? new Guid("9d2583dd-6cf5-497c-8c40-c9a290598396") :
             new Guid("bb59bffc-f54c-4682-9778-f6c3fe74fce3");
 
-        private Arc_Control type => (Arc_Control)Instances.Settings.GetValue(typeof(Arc_Control).FullName, 0);
+        private Arc_Control type => NewData.ArcType;
 
         public GooArcControl(Func<GH_Arc> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {

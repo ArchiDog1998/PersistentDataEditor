@@ -47,7 +47,7 @@ namespace PersistentDataEditor
 
         public void SetControl()
         {
-            if (Datas.UseParamControl && Datas.ParamUseControl)
+            if (NewData.UseParamControl && NewData.ParamUseControl)
             {
                 Control = GH_AdvancedLinkParamAttr.GetControl(Owner);
             }
@@ -82,8 +82,8 @@ namespace PersistentDataEditor
         protected override void Layout()
         {
             int minWidth = 50;
-            int edgeDistance = Datas.ParamsEdgeDistance;
-            int controlDis = Datas.ParamsCoreDistance;
+            int edgeDistance = NewData.ParamsEdgeDistance;
+            int controlDis = NewData.ParamsCoreDistance;
 
             //Get Icon/Text Bound.
             if (IsIconMode(Owner.IconDisplayMode))

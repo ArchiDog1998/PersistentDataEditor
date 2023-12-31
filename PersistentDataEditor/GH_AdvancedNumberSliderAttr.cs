@@ -66,11 +66,11 @@ internal class GH_AdvancedNumberSliderAttr : GH_NumberSliderAttributes, IControl
 
     protected override void Layout()
     {
-        int controlDis = Datas.ParamsCoreDistance;
+        int controlDis = NewData.ParamsCoreDistance;
 
         _width = 0;
         if(_controlItems != null && _controlItems.Length > 0 && 
-            (!Datas.OnlyShowSelectedObjectControl || Owner.Attributes.Selected))
+            (!NewData.OnlyShowSelectedObjectControl || Owner.Attributes.Selected))
         {
             _width += controlDis * 2+ _controlItems.Sum(t=>t.Width);
         }

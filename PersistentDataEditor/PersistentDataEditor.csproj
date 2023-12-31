@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 	
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFrameworks>net7.0-windows</TargetFrameworks>
     <Version>1.1.4</Version>
     <Title>PersistentDataEditor</Title>
     <Description>Extra information and control for grasshopper component.</Description>
@@ -14,7 +14,9 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <PackageReference Include="SimpleGrasshopper" Version="0.10.6" />
+    <PackageReference Include="Grasshopper" Version="8.0.23304.9001" />
+    <PackageReference Include="SimpleGrasshopper" Version="1.2.7" />
+	  <EmbeddedResource Include="Resources\*.png" />
   </ItemGroup>
   
   <ItemGroup>
@@ -40,13 +42,8 @@
   </ItemGroup>
   
   <PropertyGroup Condition="$(Configuration) == 'Debug' AND $([MSBuild]::IsOSPlatform(Windows))">
-    <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
+    <StartProgram>C:\Program Files\Rhino 8\System\Rhino.exe</StartProgram>
     <StartArguments></StartArguments>
     <StartAction>Program</StartAction>
   </PropertyGroup>
-  
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(AppData)\Grasshopper\Libraries\$(ProjectName).gha&quot;" />
-  </Target>
-
-</Project>
+  </Project>

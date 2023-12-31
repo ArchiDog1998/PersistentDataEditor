@@ -15,11 +15,9 @@ using System.Windows.Forms;
 
 namespace PersistentDataEditor
 {
-    internal class GumballMouse<T> : MouseCallback, IGumball where T : class, IGH_GeometricGoo
+    internal class GumballMouse<T>(GH_PersistentParam<T> owner) : MouseCallback, IGumball where T : class, IGH_GeometricGoo
     {
 		public bool IsMouseUp { get; private set; }
-
-		private GH_PersistentParam<T> _owner;
 
 		private T[] _geometries;
 		private GumballDisplayConduit[] _conduits;
@@ -28,29 +26,25 @@ namespace PersistentDataEditor
 		private bool _isOnlyOneGumball => _conduits?.Length != _geometries?.Length;
 
 		private int _index;
-        public GumballMouse(GH_PersistentParam<T> owner)
-        {
-			_owner = owner;
-		}
 
         private static GumballAppearanceSettings settings
         {
             get
             {
-                GumballAppearanceSettings gumballAppearanceSettings = new GumballAppearanceSettings
+                GumballAppearanceSettings gumballAppearanceSettings = new ()
                 {
                     MenuEnabled = false,
-                    RotateXEnabled = Datas.GeoParamGumballRotate,
-                    RotateYEnabled = Datas.GeoParamGumballRotate,
-                    RotateZEnabled = Datas.GeoParamGumballRotate,
-                    ScaleXEnabled = Datas.GeoParamGumballScale,
-                    ScaleYEnabled = Datas.GeoParamGumballScale,
-                    ScaleZEnabled = Datas.GeoParamGumballScale,
+                    RotateXEnabled = GumballData.GeoParamGumballRotate,
+                    RotateYEnabled = GumballData.GeoParamGumballRotate,
+                    RotateZEnabled = GumballData.GeoParamGumballRotate,
+                    ScaleXEnabled = GumballData.GeoParamGumballScale,
+                    ScaleYEnabled = GumballData.GeoParamGumballScale,
+                    ScaleZEnabled = GumballData.GeoParamGumballScale,
                     TranslateXYEnabled = true,
                     TranslateYZEnabled = true,
                     TranslateZXEnabled = true,
                     RelocateEnabled = false,
-                    Radius = Datas.ParamGumballRadius
+                    Radius = GumballData.ParamGumballRadius
                 };
                 return gumballAppearanceSettings;
 			}
@@ -80,17 +74,17 @@ namespace PersistentDataEditor
 		{
 			Dispose();
 
-			if (!Datas.UseGeoParamGumball) return;
-			if (_owner == null || _owner.OnPingDocument() == null) return;
-			if (_owner.Locked || !_owner.Attributes.Selected) return;
-			if (_owner is IGH_PreviewObject previewObject && previewObject.Hidden) return;
-			if (_owner.Attributes.GetTopLevel.DocObject is IGH_PreviewObject ghPreviewObject && ghPreviewObject.Hidden) return;
+			if (!GumballData.UseGeoParamGumball) return;
+			if (owner == null || owner.OnPingDocument() == null) return;
+			if (owner.Locked || !owner.Attributes.Selected) return;
+			if (owner is IGH_PreviewObject previewObject && previewObject.Hidden) return;
+			if (owner.Attributes.GetTopLevel.DocObject is IGH_PreviewObject ghPreviewObject && ghPreviewObject.Hidden) return;
 
 
 			//Get PersistentData.
-			_geometries = _owner.PersistentData.NonNulls.Where((goo) => !goo.IsReferencedGeometry).ToArray();
+			_geometries = owner.PersistentData.NonNulls.Where((goo) => !goo.IsReferencedGeometry).ToArray();
 
-			if(_geometries.Length > Datas.GumballMaxShowCount)
+			if(_geometries.Length > GumballData.GumballMaxShowCount)
             {
 				BoundingBox box = BoundingBox.Empty;
 				foreach (var geom in _geometries)
@@ -333,7 +327,7 @@ namespace PersistentDataEditor
 			}
 			if (trans.IsIdentity) return;
 
-			_owner.RecordUndoEvent("Gumball drag");
+            owner.RecordUndoEvent("Gumball drag");
 
 			if(_geometries.Length == _conduits.Length)
             {
@@ -348,7 +342,7 @@ namespace PersistentDataEditor
             }
 
             IsMouseUp = true;
-            _owner.ExpireSolution(true);
+            owner.ExpireSolution(true);
             IsMouseUp = false;
             UpdateGumball(_index);
 			RhinoDoc.ActiveDoc.Views.Redraw();
@@ -372,9 +366,9 @@ namespace PersistentDataEditor
 		{
 			if (MoveObjects != null && MoveObjects.Length != 0)
 			{
-				int thickness = Datas.ParamGumballWirePreviewThickness;
-				Color wireColor = Datas.ParamGumballPreviewWireColor;
-				Color metarColor = Datas.ParamGumballPreviewMeshColor;
+				int thickness = GumballData.ParamGumballWirePreviewThickness;
+				Color wireColor = GumballData.ParamGumballPreviewWire;
+				Color metarColor = GumballData.ParamGumballPreviewMesh;
 
                 foreach (var item in MoveObjects)
                 {

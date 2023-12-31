@@ -9,7 +9,7 @@ namespace PersistentDataEditor
 {
     internal class GooCircleControl : GooVerticalControlBase<GH_Circle>
     {
-        private static Circle_Control type => (Circle_Control)Instances.Settings.GetValue(typeof(Circle_Control).FullName, 0);
+        private static Circle_Control type => NewData.CircleType;
 
         public override Guid AddCompnentGuid => type == Circle_Control.CNR ? new Guid("d114323a-e6ee-4164-946b-e4ca0ce15efa") :
             new Guid("807b86e3-be8d-4970-92b5-f8cdcb45b06b");

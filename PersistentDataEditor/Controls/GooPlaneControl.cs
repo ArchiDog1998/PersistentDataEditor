@@ -13,7 +13,7 @@ namespace PersistentDataEditor
         public override Guid AddCompnentGuid => type == Plane_Control.OZ ? new Guid("cfb6b17f-ca82-4f5d-b604-d4f69f569de3") :
             new Guid("bc3e379e-7206-4e7b-b63a-ff61f4b38a3e");
 
-        private static Plane_Control type => (Plane_Control)Instances.Settings.GetValue(typeof(Plane_Control).FullName, 0);
+        private static Plane_Control type => NewData.PlaneType;
 
         public GooPlaneControl(Func<GH_Plane> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {

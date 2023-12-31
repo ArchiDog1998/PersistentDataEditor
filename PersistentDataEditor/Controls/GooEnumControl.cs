@@ -31,7 +31,7 @@ namespace PersistentDataEditor
         internal override int Height => 14;
 
         private const int _triangleWidth = 14;
-        internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(_showString, GH_FontServer.StandardAdjusted), 15), Datas.InputBoxControlMaxWidth) + _triangleWidth;
+        internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(_showString, GH_FontServer.StandardAdjusted), 15), NewData.InputBoxControlMaxWidth) + _triangleWidth;
 
         private SortedList<int, string> _namedValues;
 
@@ -104,11 +104,11 @@ namespace PersistentDataEditor
 
         internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
         {
-            graphics.FillPath(new SolidBrush(Datas.ControlBackgroundColor), _roundBounds);
-            graphics.DrawPath(new Pen(new SolidBrush(Datas.ControlBorderColor)), _roundBounds);
-            graphics.DrawString(_showString, GH_FontServer.StandardAdjusted, new SolidBrush(Datas.ControlTextgroundColor), _stringBounds, GH_TextRenderingConstants.NearCenter);
+            graphics.FillPath(new SolidBrush(NewData.ControlBackgroundColor), _roundBounds);
+            graphics.DrawPath(new Pen(new SolidBrush(NewData.ControlBorderColor)), _roundBounds);
+            graphics.DrawString(_showString, GH_FontServer.StandardAdjusted, new SolidBrush(NewData.ControlTextgroundColor), _stringBounds, GH_TextRenderingConstants.NearCenter);
 
-            graphics.FillPath(new SolidBrush(Datas.ControlForegroundColor), _triangle);
+            graphics.FillPath(new SolidBrush(NewData.ControlForegroundColor), _triangle);
         }
 
         public override void DosomethingWhenCreate(IGH_DocumentObject obj)

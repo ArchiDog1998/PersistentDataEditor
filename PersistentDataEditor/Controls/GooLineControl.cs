@@ -12,7 +12,7 @@ namespace PersistentDataEditor
         public override Guid AddCompnentGuid => type == Line_Control.From_To ? new Guid("4c4e56eb-2f04-43f9-95a3-cc46a14f495a") :
             new Guid("4c619bc9-39fd-4717-82a6-1e07ea237bbe");
 
-        private static Line_Control type => (Line_Control)Instances.Settings.GetValue(typeof(Line_Control).FullName, 0);
+        private static Line_Control type => NewData.LineType;
 
         public GooLineControl(Func<GH_Line> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {

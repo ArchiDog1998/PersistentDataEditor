@@ -51,7 +51,7 @@ namespace PersistentDataEditor
                     new Interval(((GH_Number)values[2]).Value, ((GH_Number)values[3]).Value)));
             }
         }
-        private static Domain2D_Control type => (Domain2D_Control)Instances.Settings.GetValue(typeof(Domain2D_Control).FullName, 0);
+        private static Domain2D_Control type => NewData.Domain2Type;
 
         public override Guid AddCompnentGuid => type == Domain2D_Control.U0_U1_V0_V1 ? 
             new Guid("9083b87f-a98c-4e41-9591-077ae4220b19"): new Guid("8555a743-36c1-42b8-abcc-06d9cb94519f");

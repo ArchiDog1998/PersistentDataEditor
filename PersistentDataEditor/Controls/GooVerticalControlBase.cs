@@ -57,7 +57,7 @@ namespace PersistentDataEditor
         {
             if(canvas.Viewport.Zoom > 0.9f)
             {
-                graphics.DrawLine(new Pen(Datas.ControlForegroundColor, 0.5f), _start, _end);
+                graphics.DrawLine(new Pen(NewData.ControlForegroundColor, 0.5f), _start, _end);
             }
             base.RenderObject(canvas, graphics, style);
         }
@@ -84,7 +84,7 @@ namespace PersistentDataEditor
                     for (int i = 1; i < _controlItems.Length; i++)
                     {
                         BaseControlItem item = _controlItems[i];
-                        item.Bounds = new RectangleF((Datas.ControlAlignRightLayout ? bounds.Right - item.Width : bounds.X + _controlItems[0].Width),
+                        item.Bounds = new RectangleF((NewData.ControlAlignRightLayout ? bounds.Right - item.Width : bounds.X + _controlItems[0].Width),
                             y, item.Width, item.Height);
                         y += item.Height;
                     }
@@ -97,7 +97,7 @@ namespace PersistentDataEditor
                     float y = bounds.Y;
                     foreach (BaseControlItem item in _controlItems)
                     {
-                        item.Bounds = new RectangleF(Datas.ControlAlignRightLayout ? bounds.Right - item.Width : bounds.X,
+                        item.Bounds = new RectangleF(NewData.ControlAlignRightLayout ? bounds.Right - item.Width : bounds.X,
                             y, item.Width, item.Height);
                         y += item.Height;
                     }

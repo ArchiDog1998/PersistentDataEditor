@@ -7,7 +7,7 @@ namespace PersistentDataEditor
 {
     internal class GooNumberControl: GooHorizonalControlBase<GH_Number>
     {
-        public override Guid AddCompnentGuid => new Guid("57da07bd-ecab-415d-9d86-af36d7073abc");
+        public override Guid AddCompnentGuid => new ("57da07bd-ecab-415d-9d86-af36d7073abc");
 
         protected override string AddCompnentInit => base.AddCompnentInit ?? "0..100.00";
 

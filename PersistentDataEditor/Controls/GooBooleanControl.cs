@@ -32,14 +32,14 @@ namespace PersistentDataEditor
 
         internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
         {
-            graphics.FillEllipse(new SolidBrush(Datas.ControlBackgroundColor), Bounds);
-            graphics.DrawEllipse(new Pen(new SolidBrush(Datas.ControlBorderColor), 1.5f), Bounds);
+            graphics.FillEllipse(new SolidBrush(NewData.ControlBackgroundColor), Bounds);
+            graphics.DrawEllipse(new Pen(new SolidBrush(NewData.ControlBorderColor), 1.5f), Bounds);
 
             if (ShowValue == null || !ShowValue.Value) return;
             RectangleF bound = Bounds;
             bound.Inflate(-2, -2);
 
-            graphics.FillEllipse(new SolidBrush(Datas.ControlForegroundColor), bound);
+            graphics.FillEllipse(new SolidBrush(NewData.ControlForegroundColor), bound);
         }
     }
 }

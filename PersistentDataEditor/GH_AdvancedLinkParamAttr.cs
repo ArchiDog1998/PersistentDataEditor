@@ -17,8 +17,8 @@ namespace PersistentDataEditor
     {
         public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
         public int ControlWidth => Control?.Width ?? 0;
-        public int WholeWidth => StringWidth + (ControlWidth == 0 ? 0 : ControlWidth + Datas.ComponentControlNameDistance) + 
-            (Datas.ShowLinkParamIcon ? Datas.ComponentParamIconSize + Datas.ComponentIconDistance : 0);
+        public int WholeWidth => StringWidth + (ControlWidth == 0 ? 0 : ControlWidth + NewData.ComponentControlNameDistance) + 
+            (NewData.ShowLinkParamIcon ? NewData.ComponentParamIconSize + NewData.ComponentIconDistance : 0);
         public int ParamHeight => Math.Max(20, (Control?.Height ?? 0) + 3);
 
         public BaseControlItem Control { get; private set; }
@@ -74,7 +74,7 @@ namespace PersistentDataEditor
 
         public void SetControl()
         {
-            if(Datas.UseParamControl && Owner.Kind == GH_ParamKind.input && Datas.ComponentUseControl)
+            if(NewData.UseParamControl && Owner.Kind == GH_ParamKind.input && NewData.ComponentUseControl)
             {
                 Control = GetControl(Owner);
             }
@@ -106,15 +106,15 @@ namespace PersistentDataEditor
 
         private static Bitmap BitmapConvert(Bitmap bitmap, bool useOpacity = true)
         {
-            float opacity = useOpacity ? (float)Datas.ComponentIconOpacity : 1;
+            float opacity = useOpacity ? (float)NewData.ComponentIconOpacity : 1;
             float[][] nArray =
-            {
-                new float[]{1,0,0,0,0},
-                new float[]{0,1,0,0,0},
-                new float[]{0,0,1,0,0},
-                new[]{0,0,0,opacity,0},
-                new float[]{0,0,0,0,1},
-            };
+            [
+                [1,0,0,0,0],
+                [0,1,0,0,0],
+                [0,0,1,0,0],
+                [0,0,0,opacity,0],
+                [0,0,0,0,1],
+            ];
 
             ImageAttributes attr = new ImageAttributes();
             attr.SetColorMatrix(new ColorMatrix(nArray), ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
@@ -133,7 +133,7 @@ namespace PersistentDataEditor
             {
                 return NewData.UseParamScriptControl ? new ParamVariableControl(variable) : null;
             }
-            if(Datas.OnlyItemAccessControl && param.Access != GH_ParamAccess.item) return null;
+            if(NewData.OnlyItemAccessControl && param.Access != GH_ParamAccess.item) return null;
 
 
             if (IsPersistentParam(param.GetType(), out Type storeType))

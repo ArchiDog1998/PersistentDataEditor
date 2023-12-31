@@ -11,7 +11,7 @@ namespace PersistentDataEditor
     {
         public override Guid AddCompnentGuid => new Guid("d93100b6-d50b-40b2-831a-814659dc38e3");
 
-        private static Rectangle_Control type => (Rectangle_Control)Instances.Settings.GetValue(typeof(Rectangle_Control).FullName, 0);
+        private static Rectangle_Control type => NewData.RectangleType;
 
         public GooRectangleControl(Func<GH_Rectangle> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {

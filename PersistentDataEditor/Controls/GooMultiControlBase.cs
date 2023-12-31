@@ -61,7 +61,7 @@ namespace PersistentDataEditor
                 if (!IsGooValid(g))
                 {
                     //Add default value.
-                    if (Datas.UseDefaultValueToControl)
+                    if (NewData.UseDefaultValueToControl)
                     {
                         g = gooValue.GetDefaultValue();
                     }

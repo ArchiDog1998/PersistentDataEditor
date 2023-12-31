@@ -64,7 +64,7 @@ namespace PersistentDataEditor
             if (ShowValue != null)
                 graphics.FillPath(new SolidBrush(ShowValue.Value), _path);
 
-            graphics.DrawPath(new Pen(new SolidBrush(Datas.ControlBorderColor)), _path);
+            graphics.DrawPath(new Pen(new SolidBrush(NewData.ControlBorderColor)), _path);
         }
 
         public override void DosomethingWhenCreate(IGH_DocumentObject obj)

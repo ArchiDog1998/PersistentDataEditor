@@ -8,7 +8,7 @@ namespace PersistentDataEditor
     internal class StringRender : BaseControlItem
     {
         private static Font _font;
-        private static Font Font => _font ?? (_font = new Font(GH_FontServer.StandardAdjusted.FontFamily, 6));
+        private static Font Font => _font ??= new Font(GH_FontServer.StandardAdjusted.FontFamily, 6);
         internal override int Width => GH_FontServer.StringWidth(_showString, Font);
 
         internal override int Height => 17;

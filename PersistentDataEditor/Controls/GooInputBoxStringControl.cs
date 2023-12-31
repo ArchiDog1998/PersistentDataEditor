@@ -17,7 +17,7 @@ namespace PersistentDataEditor
         private string ShowString => ShowValue?.ToString();
         internal override int Height => 14;
         internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15),
-            Datas.InputBoxControlMaxWidth);
+            NewData.InputBoxControlMaxWidth);
 
         private GraphicsPath _roundRect;
         protected virtual bool IsReadOnly { get; }
@@ -68,9 +68,9 @@ namespace PersistentDataEditor
 
         internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
         {
-            graphics.FillPath(new SolidBrush(Datas.ControlBackgroundColor), _roundRect);
-            graphics.DrawPath(new Pen(new SolidBrush(Datas.ControlBorderColor)), _roundRect);
-            Color color = _isNull() ? Color.DarkRed : Datas.ControlTextgroundColor;
+            graphics.FillPath(new SolidBrush(NewData.ControlBackgroundColor), _roundRect);
+            graphics.DrawPath(new Pen(new SolidBrush(NewData.ControlBorderColor)), _roundRect);
+            Color color = _isNull() ? Color.DarkRed : NewData.ControlTextgroundColor;
             graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, new SolidBrush(color), Bounds, GH_TextRenderingConstants.NearCenter);
         }
     }
@@ -96,7 +96,7 @@ namespace PersistentDataEditor
         }
         private void TextOverrideLostFocusNew(object sender, EventArgs e)
         {
-            if(Datas.TextboxInputAutoApply) RespondToEnter();
+            if(NewData.TextboxInputAutoApply) RespondToEnter();
             HideTextInputBox();
         }
 

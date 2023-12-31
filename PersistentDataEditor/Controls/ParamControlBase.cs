@@ -68,7 +68,7 @@ namespace PersistentDataEditor
         }
         protected override bool Valid => Owner.OnPingDocument() == Instances.ActiveCanvas.Document 
             && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2
-            && (!Datas.OnlyShowSelectedObjectControl || Owner.Attributes.Selected) 
+            && (!NewData.OnlyShowSelectedObjectControl || Owner.Attributes.Selected) 
             && !Owner.PersistentData.Any(d => d is IGH_GeometricGoo g && g.IsReferencedGeometry);
 
         protected ParamControlBase(GH_PersistentParam<T> owner)
@@ -94,7 +94,7 @@ namespace PersistentDataEditor
         internal sealed override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
         {
             if (!Valid) return;
-            Datas.IsCurrectObjectLock = Owner.Locked;
+            NewData.IsCurrectObjectLock = Owner.Locked;
             _gooControl.RenderObject(canvas, graphics, style);
         }
 

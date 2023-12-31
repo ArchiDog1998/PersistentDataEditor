@@ -26,7 +26,7 @@ namespace PersistentDataEditor
             }
         }
 
-        private static Box_Control type => (Box_Control)Instances.Settings.GetValue(typeof(Box_Control).FullName, 0);
+        private static Box_Control type => NewData.BoxType;
 
         public GooBoxControl(Func<GH_Box> valueGetter, Func<bool> isNull, string name) : base(valueGetter, isNull, name)
         {
