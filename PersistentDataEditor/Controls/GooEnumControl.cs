@@ -28,10 +28,10 @@ internal class GooEnumControl(Func<GH_Integer> valueGetter, Func<bool> isNull, S
             return _namedValues.TryGetValue(index, out var value) ? value : index.ToString();
         }
     }
-    internal override int Height => 14;
+    internal override float Height => 14;
 
     private const int _triangleWidth = 14;
-    internal override int MinWidth => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15), Data.InputBoxControlMaxWidth) + _triangleWidth;
+    internal override float MinWidth => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15), Data.InputBoxControlMaxWidth) + _triangleWidth;
 
     private readonly SortedList<int, string> _namedValues = namedValues;
 

@@ -16,8 +16,8 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
     public override Guid AddCompnentGuid => new("59e0b89a-e487-49f8-bab8-b5bab16be14c");
 
     private string ShowString => ShowValue?.ToString();
-    internal override int Height => 14;
-    internal override int MinWidth => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15),
+    internal override float Height => 14;
+    internal override float MinWidth => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15),
         Data.InputBoxControlMaxWidth);
 
     private GraphicsPath _roundRect;

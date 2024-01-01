@@ -16,7 +16,7 @@ internal class GH_AdvancedNumberSliderAttr : GH_NumberSliderAttributes, IControl
     private static readonly FieldInfo _sliderBoundInfo = typeof(GH_NumberSliderAttributes).FindField("m_boundsSlider");
 
     private Rectangle _controlBounds;
-    private int _width;
+    private float _width;
 
     private BaseControlItem[] _controlItems;
     public GH_AdvancedNumberSliderAttr(GH_NumberSlider nOwner) : base(nOwner)
@@ -75,14 +75,14 @@ internal class GH_AdvancedNumberSliderAttr : GH_NumberSliderAttributes, IControl
             _width += controlDis * 2 + _controlItems.Sum(t => t.MinWidth);
         }
 
-        Bounds = new Rectangle((int)Bounds.X, (int)Bounds.Y, (int)Bounds.Width - _width, (int)Bounds.Height);
+        Bounds = new Rectangle((int)Bounds.X, (int)Bounds.Y, (int)(Bounds.Width - _width), (int)Bounds.Height);
         base.Layout();
         Rectangle nameRect = (Rectangle)_nameBoundInfo.GetValue(this);
         nameRect = new Rectangle(nameRect.X, nameRect.Y, nameRect.Width, nameRect.Height);
         _nameBoundInfo.SetValue(this, nameRect);
 
         Rectangle sliderRect = (Rectangle)_sliderBoundInfo.GetValue(this);
-        sliderRect = new Rectangle(sliderRect.X + _width, sliderRect.Y, sliderRect.Width, sliderRect.Height);
+        sliderRect = new Rectangle(sliderRect.X + (int)_width, sliderRect.Y, sliderRect.Width, sliderRect.Height);
         _sliderBoundInfo.SetValue(this, sliderRect);
         Owner.Slider.Bounds = sliderRect;
 
@@ -99,7 +99,7 @@ internal class GH_AdvancedNumberSliderAttr : GH_NumberSliderAttributes, IControl
         else
             _controlBounds = Rectangle.Empty;
 
-        Bounds = new Rectangle((int)Bounds.X, (int)Bounds.Y, (int)Bounds.Width + _width, (int)Bounds.Height);
+        Bounds = new Rectangle((int)Bounds.X, (int)Bounds.Y, (int)(Bounds.Width + _width), (int)Bounds.Height);
     }
 
     protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)

@@ -25,10 +25,10 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
 
     public static RectangleF LayoutComponentBoxNew(IGH_Component owner)
     {
-        int inputHeight = GetParamsWholeHeight(owner.Params.Input, owner);
-        int outputHeight = GetParamsWholeHeight(owner.Params.Output, owner);
+        float inputHeight = GetParamsWholeHeight(owner.Params.Input, owner);
+        float outputHeight = GetParamsWholeHeight(owner.Params.Output, owner);
 
-        int val = Math.Max(inputHeight, outputHeight);
+        float val = Math.Max(inputHeight, outputHeight);
         val = Math.Max(val, 24);
         int num = 24;
         if (!IsIconMode(owner.IconDisplayMode))
@@ -37,9 +37,9 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
         }
         return GH_Convert.ToRectangle(new RectangleF(owner.Attributes.Pivot.X - 0.5f * num, owner.Attributes.Pivot.Y - 0.5f * val, num, val));
 
-        static int GetParamsWholeHeight(List<IGH_Param> gH_Params, IGH_Component owner)
+        static float GetParamsWholeHeight(List<IGH_Param> gH_Params, IGH_Component owner)
         {
-            int wholeHeight = 0;
+            float wholeHeight = 0;
             foreach (IGH_Param param in gH_Params)
             {
                 if (param.Attributes == null || param.Attributes is not GH_AdvancedLinkParamAttr)
@@ -74,11 +74,11 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
         if (count == 0) return;
 
         //Get width and Init the Attributes.
-        int singleParamBoxMaxWidth = 0;
-        int nameMaxWidth = 0;
-        int controlMaxWidth = 0;
-        int heightCalculate = 0;
-        int iconSpaceWidth = Data.ShowLinkParamIcon ? Data.ComponentParamIconSize + Data.ComponentIconDistance : 0;
+        float singleParamBoxMaxWidth = 0;
+        float nameMaxWidth = 0;
+        float controlMaxWidth = 0;
+        float heightCalculate = 0;
+        float iconSpaceWidth = Data.ShowLinkParamIcon ? Data.ComponentParamIconSize + Data.ComponentIconDistance : 0;
         foreach (IGH_Param param in gH_Params)
         {
             if (param.Attributes is not GH_AdvancedLinkParamAttr)
@@ -98,7 +98,7 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
 
         if (Data.SeperateCalculateWidthControl)
         {
-            int controlAddition = controlMaxWidth == 0 ? 0 : controlMaxWidth + Data.ComponentControlNameDistance;
+            float controlAddition = controlMaxWidth == 0 ? 0 : controlMaxWidth + Data.ComponentControlNameDistance;
             singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + Data.AdditionWidth + iconSpaceWidth, Data.AdditionWidth + Data.MiniWidth);
         }
         else

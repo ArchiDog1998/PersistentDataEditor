@@ -45,9 +45,9 @@ public abstract class BaseControlItem
         }
     }
     protected virtual bool Valid => true;
-    internal abstract int MinWidth { get; }
-    private int? _width = null;
-    internal int Width 
+    internal abstract float MinWidth { get; }
+    private float? _width = null;
+    internal float Width 
     {
         get
         {
@@ -60,7 +60,7 @@ public abstract class BaseControlItem
         }
         set => _width = value;
     }
-    internal abstract int Height { get; }
+    internal abstract float Height { get; }
     protected virtual void OnLayoutChanged(RectangleF bounds) { }
     internal virtual void ChangeControlItems() { }
     internal abstract void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style);

@@ -16,16 +16,16 @@ namespace PersistentDataEditor;
 internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr, IDisposable
 {
     public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
-    public int ControlMinWidth => Control?.MinWidth ?? 0;
-    public int WholeWidth => StringWidth + (ControlMinWidth == 0 ? 0 : ControlMinWidth + Data.ComponentControlNameDistance) +
+    public float ControlMinWidth => Control?.MinWidth ?? 0;
+    public float WholeWidth => StringWidth + (ControlMinWidth == 0 ? 0 : ControlMinWidth + Data.ComponentControlNameDistance) +
         (Data.ShowLinkParamIcon ? Data.ComponentParamIconSize + Data.ComponentIconDistance : 0);
-    public int ParamHeight => Math.Max(20, (Control?.Height ?? 0) + 3);
+    public float ParamHeight => Math.Max(20, (Control?.Height ?? 0) + 3);
 
     public BaseControlItem Control { get; private set; }
 
     public RectangleF IconRect { get; set; }
 
-    public static SortedList<Guid, Bitmap> IconSet = new SortedList<Guid, Bitmap>();
+    public static SortedList<Guid, Bitmap> IconSet = [];
 
     private readonly IGumball _gumball;
 

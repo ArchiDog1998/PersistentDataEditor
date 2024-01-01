@@ -2,7 +2,6 @@
 using Grasshopper.Kernel.Types;
 using System;
 using System.Drawing;
-using System.Linq;
 
 namespace PersistentDataEditor;
 
@@ -10,11 +9,11 @@ internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where
 {
     PointF _start, _end;
 
-    internal sealed override int MinWidth
+    internal sealed override float MinWidth
     {
         get
         {
-            int max = 0;
+            float max = 0;
             if (_hasName)
             {
                 for (int i = 1; i < _controlItems.Length; i++)
@@ -35,11 +34,11 @@ internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where
         }
     }
 
-    internal sealed override int Height
+    internal sealed override float Height
     {
         get
         {
-            int all = 0;
+            float all = 0;
             for (int i = _hasName ? 1 : 0; i < _controlItems.Length; i++)
             {
                 all += _controlItems[i].Height;
@@ -84,7 +83,7 @@ internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where
                 for (int i = 1; i < _controlItems.Length; i++)
                 {
                     BaseControlItem item = _controlItems[i];
-                    item.Width = (int)bounds.Width;
+                    item.Width = bounds.Width;
                     item.Bounds = new RectangleF(bounds.X, y, bounds.Width, item.Height);
                     y += item.Height;
                 }
@@ -97,7 +96,7 @@ internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where
                 float y = bounds.Y;
                 foreach (BaseControlItem item in _controlItems)
                 {
-                    item.Width = (int)bounds.Width;
+                    item.Width = bounds.Width;
                     item.Bounds = new RectangleF(bounds.X, y, bounds.Width, item.Height);
                     y += item.Height;
                 }

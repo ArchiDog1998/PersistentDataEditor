@@ -20,9 +20,9 @@ internal class GooColorControl(Func<GH_Colour> valueGetter, Func<bool> isNull) :
 
     public override Guid AddCompnentGuid => new("9c53bac0-ba66-40bd-8154-ce9829b9db1a");
 
-    internal override int MinWidth => 12;
+    internal override float MinWidth => 12;
 
-    internal override int Height => 12;
+    internal override float Height => 12;
 
     internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {

@@ -12,9 +12,9 @@ internal class GooBooleanControl(Func<GH_Boolean> valueGetter, Func<bool> isNull
 {
     public override Guid AddCompnentGuid => new("2e78987b-9dfb-42a2-8b76-3923ac8bd91a");
 
-    internal override int MinWidth => 10;
+    internal override float MinWidth => 10;
 
-    internal override int Height => 10;
+    internal override float Height => 10;
 
     internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {

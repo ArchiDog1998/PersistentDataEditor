@@ -38,7 +38,7 @@ internal abstract class ParamControlBase<T> : BaseControlItem where T : class, I
 
     private readonly GooControlBase<T> _gooControl;
 
-    internal sealed override int MinWidth
+    internal sealed override float MinWidth
     {
         get
         {
@@ -52,7 +52,7 @@ internal abstract class ParamControlBase<T> : BaseControlItem where T : class, I
 
         }
     }
-    internal sealed override int Height
+    internal sealed override float Height
     {
         get
         {
