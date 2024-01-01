@@ -167,14 +167,6 @@ internal static partial class Data
     [Setting, Config("Number Slider", icon: "{57DA07BD-ECAB-415d-9D86-AF36D7073ABC}", parent: "Choose Controls", section: 3)]
     private static readonly bool _useParamNumberSliderControl = true;
 
-    [Obsolete]
-    [Setting, Config("Component Input Align Edge", section: 1)]
-    private static readonly bool _componentInputEdgeLayout = false;
-
-    [Obsolete]
-    [Setting, Config("Component Output Align Edge", section: 1)]
-    private static readonly bool _componentOutputEdgeLayout = false;
-
     [Setting, Config("Show Component's Param Icon", section: 1, icon: ParamGuids.GenericObject)]
     private static readonly bool _showLinkParamIcon = false;
 

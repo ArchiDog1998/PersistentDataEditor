@@ -13,12 +13,12 @@ namespace PersistentDataEditor;
 
 internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IControlAttr, IDisposable
 {
-    private static FieldInfo _tagsinfo = typeof(GH_FloatingParamAttributes).FindField("m_stateTags");
+    private static readonly FieldInfo _tagsinfo = typeof(GH_FloatingParamAttributes).FindField("m_stateTags");
 
-    private IGumball _gumball;
+    private readonly IGumball _gumball;
     private Rectangle _iconTextBound;
 
-    private MethodInfo _expressionInfo;
+    private readonly MethodInfo _expressionInfo;
 
     public BaseControlItem Control { get; private set; }
     public GH_AdvancedFloatingParamAttr(IGH_Param param) : base(param)

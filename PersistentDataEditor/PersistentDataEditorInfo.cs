@@ -47,7 +47,7 @@ partial class SimpleAssemblyPriority
             gumball = (ToolStripMenuItem)gumballs[0];
             displayItem.DropDownItems.Remove(gumball);
         }
-        //displayItem.DropDownItems.Insert(3, MenuCreator.CreateMajorMenu(gumball?.Image));
+
         GH_ComponentAttributesReplacer.Init();
 
         CentralSettings.PreviewGumballs = false;

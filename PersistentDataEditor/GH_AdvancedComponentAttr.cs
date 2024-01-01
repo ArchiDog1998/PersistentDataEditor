@@ -287,8 +287,8 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
                 else
                 {
                     StringFormat format = item.Kind == GH_ParamKind.input ?
-                        (Data.ComponentInputEdgeLayout ? GH_TextRenderingConstants.NearCenter : GH_TextRenderingConstants.FarCenter) :
-                        (Data.ComponentOutputEdgeLayout ? GH_TextRenderingConstants.FarCenter : GH_TextRenderingConstants.NearCenter);
+                        GH_TextRenderingConstants.FarCenter :
+                        GH_TextRenderingConstants.NearCenter;
 
                     graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, bounds, format);
                     GH_LinkedParamAttributes gH_LinkedParamAttributes = (GH_LinkedParamAttributes)item.Attributes;
