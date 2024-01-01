@@ -22,11 +22,19 @@ internal abstract class GooHorizonalControlBase<T>(Func<T> valueGetter, Func<boo
         }
         else
         {
+            var stringRendererSum = _controlItems.Where(i => i is StringRender).Sum(ctrl => ctrl.MinWidth);
+
+            var ratio = (bounds.Width - stringRendererSum) / (MinWidth - stringRendererSum);
+
             float x = bounds.X;
             foreach (BaseControlItem item in _controlItems)
             {
-                item.Bounds = new RectangleF(x, bounds.Y + (bounds.Height - item.Height) / 2, item.MinWidth, item.Height);
-                x += item.MinWidth;
+                if(item is not StringRender)
+                {
+                    item.Width = (int)(item.MinWidth * ratio);
+                }
+                item.Bounds = new (x, bounds.Y + (bounds.Height - item.Height) / 2, item.Width, item.Height);
+                x += item.Width;
             }
         }
 

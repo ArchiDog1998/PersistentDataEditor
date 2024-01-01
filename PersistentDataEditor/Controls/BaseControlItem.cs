@@ -15,34 +15,33 @@ public abstract class BaseControlItem
         get => _bounds;
         set
         {
-            if (Valid)
-            {
-                var shrinkHeight = -(value.Height - Height) / 2;
-                value = value.Inflate(0, shrinkHeight, 0 , shrinkHeight);
-
-                var shrinkWidth = -(value.Width - Width) / 2;
-                switch (Data.ControlAlignment)
-                {
-                    case HorizontalAlignment.Left:
-                        value = value.Inflate(0, 0, 2 * shrinkWidth, 0);
-                        break;
-                    case HorizontalAlignment.Right:
-                        value = value.Inflate(2 * shrinkWidth, 0, 0, 0);
-                        break;
-                    case HorizontalAlignment.Center:
-                        value = value.Inflate(shrinkWidth, 0, shrinkWidth, 0);
-                        break;
-                    default:
-                        break;
-                }
-
-                _bounds = value;
-                OnLayoutChanged(_bounds);
-            }
-            else
+            if (!Valid)
             {
                 _bounds = RectangleF.Empty;
+                return;
             }
+
+            var shrinkHeight = -(value.Height - Height) / 2;
+            value = value.Inflate(0, shrinkHeight, 0, shrinkHeight);
+
+            var shrinkWidth = -(value.Width - Width) / 2;
+            switch (Data.ControlAlignment)
+            {
+                case HorizontalAlignment.Left:
+                    value = value.Inflate(0, 0, 2 * shrinkWidth, 0);
+                    break;
+                case HorizontalAlignment.Right:
+                    value = value.Inflate(2 * shrinkWidth, 0, 0, 0);
+                    break;
+                case HorizontalAlignment.Center:
+                    value = value.Inflate(shrinkWidth, 0, shrinkWidth, 0);
+                    break;
+                default:
+                    break;
+            }
+
+            _bounds = value;
+            OnLayoutChanged(_bounds);
         }
     }
     protected virtual bool Valid => true;

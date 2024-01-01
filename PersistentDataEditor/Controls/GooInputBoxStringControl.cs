@@ -67,7 +67,7 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
         graphics.FillPath(Data.ControlBackgroundColor.GetBrush(), _roundRect);
         graphics.DrawPath(new Pen(Data.ControlBorderColor.GetBrush()), _roundRect);
         Color color = _isNull() ? Color.DarkRed : Data.ControlTextgroundColor;
-        graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, color.GetBrush(), Bounds, GH_TextRenderingConstants.NearCenter);
+        graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, color.GetBrush(), Bounds, GH_TextRenderingConstants.CenterCenter);
     }
 }
 
