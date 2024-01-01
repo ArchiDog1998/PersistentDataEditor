@@ -13,7 +13,7 @@ internal class GooPointControl(Func<GH_Point> valueGetter, Func<bool> isNull, st
 
     protected override BaseControlItem[] SetControlItems()
     {
-        return NewData.PointType switch
+        return Data.PointType switch
         {
             Point_Control.XYZ =>
             [
@@ -33,7 +33,7 @@ internal class GooPointControl(Func<GH_Point> valueGetter, Func<bool> isNull, st
 
     protected override GH_Point SetValue(IGH_Goo[] values)
     {
-        return NewData.PointType switch
+        return Data.PointType switch
         {
             Point_Control.XYZ => new GH_Point(new Point3d(
                         ((GH_Number)values[0]).Value,

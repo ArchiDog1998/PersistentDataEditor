@@ -78,10 +78,10 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
         int nameMaxWidth = 0;
         int controlMaxWidth = 0;
         int heightCalculate = 0;
-        int iconSpaceWidth = NewData.ShowLinkParamIcon ? NewData.ComponentParamIconSize + NewData.ComponentIconDistance : 0;
+        int iconSpaceWidth = Data.ShowLinkParamIcon ? Data.ComponentParamIconSize + Data.ComponentIconDistance : 0;
         foreach (IGH_Param param in gH_Params)
         {
-            if (param.Attributes == null || param.Attributes is not GH_AdvancedLinkParamAttr)
+            if (param.Attributes is not GH_AdvancedLinkParamAttr)
             {
                 param.Attributes = new GH_AdvancedLinkParamAttr(param, owner.Attributes);
 
@@ -92,16 +92,19 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
 
             singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth, attr.WholeWidth);
             nameMaxWidth = Math.Max(nameMaxWidth, attr.StringWidth);
-            controlMaxWidth = Math.Max(controlMaxWidth, attr.ControlWidth);
+            controlMaxWidth = Math.Max(controlMaxWidth, attr.ControlMinWidth);
             heightCalculate += attr.ParamHeight;
         }
 
-        if (NewData.SeperateCalculateWidthControl)
+        if (Data.SeperateCalculateWidthControl)
         {
-            int controlAddition = controlMaxWidth == 0 ? 0 : controlMaxWidth + NewData.ComponentControlNameDistance;
-            singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + NewData.AdditionWidth + iconSpaceWidth, NewData.AdditionWidth + NewData.MiniWidth);
+            int controlAddition = controlMaxWidth == 0 ? 0 : controlMaxWidth + Data.ComponentControlNameDistance;
+            singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + Data.AdditionWidth + iconSpaceWidth, Data.AdditionWidth + Data.MiniWidth);
         }
-        else singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth + NewData.AdditionWidth, NewData.AdditionWidth + NewData.MiniWidth);
+        else
+        {
+            singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth + Data.AdditionWidth, Data.AdditionWidth + Data.MiniWidth);
+        }
 
 
         //Layout every param.
@@ -111,9 +114,9 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
         {
             float singleParamBoxHeight = heightFloat * ((GH_AdvancedLinkParamAttr)param.Attributes).ParamHeight;
 
-            float rectX = isInput ? componentBox.X - singleParamBoxMaxWidth : componentBox.Right + NewData.ComponentToCoreDistance;
+            float rectX = isInput ? componentBox.X - singleParamBoxMaxWidth : componentBox.Right + Data.ComponentToCoreDistance;
             float rectY = componentBox.Y + movementY;
-            float width = singleParamBoxMaxWidth - NewData.ComponentToCoreDistance;
+            float width = singleParamBoxMaxWidth - Data.ComponentToCoreDistance;
             float height = singleParamBoxHeight;
             param.Attributes.Pivot = new PointF(rectX + 0.5f * singleParamBoxMaxWidth, rectY + 0.5f * singleParamBoxHeight);
             param.Attributes.Bounds = GH_Convert.ToRectangle(new RectangleF(rectX, rectY, width, height));
@@ -195,60 +198,28 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
             GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
 
             int stringwidth = attr.StringWidth;
-            int wholeWidth = attr.WholeWidth;
 
             if (isInput)
             {
-                float startX = attr.Bounds.X + additionforTag + NewData.ComponentToEdgeDistance;
+                float startX = attr.Bounds.X + additionforTag + Data.ComponentToEdgeDistance;
 
-                if (NewData.ShowLinkParamIcon)
+                if (Data.ShowLinkParamIcon)
                 {
-                    float size = NewData.ComponentParamIconSize;
+                    float size = Data.ComponentParamIconSize;
                     attr.IconRect = new RectangleF(startX, attr.Bounds.Y + attr.Bounds.Height / 2 - size / 2, size, size);
-                    startX += size + NewData.ComponentIconDistance;
+                    startX += size + Data.ComponentIconDistance;
                 }
 
-                if (NewData.SeperateCalculateWidthControl)
-                {
-                    attr.Control.Bounds = new RectangleF(NewData.ControlAlignRightLayout
-                        ? attr.Bounds.Right - nameMaxWidth - NewData.ComponentControlNameDistance - attr.ControlWidth
-                        : startX,
-                        attr.Bounds.Y, attr.Bounds.Width - NewData.ComponentControlNameDistance - nameMaxWidth, attr.Bounds.Height);
-                }
-                else
-                {
-                    attr.Control.Bounds = new RectangleF(NewData.ControlAlignRightLayout
-                        ? attr.Bounds.Right - stringwidth - NewData.ComponentControlNameDistance - attr.ControlWidth
-                        : startX,
-                        attr.Bounds.Y, attr.Bounds.Width - NewData.ComponentControlNameDistance - nameMaxWidth, attr.Bounds.Height);
-                }
-
-
-                //if (NewData.SeperateCalculateWidthControl)
-                //{
-                //    float maxStringRight = startX + nameMaxWidth;
-
-                //    if (attr.Control != null)
-                //    {
-                //        attr.Control.Bounds = new RectangleF(NewData.ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth - maxStringRight : attr.Bounds.X,
-                //            attr.Bounds.Y, attr.ControlWidth - NewData.ComponentControlNameDistance - nameMaxWidth, attr.Control.Height);
-                //    }
-                //}
-                //else
-                //{
-                //    if (attr.Control != null)
-                //    {
-                //        attr.Control.Bounds = new RectangleF(NewData.ControlAlignRightLayout ? attr.Bounds.Right - attr.ControlWidth - stringwidth : attr.Bounds.X,
-                //            attr.Bounds.Y, attr.ControlWidth, attr.Control.Height);
-                //    }
-                //}
+                attr.Control.Bounds = new RectangleF(startX,
+                    attr.Bounds.Y, attr.Bounds.Width - Data.ComponentControlNameDistance -
+                    (Data.SeperateCalculateWidthControl ? nameMaxWidth : stringwidth), attr.Bounds.Height);
             }
             else
             {
-                if (NewData.ShowLinkParamIcon)
+                if (Data.ShowLinkParamIcon)
                 {
-                    float size = NewData.ComponentParamIconSize;
-                    attr.IconRect = new RectangleF(attr.Bounds.Right - NewData.ComponentParamIconSize - additionforTag - NewData.ComponentToEdgeDistance,
+                    float size = Data.ComponentParamIconSize;
+                    attr.IconRect = new RectangleF(attr.Bounds.Right - Data.ComponentParamIconSize - additionforTag - Data.ComponentToEdgeDistance,
                         attr.Bounds.Y + attr.Bounds.Height / 2 - size / 2, size, size);
                 }
             }
@@ -293,7 +264,7 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
                 if (item.Attributes is GH_AdvancedLinkParamAttr attr)
                 {
                     //Render Icon;
-                    if (NewData.ShowLinkParamIcon)
+                    if (Data.ShowLinkParamIcon)
                     {
                         if (!GH_AdvancedLinkParamAttr.IconSet.TryGetValue(item.ComponentGuid, out Bitmap icon))
                         {
@@ -316,8 +287,8 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
                 else
                 {
                     StringFormat format = item.Kind == GH_ParamKind.input ?
-                        (NewData.ComponentInputEdgeLayout ? GH_TextRenderingConstants.NearCenter : GH_TextRenderingConstants.FarCenter) :
-                        (NewData.ComponentOutputEdgeLayout ? GH_TextRenderingConstants.FarCenter : GH_TextRenderingConstants.NearCenter);
+                        (Data.ComponentInputEdgeLayout ? GH_TextRenderingConstants.NearCenter : GH_TextRenderingConstants.FarCenter) :
+                        (Data.ComponentOutputEdgeLayout ? GH_TextRenderingConstants.FarCenter : GH_TextRenderingConstants.NearCenter);
 
                     graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, bounds, format);
                     GH_LinkedParamAttributes gH_LinkedParamAttributes = (GH_LinkedParamAttributes)item.Attributes;

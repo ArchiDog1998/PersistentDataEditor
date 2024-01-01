@@ -8,13 +8,13 @@ namespace PersistentDataEditor;
 internal abstract class GooHorizonalControlBase<T>(Func<T> valueGetter, Func<bool> isNull, string name)
     : GooMultiControlBase<T>(valueGetter, isNull, name) where T : class, IGH_Goo
 {
-    internal sealed override int Width
-        => _controlItems.Sum(control => control.Width);
+    internal sealed override int MinWidth
+        => _controlItems.Sum(control => control.MinWidth);
 
     internal sealed override int Height
         => _controlItems.Select(control => control.Height).Prepend(0).Max();
 
-    protected sealed override void LayoutObject(RectangleF bounds)
+    protected sealed override void OnLayoutChanged(RectangleF bounds)
     {
         if (bounds == RectangleF.Empty)
         {
@@ -25,11 +25,11 @@ internal abstract class GooHorizonalControlBase<T>(Func<T> valueGetter, Func<boo
             float x = bounds.X;
             foreach (BaseControlItem item in _controlItems)
             {
-                item.Bounds = new RectangleF(x, bounds.Y + (bounds.Height - item.Height) / 2, item.Width, item.Height);
-                x += item.Width;
+                item.Bounds = new RectangleF(x, bounds.Y + (bounds.Height - item.Height) / 2, item.MinWidth, item.Height);
+                x += item.MinWidth;
             }
         }
 
-        base.LayoutObject(bounds);
+        base.OnLayoutChanged(bounds);
     }
 }

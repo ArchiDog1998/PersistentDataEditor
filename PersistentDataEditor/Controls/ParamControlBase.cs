@@ -38,13 +38,13 @@ internal abstract class ParamControlBase<T> : BaseControlItem where T : class, I
 
     private readonly GooControlBase<T> _gooControl;
 
-    internal sealed override int Width
+    internal sealed override int MinWidth
     {
         get
         {
             if (Valid)
             {
-                return _gooControl.Width;
+                return _gooControl.MinWidth;
             }
 
             _gooControl.Bounds = RectangleF.Empty;
@@ -68,7 +68,7 @@ internal abstract class ParamControlBase<T> : BaseControlItem where T : class, I
     }
     protected override bool Valid => Owner.OnPingDocument() == Instances.ActiveCanvas.Document
         && Owner.SourceCount == 0 && Owner.PersistentDataCount < 2
-        && (!NewData.OnlyShowSelectedObjectControl || Owner.Attributes.Selected)
+        && (!Data.OnlyShowSelectedObjectControl || Owner.Attributes.Selected)
         && !Owner.PersistentData.Any(d => d is IGH_GeometricGoo g && g.IsReferencedGeometry);
 
     protected ParamControlBase(GH_PersistentParam<T> owner)
@@ -85,16 +85,16 @@ internal abstract class ParamControlBase<T> : BaseControlItem where T : class, I
     }
     protected abstract GooControlBase<T> SetUpControl(IGH_Param param);
 
-    protected sealed override void LayoutObject(RectangleF bounds)
+    protected sealed override void OnLayoutChanged(RectangleF bounds)
     {
         _gooControl.Bounds = bounds;
-        base.LayoutObject(bounds);
+        base.OnLayoutChanged(bounds);
     }
 
     internal sealed override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
     {
         if (!Valid) return;
-        NewData.IsCurrectObjectLock = Owner.Locked;
+        Data.IsCurrectObjectLock = Owner.Locked;
         _gooControl.RenderObject(canvas, graphics, style);
     }
 

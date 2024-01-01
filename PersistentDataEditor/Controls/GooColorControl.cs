@@ -20,7 +20,7 @@ internal class GooColorControl(Func<GH_Colour> valueGetter, Func<bool> isNull) :
 
     public override Guid AddCompnentGuid => new("9c53bac0-ba66-40bd-8154-ce9829b9db1a");
 
-    internal override int Width => 12;
+    internal override int MinWidth => 12;
 
     internal override int Height => 12;
 
@@ -42,21 +42,20 @@ internal class GooColorControl(Func<GH_Colour> valueGetter, Func<bool> isNull) :
         }
     }
 
-    protected override void LayoutObject(RectangleF bounds)
+    protected override void OnLayoutChanged(RectangleF bounds)
     {
-        _path = RoundedRect(GH_Convert.ToRectangle(Bounds), 2);
-        base.LayoutObject(bounds);
+        _path = GH_Convert.ToRectangle(Bounds).RoundCorner(2);
+        base.OnLayoutChanged(bounds);
     }
 
     internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
     {
-
         graphics.FillPath(_background, _path);
 
         if (ShowValue != null)
             graphics.FillPath(new SolidBrush(ShowValue.Value), _path);
 
-        graphics.DrawPath(new Pen(new SolidBrush(NewData.ControlBorderColor)), _path);
+        graphics.DrawPath(new Pen(new SolidBrush(Data.ControlBorderColor)), _path);
     }
 
     public override void DosomethingWhenCreate(IGH_DocumentObject obj)

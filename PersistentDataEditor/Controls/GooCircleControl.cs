@@ -9,7 +9,7 @@ namespace PersistentDataEditor;
 internal class GooCircleControl(Func<GH_Circle> valueGetter, Func<bool> isNull, string name) : GooVerticalControlBase<GH_Circle>(valueGetter, isNull, name)
 {
 
-    public override Guid AddCompnentGuid => NewData.CircleType == Circle_Control.CNR
+    public override Guid AddCompnentGuid => Data.CircleType == Circle_Control.CNR
         ? new Guid("d114323a-e6ee-4164-946b-e4ca0ce15efa")
         : new Guid("807b86e3-be8d-4970-92b5-f8cdcb45b06b");
 
@@ -18,7 +18,7 @@ internal class GooCircleControl(Func<GH_Circle> valueGetter, Func<bool> isNull, 
 
     protected override GH_Circle SetValue(IGH_Goo[] values)
     {
-        return NewData.CircleType switch
+        return Data.CircleType switch
         {
             Circle_Control.Plane_Radius => new GH_Circle(new Circle(((GH_Plane)values[0]).Value, ((GH_Number)values[1]).Value)),
             Circle_Control.CNR => new GH_Circle(new Circle(new Plane(((GH_Point)values[0]).Value, ((GH_Vector)values[1]).Value),
@@ -29,7 +29,7 @@ internal class GooCircleControl(Func<GH_Circle> valueGetter, Func<bool> isNull, 
 
     protected override BaseControlItem[] SetControlItems()
     {
-        return NewData.CircleType switch
+        return Data.CircleType switch
         {
             Circle_Control.Plane_Radius =>
             [
@@ -54,7 +54,7 @@ internal class GooCircleControl(Func<GH_Circle> valueGetter, Func<bool> isNull, 
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;
 
-        if (NewData.CircleType == Circle_Control.CNR)
+        if (Data.CircleType == Circle_Control.CNR)
         {
             if (com.Params.Input.Count < 3) return;
 

@@ -13,7 +13,7 @@ internal class GooIntervalControl(Func<GH_Interval> valueGetter, Func<bool> isNu
 
     protected override BaseControlItem[] SetControlItems()
     {
-        return NewData.DomainType switch
+        return Data.DomainType switch
         {
             Domain_Control.T0_T1 =>
             [
@@ -35,7 +35,7 @@ internal class GooIntervalControl(Func<GH_Interval> valueGetter, Func<bool> isNu
 
     protected override GH_Interval SetValue(IGH_Goo[] values)
     {
-        return NewData.DomainType switch
+        return Data.DomainType switch
         {
             Domain_Control.T0_T1 => new GH_Interval(new Interval(((GH_Number)values[0]).Value, ((GH_Number)values[1]).Value)),
             _ => (GH_Interval)values[0],

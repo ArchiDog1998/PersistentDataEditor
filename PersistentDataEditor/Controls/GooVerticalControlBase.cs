@@ -9,7 +9,7 @@ internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where
 {
     PointF _start, _end;
 
-    internal sealed override int Width
+    internal sealed override int MinWidth
     {
         get
         {
@@ -18,15 +18,15 @@ internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where
             {
                 for (int i = 1; i < _controlItems.Length; i++)
                 {
-                    max = Math.Max(max, _controlItems[i].Width);
+                    max = Math.Max(max, _controlItems[i].MinWidth);
                 }
-                max += _controlItems[0].Width;
+                max += _controlItems[0].MinWidth;
             }
             else
             {
                 foreach (var control in _controlItems)
                 {
-                    max = Math.Max(max, control.Width);
+                    max = Math.Max(max, control.MinWidth);
                 }
             }
 
@@ -56,12 +56,12 @@ internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where
     {
         if (canvas.Viewport.Zoom > 0.9f)
         {
-            graphics.DrawLine(new Pen(NewData.ControlForegroundColor, 0.5f), _start, _end);
+            graphics.DrawLine(new Pen(Data.ControlForegroundColor, 0.5f), _start, _end);
         }
         base.RenderObject(canvas, graphics, style);
     }
 
-    protected sealed override void LayoutObject(RectangleF bounds)
+    protected sealed override void OnLayoutChanged(RectangleF bounds)
     {
         if (bounds == RectangleF.Empty)
         {
@@ -74,7 +74,7 @@ internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where
             if (_hasName)
             {
                 _controlItems[0].Bounds = new RectangleF(bounds.X,
-                    bounds.Y + bounds.Height / 2 - _controlItems[0].Height / 2, _controlItems[0].Width, _controlItems[0].Height);
+                    bounds.Y + bounds.Height / 2 - _controlItems[0].Height / 2, _controlItems[0].MinWidth, _controlItems[0].Height);
 
                 _start = new PointF(_controlItems[0].Bounds.Right, bounds.Top + margin);
                 _end = new PointF(_controlItems[0].Bounds.Right, bounds.Bottom - margin);
@@ -83,8 +83,7 @@ internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where
                 for (int i = 1; i < _controlItems.Length; i++)
                 {
                     BaseControlItem item = _controlItems[i];
-                    item.Bounds = new RectangleF((NewData.ControlAlignRightLayout ? bounds.Right - item.Width : bounds.X + _controlItems[0].Width),
-                        y, item.Width, item.Height);
+                    item.Bounds = new RectangleF(bounds.X, y, bounds.Width, item.Height);
                     y += item.Height;
                 }
             }
@@ -96,13 +95,13 @@ internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where
                 float y = bounds.Y;
                 foreach (BaseControlItem item in _controlItems)
                 {
-                    item.Bounds = new RectangleF(NewData.ControlAlignRightLayout ? bounds.Right - item.Width : bounds.X,
+                    item.Bounds = new RectangleF(bounds.X,
                         y, item.Width, item.Height);
                     y += item.Height;
                 }
             }
         }
 
-        base.LayoutObject(bounds);
+        base.OnLayoutChanged(bounds);
     }
 }

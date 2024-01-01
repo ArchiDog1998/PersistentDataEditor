@@ -13,7 +13,7 @@ internal class GooVectorControl(Func<GH_Vector> valueGetter, Func<bool> isNull, 
 
     protected override BaseControlItem[] SetControlItems()
     {
-        return NewData.VectorType switch
+        return Data.VectorType switch
         {
             Vector_Control.XYZ =>
             [
@@ -36,7 +36,7 @@ internal class GooVectorControl(Func<GH_Vector> valueGetter, Func<bool> isNull, 
 
     protected override GH_Vector SetValue(IGH_Goo[] values)
     {
-        return NewData.VectorType switch
+        return Data.VectorType switch
         {
             Vector_Control.XYZ => new GH_Vector(new Vector3d(
                                 ((GH_Number)values[0]).Value,

@@ -7,11 +7,12 @@ using System.Windows.Forms;
 
 namespace PersistentDataEditor;
 
-internal class GooBooleanControl(Func<GH_Boolean> valueGetter, Func<bool> isNull) : GooControlBase<GH_Boolean>(valueGetter, isNull)
+internal class GooBooleanControl(Func<GH_Boolean> valueGetter, Func<bool> isNull) 
+    : GooControlBase<GH_Boolean>(valueGetter, isNull)
 {
     public override Guid AddCompnentGuid => new("2e78987b-9dfb-42a2-8b76-3923ac8bd91a");
 
-    internal override int Width => 10;
+    internal override int MinWidth => 10;
 
     internal override int Height => 10;
 
@@ -28,13 +29,13 @@ internal class GooBooleanControl(Func<GH_Boolean> valueGetter, Func<bool> isNull
 
     internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
     {
-        graphics.FillEllipse(new SolidBrush(NewData.ControlBackgroundColor), Bounds);
-        graphics.DrawEllipse(new Pen(new SolidBrush(NewData.ControlBorderColor), 1.5f), Bounds);
+        graphics.FillEllipse(Data.ControlBackgroundColor.GetBrush(), Bounds);
+        graphics.DrawEllipse(new Pen(Data.ControlBorderColor.GetBrush(), 1.5f), Bounds);
 
         if (ShowValue == null || !ShowValue.Value) return;
         RectangleF bound = Bounds;
         bound.Inflate(-2, -2);
 
-        graphics.FillEllipse(new SolidBrush(NewData.ControlForegroundColor), bound);
+        graphics.FillEllipse(Data.ControlForegroundColor.GetBrush(), bound);
     }
 }

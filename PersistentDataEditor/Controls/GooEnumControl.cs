@@ -31,7 +31,7 @@ internal class GooEnumControl(Func<GH_Integer> valueGetter, Func<bool> isNull, S
     internal override int Height => 14;
 
     private const int _triangleWidth = 14;
-    internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15), NewData.InputBoxControlMaxWidth) + _triangleWidth;
+    internal override int MinWidth => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15), Data.InputBoxControlMaxWidth) + _triangleWidth;
 
     private readonly SortedList<int, string> _namedValues = namedValues;
 
@@ -62,48 +62,24 @@ internal class GooEnumControl(Func<GH_Integer> valueGetter, Func<bool> isNull, S
         }
     }
 
-    protected override void LayoutObject(RectangleF bounds)
+    protected override void OnLayoutChanged(RectangleF bounds)
     {
-        _roundBounds = RoundedRect(GH_Convert.ToRectangle(bounds), 2);
+        _roundBounds = GH_Convert.ToRectangle(bounds).RoundCorner(2);
         _stringBounds = new RectangleF(bounds.X, bounds.Y, bounds.Width - _triangleWidth, bounds.Height);
 
         RectangleF triBounds = new RectangleF(bounds.Right - _triangleWidth, bounds.Y, _triangleWidth, bounds.Height);
-        _triangle = Triangle(triBounds);
+        _triangle = triBounds.Triangle();
 
-        base.LayoutObject(bounds);
-    }
-
-    private static GraphicsPath Triangle(RectangleF rect)
-    {
-        const float radius = 1.5f;
-
-        const float width = 12;
-        float height = width / 2 * (float)Math.Sqrt(3);
-        PointF center = new PointF(rect.X + width / 2, rect.Y + rect.Height / 2);
-
-        float up = height / 2;
-        PointF pt1 = new PointF(center.X - width / 2, center.Y - up + radius / 2);
-        PointF pt2 = new PointF(center.X + width / 2, center.Y - up + radius / 2);
-        PointF pt3 = new PointF(center.X, center.Y + up + radius / 2);
-
-        float horiThick = radius * (float)(Math.Sqrt(3) - 1);
-
-        GraphicsPath path = new GraphicsPath();
-        path.AddArc(new RectangleF(pt1.X + horiThick, pt1.Y, 2 * radius, 2 * radius), -90, -120);
-        path.AddArc(new RectangleF(pt3.X - radius, pt3.Y - 3 * radius, 2 * radius, 2 * radius), -210, -120);
-        path.AddArc(new RectangleF(pt2.X - horiThick - 2 * radius, pt2.Y, 2 * radius, 2 * radius), 30, -120);
-
-        path.CloseFigure();
-        return path;
+        base.OnLayoutChanged(bounds);
     }
 
     internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
     {
-        graphics.FillPath(new SolidBrush(NewData.ControlBackgroundColor), _roundBounds);
-        graphics.DrawPath(new Pen(new SolidBrush(NewData.ControlBorderColor)), _roundBounds);
-        graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, new SolidBrush(NewData.ControlTextgroundColor), _stringBounds, GH_TextRenderingConstants.NearCenter);
+        graphics.FillPath(Data.ControlBackgroundColor.GetBrush(), _roundBounds);
+        graphics.DrawPath(new Pen(Data.ControlBorderColor.GetBrush()), _roundBounds);
+        graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, Data.ControlTextgroundColor.GetBrush(), _stringBounds, GH_TextRenderingConstants.NearCenter);
 
-        graphics.FillPath(new SolidBrush(NewData.ControlForegroundColor), _triangle);
+        graphics.FillPath(Data.ControlForegroundColor.GetBrush(), _triangle);
     }
 
     public override void DosomethingWhenCreate(IGH_DocumentObject obj)

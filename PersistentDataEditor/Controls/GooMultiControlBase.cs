@@ -24,7 +24,7 @@ internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : cla
 
     internal sealed override void ChangeControlItems()
     {
-        BaseControlItem[] addcontrolItems = SetControlItems() ?? Array.Empty<BaseControlItem>();
+        BaseControlItem[] addcontrolItems = SetControlItems() ?? [];
         if (string.IsNullOrEmpty(_name))
         {
             _controlItems = addcontrolItems;
@@ -32,12 +32,11 @@ internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : cla
         else
         {
             _hasName = true;
-            List<BaseControlItem> items = new List<BaseControlItem> { new StringRender(_name) };
-            items.AddRange(addcontrolItems);
-            _controlItems = items.ToArray();
+            List<BaseControlItem> items = [new StringRender(_name), .. addcontrolItems];
+            _controlItems = [.. items];
         }
 
-        List<IGooValue> gooValues = new List<IGooValue>();
+        List<IGooValue> gooValues = [];
         foreach (var control in _controlItems)
         {
             control.ChangeControlItems();
@@ -47,7 +46,7 @@ internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : cla
                 gooValues.Add(value);
             }
         }
-        _values = gooValues.ToArray();
+        _values = [.. gooValues];
     }
 
     private void SetValue()
@@ -61,7 +60,7 @@ internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : cla
             if (!IsGooValid(g))
             {
                 //Add default value.
-                if (NewData.UseDefaultValueToControl)
+                if (Data.UseDefaultValueToControl)
                 {
                     g = gooValue.GetDefaultValue();
                 }

@@ -1,4 +1,6 @@
-﻿using Grasshopper;
+﻿global using HorizontalAlignment = System.Windows.HorizontalAlignment;
+
+using Grasshopper;
 using Grasshopper.Kernel;
 using SimpleGrasshopper.Attributes;
 using SimpleGrasshopper.Data;
@@ -8,7 +10,7 @@ using System.Linq;
 
 namespace PersistentDataEditor;
 
-internal static partial class NewData
+internal static partial class Data
 {
     public static readonly int MiniWidth = 6;
     public static bool IsCurrectObjectLock { private get; set; } = false;
@@ -37,8 +39,8 @@ internal static partial class NewData
     [Setting, Config("Independent Width", parent: "Param's Control", section: 2)]
     private static readonly bool _seperateCalculateWidthControl = true;
 
-    [Setting, Config("Control Align Right", parent: "Param's Control", section: 2)]
-    private static readonly bool _controlAlignRightLayout = true;
+    [Setting, Config("Control Alignment", parent: "Param's Control", section: 2)]
+    private static readonly HorizontalAlignment _controlAlignment = HorizontalAlignment.Center;
 
     [Setting, Config("Components' Params to Control", parent: "Param's Control", section: 3)]
     private static readonly int _componentControlNameDistance = 2;
@@ -196,7 +198,7 @@ internal static partial class NewData
     [Setting, Config("Params' Icon to Edge", section: 2)]
     private static readonly int _paramsEdgeDistance = 5;
 
-    static NewData()
+    static Data()
     {
         OnPropertyChanged += (name, value) =>
         {

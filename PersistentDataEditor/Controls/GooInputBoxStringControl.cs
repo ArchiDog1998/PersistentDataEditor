@@ -17,8 +17,8 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
 
     private string ShowString => ShowValue?.ToString();
     internal override int Height => 14;
-    internal override int Width => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15),
-        NewData.InputBoxControlMaxWidth);
+    internal override int MinWidth => Math.Min(Math.Max(GH_FontServer.StringWidth(ShowString, GH_FontServer.StandardAdjusted), 15),
+        Data.InputBoxControlMaxWidth);
 
     private GraphicsPath _roundRect;
     protected virtual bool IsReadOnly { get; } = readOnly;
@@ -45,7 +45,7 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
         }
         else
         {
-            T value = (T)Activator.CreateInstance(typeof(T));
+            T value = Activator.CreateInstance<T>();
             if (value.CastFrom(str))
             {
                 ShowValue = value;
@@ -56,18 +56,18 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
         MessageBox.Show($"Can't cast a {typeof(T).Name} from \"{str}\".");
     }
 
-    protected override void LayoutObject(RectangleF bounds)
+    protected override void OnLayoutChanged(RectangleF bounds)
     {
-        _roundRect = RoundedRect(GH_Convert.ToRectangle(bounds), 2);
-        base.LayoutObject(bounds);
+        _roundRect = GH_Convert.ToRectangle(bounds).RoundCorner(2);
+        base.OnLayoutChanged(bounds);
     }
 
     internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
     {
-        graphics.FillPath(new SolidBrush(NewData.ControlBackgroundColor), _roundRect);
-        graphics.DrawPath(new Pen(new SolidBrush(NewData.ControlBorderColor)), _roundRect);
-        Color color = _isNull() ? Color.DarkRed : NewData.ControlTextgroundColor;
-        graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, new SolidBrush(color), Bounds, GH_TextRenderingConstants.NearCenter);
+        graphics.FillPath(Data.ControlBackgroundColor.GetBrush(), _roundRect);
+        graphics.DrawPath(new Pen(Data.ControlBorderColor.GetBrush()), _roundRect);
+        Color color = _isNull() ? Color.DarkRed : Data.ControlTextgroundColor;
+        graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, color.GetBrush(), Bounds, GH_TextRenderingConstants.NearCenter);
     }
 }
 

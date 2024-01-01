@@ -10,7 +10,7 @@ namespace PersistentDataEditor;
 internal class GooPlaneControl(Func<GH_Plane> valueGetter, Func<bool> isNull, string name)
     : GooVerticalControlBase<GH_Plane>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => NewData.PlaneType == Plane_Control.OZ
+    public override Guid AddCompnentGuid => Data.PlaneType == Plane_Control.OZ
         ? new Guid("cfb6b17f-ca82-4f5d-b604-d4f69f569de3")
         : new Guid("bc3e379e-7206-4e7b-b63a-ff61f4b38a3e");
 
@@ -21,7 +21,7 @@ internal class GooPlaneControl(Func<GH_Plane> valueGetter, Func<bool> isNull, st
 
     protected override BaseControlItem[] SetControlItems()
     {
-        return NewData.PlaneType switch
+        return Data.PlaneType switch
         {
             Plane_Control.OZ =>
             [
@@ -43,7 +43,7 @@ internal class GooPlaneControl(Func<GH_Plane> valueGetter, Func<bool> isNull, st
 
     protected override GH_Plane SetValue(IGH_Goo[] values)
     {
-        return NewData.PlaneType switch
+        return Data.PlaneType switch
         {
             Plane_Control.OZ => new GH_Plane(new Plane(((GH_Point)values[0]).Value, ((GH_Vector)values[1]).Value)),
             Plane_Control.OXY => new GH_Plane(new Plane(((GH_Point)values[0]).Value, ((GH_Vector)values[1]).Value, ((GH_Vector)values[2]).Value)),
@@ -56,7 +56,7 @@ internal class GooPlaneControl(Func<GH_Plane> valueGetter, Func<bool> isNull, st
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;
 
-        if (NewData.PlaneType == Plane_Control.OZ)
+        if (Data.PlaneType == Plane_Control.OZ)
         {
             if (com.Params.Input.Count < 2) return;
 

@@ -9,7 +9,7 @@ internal class StringRender(string showString) : BaseControlItem
 {
     private static Font _font;
     private static Font Font => _font ??= new Font(GH_FontServer.StandardAdjusted.FontFamily, 6);
-    internal override int Width => GH_FontServer.StringWidth(showString, Font);
+    internal override int MinWidth => GH_FontServer.StringWidth(showString, Font);
 
     internal override int Height => 17;
 
@@ -19,7 +19,6 @@ internal class StringRender(string showString) : BaseControlItem
 
     internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
     {
-        SolidBrush solidBrush = new SolidBrush(Color.FromArgb(GH_Canvas.ZoomFadeLow, style.Text));
-        graphics.DrawString(showString, Font, solidBrush, Bounds, GH_TextRenderingConstants.CenterCenter);
+        graphics.DrawString(showString, Font, style.Text.GetBrush(), Bounds, GH_TextRenderingConstants.CenterCenter);
     }
 }

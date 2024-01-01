@@ -26,7 +26,7 @@ internal class GH_AdvancedNumberSliderAttr : GH_NumberSliderAttributes, IControl
 
     public void SetControl()
     {
-        if (NewData.UseParamNumberSliderControl && NewData.UseParamControl && NewData.ParamUseControl)
+        if (Data.UseParamNumberSliderControl && Data.UseParamControl && Data.ParamUseControl)
         {
             _controlItems =
             [
@@ -66,13 +66,13 @@ internal class GH_AdvancedNumberSliderAttr : GH_NumberSliderAttributes, IControl
 
     protected override void Layout()
     {
-        int controlDis = NewData.ParamsCoreDistance;
+        int controlDis = Data.ParamsCoreDistance;
 
         _width = 0;
         if (_controlItems != null && _controlItems.Length > 0 &&
-            (!NewData.OnlyShowSelectedObjectControl || Owner.Attributes.Selected))
+            (!Data.OnlyShowSelectedObjectControl || Owner.Attributes.Selected))
         {
-            _width += controlDis * 2 + _controlItems.Sum(t => t.Width);
+            _width += controlDis * 2 + _controlItems.Sum(t => t.MinWidth);
         }
 
         Bounds = new Rectangle((int)Bounds.X, (int)Bounds.Y, (int)Bounds.Width - _width, (int)Bounds.Height);
@@ -92,8 +92,8 @@ internal class GH_AdvancedNumberSliderAttr : GH_NumberSliderAttributes, IControl
             float x = _controlBounds.X + controlDis;
             foreach (BaseControlItem item in _controlItems)
             {
-                item.Bounds = new RectangleF(x, _controlBounds.Y + (_controlBounds.Height - item.Height) / 2, item.Width, item.Height);
-                x += item.Width;
+                item.Bounds = new RectangleF(x, _controlBounds.Y + (_controlBounds.Height - item.Height) / 2, item.MinWidth, item.Height);
+                x += item.MinWidth;
             }
         }
         else

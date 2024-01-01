@@ -12,7 +12,7 @@ namespace PersistentDataEditor;
 
 internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T : class, IGH_Goo
 {
-    public static MethodInfo functions = typeof(GH_Canvas).GetRuntimeMethods().First(m => m.Name.Contains("InstantiateNewObject") && !m.IsPublic);
+    private static readonly MethodInfo _function = typeof(GH_Canvas).GetRuntimeMethods().First(m => m.Name.Contains("InstantiateNewObject") && !m.IsPublic);
 
     public abstract Guid AddCompnentGuid { get; }
     protected virtual ushort AddCompnentIndex => 0;
@@ -55,7 +55,7 @@ internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T :
             CreateObject(Owner, AddCompnentGuid, AddCompnentIndex, AddCompnentInit, true, DosomethingWhenCreate);
     }
 
-    public static IGH_DocumentObject CreateObject(IGH_Param param, Guid componentGuid, ushort index, string init, bool isinput, Action<IGH_DocumentObject> action = null)
+    private static IGH_DocumentObject CreateObject(IGH_Param param, Guid componentGuid, ushort index, string init, bool isinput, Action<IGH_DocumentObject> action = null)
     {
         const int width = 100;
 
@@ -71,39 +71,43 @@ internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T :
         PointF objCenter = new PointF(outBound.Left + (isinput ? -width : (width + outBound.Width)),
                thisBound.Top + thisBound.Height / 2);
 
-        AddAObjectToCanvas(obj, objCenter, init);
-
-        //Add Sources
-        if (obj is IGH_Component com)
-        {
-            if (isinput)
-            {
-                param.AddSource(com.Params.Output[index]);
-            }
-            else
-            {
-                com.Params.Input[index].AddSource(param);
-            }
-        }
-        else if (obj is IGH_Param par)
-        {
-            if (isinput)
-            {
-                param.AddSource(par);
-            }
-            else
-            {
-                par.AddSource(param);
-            }
-        }
+        AddAnObjectToCanvas(obj, objCenter, init);
+        AddSources();
 
         Grasshopper.Instances.ActiveCanvas.Document.NewSolution(false);
-        return obj;
-    }
 
-    public static void AddAObjectToCanvas(IGH_DocumentObject obj, PointF pivot, string init, bool update = false)
-    {
-        functions.Invoke(Grasshopper.Instances.ActiveCanvas, new object[] { obj, init, pivot, update });
+        return obj;
+
+        void AddSources()
+        {
+            if (obj is IGH_Component com)
+            {
+                if (isinput)
+                {
+                    param.AddSource(com.Params.Output[index]);
+                }
+                else
+                {
+                    com.Params.Input[index].AddSource(param);
+                }
+            }
+            else if (obj is IGH_Param par)
+            {
+                if (isinput)
+                {
+                    param.AddSource(par);
+                }
+                else
+                {
+                    par.AddSource(param);
+                }
+            }
+        }
+
+        static void AddAnObjectToCanvas(IGH_DocumentObject obj, PointF pivot, string init, bool update = false)
+        {
+            _function.Invoke(Grasshopper.Instances.ActiveCanvas, new object[] { obj, init, pivot, update });
+        }
     }
 
     private protected virtual T CreateDefaultValue()
@@ -114,7 +118,6 @@ internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T :
     public IGH_Goo GetDefaultValue()
     {
         _savedValue = CreateDefaultValue();
-
         return _savedValue;
     }
 }

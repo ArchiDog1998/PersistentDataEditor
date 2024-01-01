@@ -9,7 +9,7 @@ namespace PersistentDataEditor;
 internal class GooLineControl(Func<GH_Line> valueGetter, Func<bool> isNull, string name)
     : GooVerticalControlBase<GH_Line>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => NewData.LineType == Line_Control.From_To
+    public override Guid AddCompnentGuid => Data.LineType == Line_Control.From_To
         ? new("4c4e56eb-2f04-43f9-95a3-cc46a14f495a")
         : new("4c619bc9-39fd-4717-82a6-1e07ea237bbe");
 
@@ -18,7 +18,7 @@ internal class GooLineControl(Func<GH_Line> valueGetter, Func<bool> isNull, stri
 
     protected override BaseControlItem[] SetControlItems()
     {
-        return NewData.LineType switch
+        return Data.LineType switch
         {
             Line_Control.From_To =>
             [
@@ -45,7 +45,7 @@ internal class GooLineControl(Func<GH_Line> valueGetter, Func<bool> isNull, stri
 
     protected override GH_Line SetValue(IGH_Goo[] values)
     {
-        return NewData.LineType switch
+        return Data.LineType switch
         {
             Line_Control.From_To => new GH_Line(new Line(((GH_Point)values[0]).Value, ((GH_Point)values[1]).Value)),
             Line_Control.Start_Direction => new GH_Line(new Line(((GH_Point)values[0]).Value, ((GH_Vector)values[1]).Value)),
@@ -60,7 +60,7 @@ internal class GooLineControl(Func<GH_Line> valueGetter, Func<bool> isNull, stri
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;
 
-        if (NewData.LineType == Line_Control.From_To)
+        if (Data.LineType == Line_Control.From_To)
         {
             if (com.Params.Input.Count < 2) return;
 

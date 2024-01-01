@@ -8,5 +8,5 @@ internal class GooGeneralControl<T>(Func<T> valueGetter, Func<bool> isNull)
 {
     public override Guid AddCompnentGuid => default;
 
-    protected override bool IsReadOnly => NewData.GeneralType == General_Control.ReadOnly;
+    protected override bool IsReadOnly => Data.GeneralType == General_Control.ReadOnly;
 }

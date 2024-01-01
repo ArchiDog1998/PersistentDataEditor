@@ -1,7 +1,8 @@
 ﻿using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
+using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
+using System.Windows;
 
 namespace PersistentDataEditor;
 
@@ -16,8 +17,27 @@ public abstract class BaseControlItem
         {
             if (Valid)
             {
+                var shrinkHeight = -(value.Height - Height) / 2;
+                value = value.Inflate(0, shrinkHeight, 0 , shrinkHeight);
+
+                var shrinkWidth = -(value.Width - Width) / 2;
+                switch (Data.ControlAlignment)
+                {
+                    case HorizontalAlignment.Left:
+                        value = value.Inflate(0, 0, 2 * shrinkWidth, 0);
+                        break;
+                    case HorizontalAlignment.Right:
+                        value = value.Inflate(2 * shrinkWidth, 0, 0, 0);
+                        break;
+                    case HorizontalAlignment.Center:
+                        value = value.Inflate(shrinkWidth, 0, shrinkWidth, 0);
+                        break;
+                    default:
+                        break;
+                }
+
                 _bounds = value;
-                LayoutObject(value);
+                OnLayoutChanged(_bounds);
             }
             else
             {
@@ -26,41 +46,24 @@ public abstract class BaseControlItem
         }
     }
     protected virtual bool Valid => true;
-    internal abstract int Width { get; }
+    internal abstract int MinWidth { get; }
+    private int? _width = null;
+    internal int Width 
+    {
+        get
+        {
+            var width = MinWidth;
+            if (_width.HasValue)
+            {
+                width = Math.Max(width, _width.Value);
+            }
+            return width;
+        }
+        set => _width = value;
+    }
     internal abstract int Height { get; }
-    protected virtual void LayoutObject(RectangleF bounds) { }
+    protected virtual void OnLayoutChanged(RectangleF bounds) { }
     internal virtual void ChangeControlItems() { }
     internal abstract void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style);
     internal abstract void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e);
-    protected static GraphicsPath RoundedRect(RectangleF bounds, float radius)
-    {
-        float diameter = radius * 2;
-        SizeF size = new(diameter, diameter);
-        RectangleF arc = new(bounds.Location, size);
-        GraphicsPath path = new();
-
-        if (radius == 0)
-        {
-            path.AddRectangle(bounds);
-            return path;
-        }
-
-        // top left arc  
-        path.AddArc(arc, 180, 90);
-
-        // top right arc  
-        arc.X = bounds.Right - diameter;
-        path.AddArc(arc, 270, 90);
-
-        // bottom right arc  
-        arc.Y = bounds.Bottom - diameter;
-        path.AddArc(arc, 0, 90);
-
-        // bottom left arc 
-        arc.X = bounds.Left;
-        path.AddArc(arc, 90, 90);
-
-        path.CloseFigure();
-        return path;
-    }
 }

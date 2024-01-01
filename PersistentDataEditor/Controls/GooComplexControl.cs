@@ -31,7 +31,7 @@ internal class GooComplexControl(Func<GH_ComplexNumber> valueGetter, Func<bool> 
 
     protected override GH_ComplexNumber SetValue(IGH_Goo[] values)
     {
-        return NewData.ComplexType switch
+        return Data.ComplexType switch
         {
             Complex_Control.Real_Imaginary => new GH_ComplexNumber(new Complex(((GH_Number)values[0]).Value, ((GH_Number)values[1]).Value)),
             _ => (GH_ComplexNumber)values[0],

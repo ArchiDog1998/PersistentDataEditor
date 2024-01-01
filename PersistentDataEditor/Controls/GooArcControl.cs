@@ -8,7 +8,7 @@ namespace PersistentDataEditor;
 
 internal class GooArcControl(Func<GH_Arc> valueGetter, Func<bool> isNull, string name) : GooVerticalControlBase<GH_Arc>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => NewData.ArcType == Arc_Control.SED
+    public override Guid AddCompnentGuid => Data.ArcType == Arc_Control.SED
         ? new("9d2583dd-6cf5-497c-8c40-c9a290598396")
         : new("bb59bffc-f54c-4682-9778-f6c3fe74fce3");
 
@@ -19,7 +19,7 @@ internal class GooArcControl(Func<GH_Arc> valueGetter, Func<bool> isNull, string
 
     protected override BaseControlItem[] SetControlItems()
     {
-        return NewData.ArcType switch
+        return Data.ArcType switch
         {
             Arc_Control.Plane_Radius_Angle =>
             [
@@ -42,7 +42,7 @@ internal class GooArcControl(Func<GH_Arc> valueGetter, Func<bool> isNull, string
 
     protected override GH_Arc SetValue(IGH_Goo[] values)
     {
-        return NewData.ArcType switch
+        return Data.ArcType switch
         {
             Arc_Control.Plane_Radius_Angle => new GH_Arc(new Arc(
                                 new Circle(((GH_Plane)values[0]).Value, ((GH_Number)values[1]).Value), ((GH_Interval)values[2]).Value)),
@@ -56,7 +56,7 @@ internal class GooArcControl(Func<GH_Arc> valueGetter, Func<bool> isNull, string
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;
 
-        switch (NewData.ArcType)
+        switch (Data.ArcType)
         {
             case Arc_Control.Plane_Radius_Angle:
                 if (com.Params.Input.Count < 3) return;

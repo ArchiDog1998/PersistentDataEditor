@@ -47,7 +47,7 @@ internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IContr
 
     public void SetControl()
     {
-        if (NewData.UseParamControl && NewData.ParamUseControl)
+        if (Data.UseParamControl && Data.ParamUseControl)
         {
             Control = GH_AdvancedLinkParamAttr.GetControl(Owner);
         }
@@ -82,8 +82,8 @@ internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IContr
     protected override void Layout()
     {
         int minWidth = 50;
-        int edgeDistance = NewData.ParamsEdgeDistance;
-        int controlDis = NewData.ParamsCoreDistance;
+        int edgeDistance = Data.ParamsEdgeDistance;
+        int controlDis = Data.ParamsCoreDistance;
 
         //Get Icon/Text Bound.
         if (IsIconMode(Owner.IconDisplayMode))
@@ -101,9 +101,9 @@ internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IContr
         if (tags.Count == 0) tags = null;
 
         //Get Control Bound.
-        if (Control != null && Control.Width > 0)
+        if (Control != null && Control.MinWidth > 0)
         {
-            float controlWidth = Control.Width;
+            float controlWidth = Control.MinWidth;
             float controlHeight = Control.Height;
             Control.Bounds = new RectangleF(_iconTextBound.X - controlWidth - controlDis, _iconTextBound.Y + _iconTextBound.Height / 2 - controlHeight / 2,
                 controlWidth, controlHeight);

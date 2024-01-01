@@ -18,7 +18,7 @@ internal class GooRectangleControl(Func<GH_Rectangle> valueGetter, Func<bool> is
 
     protected override BaseControlItem[] SetControlItems()
     {
-        return NewData.RectangleType switch
+        return Data.RectangleType switch
         {
             Rectangle_Control.Domain_Rectangle =>
             [
@@ -46,7 +46,7 @@ internal class GooRectangleControl(Func<GH_Rectangle> valueGetter, Func<bool> is
     }
     protected override GH_Rectangle SetValue(IGH_Goo[] values)
     {
-        switch (NewData.RectangleType)
+        switch (Data.RectangleType)
         {
             default:
                 return (GH_Rectangle)values[0];
@@ -75,7 +75,7 @@ internal class GooRectangleControl(Func<GH_Rectangle> valueGetter, Func<bool> is
 
         if (com.Params.Input[1] is Param_Interval param1)
         {
-            switch (NewData.RectangleType)
+            switch (Data.RectangleType)
             {
                 case Rectangle_Control.Domain_Rectangle:
                     if (_values[0].SaveValue is GH_Interval Value11)
@@ -105,7 +105,7 @@ internal class GooRectangleControl(Func<GH_Rectangle> valueGetter, Func<bool> is
 
         if (com.Params.Input[2] is Param_Interval param2)
         {
-            switch (NewData.RectangleType)
+            switch (Data.RectangleType)
             {
                 case Rectangle_Control.Domain_Rectangle:
                     if (_values[2].SaveValue is GH_Interval Value20)

@@ -43,13 +43,13 @@ internal class GooInterval2DControl(Func<GH_Interval2D> valueGetter, Func<bool> 
         }
     }
 
-    public override Guid AddCompnentGuid => NewData.Domain2Type == Domain2D_Control.U0_U1_V0_V1
+    public override Guid AddCompnentGuid => Data.Domain2Type == Domain2D_Control.U0_U1_V0_V1
         ? new("9083b87f-a98c-4e41-9591-077ae4220b19")
         : new("8555a743-36c1-42b8-abcc-06d9cb94519f");
 
     protected override BaseControlItem[] SetControlItems()
     {
-        return NewData.Domain2Type switch
+        return Data.Domain2Type switch
         {
             Domain2D_Control.U_V =>
             [
@@ -77,7 +77,7 @@ internal class GooInterval2DControl(Func<GH_Interval2D> valueGetter, Func<bool> 
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;
 
-        if (NewData.Domain2Type == Domain2D_Control.U0_U1_V0_V1)
+        if (Data.Domain2Type == Domain2D_Control.U0_U1_V0_V1)
         {
             if (com.Params.Input.Count < 4) return;
 
