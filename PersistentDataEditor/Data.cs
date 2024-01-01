@@ -21,6 +21,10 @@ internal static partial class Data
     [Setting, Config("Param's Control", icon: "ParamControlIcon_24.png")]
     private static readonly bool _useParamControl = true;
 
+    [Range(double.Epsilon, 100)]
+    [Setting, Config("The speed of the slider", parent: "Param's Control")]
+    private static readonly double _sliderSpeed = 1;
+
     [Setting, Config("Auto Set Default Value", parent: "Param's Control")]
     private static readonly bool _useDefaultValueToControl = true;
 

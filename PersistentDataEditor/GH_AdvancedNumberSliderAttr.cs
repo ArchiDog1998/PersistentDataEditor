@@ -128,6 +128,38 @@ internal class GH_AdvancedNumberSliderAttr : GH_NumberSliderAttributes, IControl
         }
     }
 
+    public override GH_ObjectResponse RespondToMouseMove(GH_Canvas sender, GH_CanvasMouseEvent e)
+    {
+        if (e.Button == MouseButtons.Left && _controlItems != null)
+        {
+            foreach (var item in _controlItems)
+            {
+                if (item.Bounds.Contains(e.CanvasLocation))
+                {
+                    item.MouseMove(sender, e);
+                    return GH_ObjectResponse.Release;
+                }
+            }
+        }
+        return base.RespondToMouseMove(sender, e);
+    }
+
+    public override GH_ObjectResponse RespondToMouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
+    {
+        if (e.Button == MouseButtons.Left && _controlItems != null)
+        {
+            foreach (var item in _controlItems)
+            {
+                if (item.Bounds.Contains(e.CanvasLocation))
+                {
+                    item.MouseDown(sender, e);
+                    return GH_ObjectResponse.Release;
+                }
+            }
+        }
+        return base.RespondToMouseDown(sender, e);
+    }
+
     public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Left && _controlItems != null)

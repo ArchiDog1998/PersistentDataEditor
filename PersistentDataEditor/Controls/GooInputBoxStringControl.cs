@@ -1,4 +1,5 @@
-﻿using Grasshopper.GUI;
+﻿using Grasshopper;
+using Grasshopper.GUI;
 using Grasshopper.GUI.Base;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
@@ -6,7 +7,10 @@ using Grasshopper.Kernel.Types;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace PersistentDataEditor;
 
@@ -23,10 +27,56 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
     private GraphicsPath _roundRect;
     protected virtual bool IsReadOnly { get; } = readOnly;
 
+    PointF? clickedPt = null;
+    PropertyInfo value = null;
+    double oldValue = 0;
+
+    internal override void MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
+    {
+        if (e.Button == MouseButtons.Left && !IsReadOnly && double.TryParse(ShowString, out _))
+        {
+            clickedPt = e.CanvasLocation;
+            value = ShowValue.GetType().GetRuntimeProperties().FirstOrDefault(p => p.Name == "Value");
+            oldValue = Convert.ToDouble(value.GetValue(ShowValue));
+        }
+        base.MouseDown(sender, e);
+    }
+
+    internal override void MouseMove(GH_Canvas sender, GH_CanvasMouseEvent e)
+    {
+        if (e.Button == MouseButtons.Left && !IsReadOnly && clickedPt.HasValue && value != null)
+        {
+            var pt = clickedPt.Value;
+
+            var xDifference = (e.CanvasX - pt.X) * Data.SliderSpeed;
+
+            xDifference = Keyboard.Modifiers switch
+            {
+                ModifierKeys.Shift => xDifference / 10,
+                ModifierKeys.Control => xDifference * 10,
+                _ => xDifference,
+            };
+
+            var newValue = oldValue + xDifference;
+            
+            var newGoo = ShowValue.Duplicate();
+            value.SetValue(newGoo, Convert.ChangeType(newValue, value.PropertyType));
+            ShowValue = (T)newGoo;
+        }
+        base.MouseMove(sender, e);
+    }
+
     internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Left && !IsReadOnly)
-            new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowString, true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
+        {
+            if (clickedPt == null || Math.Abs(e.CanvasX - clickedPt.Value.X) < 5)
+            {
+                new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowString, true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
+            }
+
+            clickedPt = null;
+        }
         base.Clicked(sender, e);
     }
 

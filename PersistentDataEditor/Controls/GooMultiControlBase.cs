@@ -92,6 +92,41 @@ internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : cla
             control.RenderObject(canvas, graphics, style);
         }
     }
+
+    internal override void MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
+    {
+        if (e.Button == MouseButtons.Left)
+        {
+            foreach (var control in _controlItems)
+            {
+                if (control is StringRender) continue;
+                if (control.Bounds.Contains(e.CanvasLocation))
+                {
+                    control.MouseDown(sender, e);
+                    return;
+                }
+            }
+        }
+        base.MouseDown(sender, e);
+    }
+
+    internal override void MouseMove(GH_Canvas sender, GH_CanvasMouseEvent e)
+    {
+        if (e.Button == MouseButtons.Left)
+        {
+            foreach (var control in _controlItems)
+            {
+                if (control is StringRender) continue;
+                if (control.Bounds.Contains(e.CanvasLocation))
+                {
+                    control.MouseMove(sender, e);
+                    return;
+                }
+            }
+        }
+        base.MouseMove(sender, e);
+    }
+
     internal sealed override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Left)

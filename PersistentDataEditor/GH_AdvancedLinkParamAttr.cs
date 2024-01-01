@@ -259,15 +259,19 @@ internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr
         return IsExpressionParam(type.BaseType, out dataType);
     }
 
+    public override GH_ObjectResponse RespondToMouseMove(GH_Canvas sender, GH_CanvasMouseEvent e)
+    {
+        return Control?.Respond(Control.MouseMove, sender, e) ?? base.RespondToMouseMove(sender, e);
+    }
+
+    public override GH_ObjectResponse RespondToMouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
+    {
+        return Control?.Respond(Control.MouseDown, sender, e) ?? base.RespondToMouseDown(sender, e);
+    }
+
     public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
-        if (Control != null && Control.Bounds.Contains(e.CanvasLocation))
-        {
-            Control.Clicked(sender, e);
-
-            return GH_ObjectResponse.Release;
-        }
-        return base.RespondToMouseUp(sender, e);
+        return Control?.Respond(Control.Clicked, sender, e) ?? base.RespondToMouseUp(sender, e);
     }
 
     public override GH_ObjectResponse RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)

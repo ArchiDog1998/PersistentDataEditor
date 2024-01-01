@@ -65,4 +65,6 @@ public abstract class BaseControlItem
     internal virtual void ChangeControlItems() { }
     internal abstract void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style);
     internal abstract void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e);
+    internal virtual void MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e) { }
+    internal virtual void MouseMove(GH_Canvas sender, GH_CanvasMouseEvent e) { }
 }

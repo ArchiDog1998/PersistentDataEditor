@@ -1,4 +1,5 @@
-﻿using Grasshopper.GUI.Canvas;
+﻿using Grasshopper.GUI;
+using Grasshopper.GUI.Canvas;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -78,5 +79,17 @@ internal static class GraphicUtils
     public static SolidBrush GetBrush(this Color color)
     {
         return new SolidBrush(Color.FromArgb((byte)(GH_Canvas.ZoomFadeLow * (color.A / 255f)), color));
+    }
+
+    public static GH_ObjectResponse? Respond(this BaseControlItem control, Action<GH_Canvas, GH_CanvasMouseEvent> action, GH_Canvas sender, GH_CanvasMouseEvent e)
+    {
+        if (control != null && control.Bounds.Contains(e.CanvasLocation)
+            && sender.Viewport.Zoom >= 0.6)
+        {
+            action(sender, e);
+
+            return GH_ObjectResponse.Release;
+        }
+        return null;
     }
 }
