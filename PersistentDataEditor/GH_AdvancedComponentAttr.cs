@@ -210,9 +210,12 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
                     startX += size + Data.ComponentIconDistance;
                 }
 
-                attr.Control.Bounds = new RectangleF(startX,
-                    attr.Bounds.Y, attr.Bounds.Width - Data.ComponentControlNameDistance -
-                    (Data.SeperateCalculateWidthControl ? nameMaxWidth : stringwidth), attr.Bounds.Height);
+                if(attr.Control != null)
+                {
+                    attr.Control.Bounds = new RectangleF(startX,
+                        attr.Bounds.Y, attr.Bounds.Width - Data.ComponentControlNameDistance -
+                        (Data.SeperateCalculateWidthControl ? nameMaxWidth : stringwidth), attr.Bounds.Height);
+                }
             }
             else
             {

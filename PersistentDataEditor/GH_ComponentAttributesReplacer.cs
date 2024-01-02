@@ -205,18 +205,8 @@ public abstract class GH_ComponentAttributesReplacer : GH_ComponentAttributes
     {
         if (item is IGH_Param o)
         {
-            if (o.Kind == GH_ParamKind.floating && o.Attributes is GH_FloatingParamAttributes && o.Attributes is not GH_AdvancedFloatingParamAttr)
+            if (o.Kind == GH_ParamKind.floating && o.Attributes.GetType() == typeof(GH_FloatingParamAttributes))
             {
-
-                //MethodInfo renderplus = o.Attributes.GetType().FindMethod("Render");
-
-                //RuntimeHelpers.PrepareMethod(_renderInfo.MethodHandle);
-                //RuntimeHelpers.PrepareMethod(renderplus.MethodHandle);
-                //unsafe
-                //{
-                //    if (_renderInfo.MethodHandle.Value.ToPointer() != renderplus.MethodHandle.Value.ToPointer()) return;
-                //}
-
                 PointF point = o.Attributes.Pivot;
                 bool isSelected = o.Attributes.Selected;
                 o.Attributes = new GH_AdvancedFloatingParamAttr(o)
@@ -226,7 +216,7 @@ public abstract class GH_ComponentAttributesReplacer : GH_ComponentAttributes
                 };
                 o.Attributes.ExpireLayout();
             }
-            else if (o is GH_NumberSlider slider && o.Attributes is GH_NumberSliderAttributes && o.Attributes is not GH_AdvancedNumberSliderAttr)
+            else if (o is GH_NumberSlider slider && o.Attributes.GetType() == typeof(GH_NumberSliderAttributes))
             {
                 PointF point = o.Attributes.Pivot;
                 bool isSelected = o.Attributes.Selected;
@@ -238,7 +228,7 @@ public abstract class GH_ComponentAttributesReplacer : GH_ComponentAttributes
                 o.Attributes.ExpireLayout();
             }
         }
-        else if (item is IGH_Component component && component.Attributes is GH_ComponentAttributes && component.Attributes is not GH_AdvancedComponentAttr)
+        else if (item is IGH_Component component && component.Attributes.GetType() == typeof(GH_ComponentAttributes))
         {
             PointF point = component.Attributes.Pivot;
             bool isSelected = component.Attributes.Selected;
