@@ -38,32 +38,47 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
             clickedPt = e.CanvasLocation;
             value = ShowValue.GetType().GetRuntimeProperties().FirstOrDefault(p => p.Name == "Value");
             oldValue = Convert.ToDouble(value.GetValue(ShowValue));
+
+            sender.MouseMove += CanvasMouseMove;
+            sender.MouseUp += Canvas_MouseUp;
         }
         base.MouseDown(sender, e);
     }
 
-    internal override void MouseMove(GH_Canvas sender, GH_CanvasMouseEvent e)
+    private void Canvas_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
     {
-        if (e.Button == MouseButtons.Left && !IsReadOnly && clickedPt.HasValue && value != null)
+        var canvas = (GH_Canvas)sender;
+
+        clickedPt = null;
+        canvas.MouseUp -= Canvas_MouseUp;
+        canvas.MouseMove -= CanvasMouseMove;
+    }
+
+    private void CanvasMouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+    {
+        if (!clickedPt.HasValue || value == null) return;
+        var pt = clickedPt.Value;
+
+        var canvasPt = ((GH_Canvas)sender).Viewport.UnprojectPoint(e.Location);
+
+        double xDifference = (canvasPt.X - pt.X);
+
+        if (Math.Abs(xDifference) < 5) return;
+
+        xDifference *= Data.SliderSpeed;
+
+        xDifference = Keyboard.Modifiers switch
         {
-            var pt = clickedPt.Value;
+            ModifierKeys.Shift => xDifference / 10,
+            ModifierKeys.Control => xDifference * 10,
+            _ => xDifference,
+        };
 
-            var xDifference = (e.CanvasX - pt.X) * Data.SliderSpeed;
+        var newValue = oldValue + xDifference;
 
-            xDifference = Keyboard.Modifiers switch
-            {
-                ModifierKeys.Shift => xDifference / 10,
-                ModifierKeys.Control => xDifference * 10,
-                _ => xDifference,
-            };
-
-            var newValue = oldValue + xDifference;
-            
-            var newGoo = ShowValue.Duplicate();
-            value.SetValue(newGoo, Convert.ChangeType(newValue, value.PropertyType));
-            ShowValue = (T)newGoo;
-        }
-        base.MouseMove(sender, e);
+        var newGoo = ShowValue.Duplicate();
+        value.SetValue(newGoo, Convert.ChangeType(newValue, value.PropertyType));
+        ShowValue = (T)newGoo;
     }
 
     internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
@@ -76,6 +91,7 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
             }
 
             clickedPt = null;
+            sender.MouseMove -= CanvasMouseMove;
         }
         base.Clicked(sender, e);
     }

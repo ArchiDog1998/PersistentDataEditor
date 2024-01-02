@@ -44,7 +44,7 @@ internal static partial class Data
     private static readonly bool _seperateCalculateWidthControl = true;
 
     [Setting, Config("Control Alignment", parent: "Param's Control", section: 2)]
-    private static readonly HorizontalAlignment _controlAlignment = HorizontalAlignment.Center;
+    private static readonly HorizontalAlignment _controlAlignment = HorizontalAlignment.Stretch;
 
     [Setting, Config("Components' Params to Control", parent: "Param's Control", section: 3)]
     private static readonly int _componentControlNameDistance = 2;
