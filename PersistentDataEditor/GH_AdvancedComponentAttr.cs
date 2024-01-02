@@ -1,4 +1,5 @@
-﻿using Grasshopper.GUI;
+﻿using GH_IO.Serialization;
+using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
@@ -9,21 +10,29 @@ using System.Reflection;
 
 namespace PersistentDataEditor;
 
-internal class GH_AdvancedComponentAttr(IGH_Component component) 
-    : GH_ComponentAttributes(component)
+internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
 {
+    private bool _isSimplify = false;
+    private const float SimplifyHeight = 10;
+
+    public GH_AdvancedComponentAttr(IGH_Component component)
+        : base(component)
+    {
+        _isSimplify = Owner.OnPingDocument().ValueTable.GetValue(nameof(_isSimplify) + Owner.InstanceGuid, false);
+    }
+
     #region Layout
     private static readonly FieldInfo _tagsInfo = typeof(GH_LinkedParamAttributes).FindField("m_renderTags");
     protected override void Layout()
     {
         Pivot = GH_Convert.ToPoint(Pivot);
         m_innerBounds = LayoutComponentBoxNew(Owner);
-        LayoutInputParamsNew(Owner, m_innerBounds);
-        LayoutOutputParamsNew(Owner, m_innerBounds);
+        ParamsLayout(Owner, m_innerBounds, true);
+        ParamsLayout(Owner, m_innerBounds, false);
         Bounds = LayoutBounds(Owner, m_innerBounds);
     }
 
-    public static RectangleF LayoutComponentBoxNew(IGH_Component owner)
+    public RectangleF LayoutComponentBoxNew(IGH_Component owner)
     {
         float inputHeight = GetParamsWholeHeight(owner.Params.Input, owner);
         float outputHeight = GetParamsWholeHeight(owner.Params.Output, owner);
@@ -37,7 +46,7 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
         }
         return GH_Convert.ToRectangle(new RectangleF(owner.Attributes.Pivot.X - 0.5f * num, owner.Attributes.Pivot.Y - 0.5f * val, num, val));
 
-        static float GetParamsWholeHeight(List<IGH_Param> gH_Params, IGH_Component owner)
+        float GetParamsWholeHeight(List<IGH_Param> gH_Params, IGH_Component owner)
         {
             float wholeHeight = 0;
             foreach (IGH_Param param in gH_Params)
@@ -50,23 +59,13 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
                     owner.OnPingDocument()?.DestroyAttributeCache();
                 }
                 GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
-                wholeHeight += attr.ParamHeight;
+                wholeHeight += _isSimplify ? SimplifyHeight : attr.ParamHeight;
             }
             return wholeHeight;
         }
     }
 
-    public static void LayoutInputParamsNew(IGH_Component owner, RectangleF componentBox)
-    {
-        ParamsLayout(owner, componentBox, true);
-    }
-
-    public static void LayoutOutputParamsNew(IGH_Component owner, RectangleF componentBox)
-    {
-        ParamsLayout(owner, componentBox, false);
-    }
-
-    private static void ParamsLayout(IGH_Component owner, RectangleF componentBox, bool isInput)
+    private void ParamsLayout(IGH_Component owner, RectangleF componentBox, bool isInput)
     {
         List<IGH_Param> gH_Params = isInput ? owner.Params.Input : owner.Params.Output;
 
@@ -93,10 +92,15 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
             singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth, attr.WholeWidth);
             nameMaxWidth = Math.Max(nameMaxWidth, attr.StringWidth);
             controlMaxWidth = Math.Max(controlMaxWidth, attr.ControlMinWidth);
-            heightCalculate += attr.ParamHeight;
+            heightCalculate += _isSimplify ? SimplifyHeight : attr.ParamHeight;
         }
 
-        if (Data.SeperateCalculateWidthControl)
+        if (_isSimplify)
+        {
+            singleParamBoxMaxWidth = Data.ComponentToCoreDistance;
+            nameMaxWidth = controlMaxWidth = 0;
+        }
+        else if (Data.SeperateCalculateWidthControl)
         {
             float controlAddition = controlMaxWidth == 0 ? 0 : controlMaxWidth + Data.ComponentControlNameDistance;
             singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + Data.AdditionWidth + iconSpaceWidth, Data.AdditionWidth + Data.MiniWidth);
@@ -106,13 +110,12 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
             singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth + Data.AdditionWidth, Data.AdditionWidth + Data.MiniWidth);
         }
 
-
         //Layout every param.
         float heightFloat = componentBox.Height / heightCalculate;
         float movementY = 0;
         foreach (IGH_Param param in gH_Params)
         {
-            float singleParamBoxHeight = heightFloat * ((GH_AdvancedLinkParamAttr)param.Attributes).ParamHeight;
+            float singleParamBoxHeight = heightFloat * (_isSimplify ? SimplifyHeight : ((GH_AdvancedLinkParamAttr)param.Attributes).ParamHeight);
 
             float rectX = isInput ? componentBox.X - singleParamBoxMaxWidth : componentBox.Right + Data.ComponentToCoreDistance;
             float rectY = componentBox.Y + movementY;
@@ -193,6 +196,7 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
         int additionforTag = tagsCount == 0 ? 0 : tagsCount * 20 - 4;
 
         //LayoutForRender
+        if (_isSimplify) return;
         foreach (IGH_Param param in gH_Params)
         {
             GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
@@ -228,12 +232,13 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
             }
         }
     }
-
     #endregion
+
+    #region Render
     protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
     {
         base.Render(canvas, graphics, channel);
-        if (channel != GH_CanvasChannel.Objects) return;
+        if (channel != GH_CanvasChannel.Objects || _isSimplify) return;
 
         GH_Palette gH_Palette = GH_CapsuleRenderEngine.GetImpliedPalette(base.Owner);
         if (gH_Palette == GH_Palette.Normal && !base.Owner.IsPreviewCapable)
@@ -250,7 +255,6 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
 
     private static void RenderComponentParametersNew(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
     {
-
         int zoomFadeLow = GH_Canvas.ZoomFadeLow;
         if (zoomFadeLow < 5)
         {
@@ -302,5 +306,19 @@ internal class GH_AdvancedComponentAttr(IGH_Component component)
             }
         }
         solidBrush.Dispose();
+    }
+    #endregion
+
+    public override GH_ObjectResponse RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)
+    {
+        if (m_innerBounds.Contains(e.CanvasLocation))
+        {
+            _isSimplify = !_isSimplify;
+            this.ExpireLayout();
+            sender.Refresh();
+            Owner.OnPingDocument().ValueTable.SetValue(nameof(_isSimplify) + Owner.InstanceGuid, _isSimplify);
+            return GH_ObjectResponse.Release;
+        }
+        return base.RespondToMouseDoubleClick(sender, e);
     }
 }
