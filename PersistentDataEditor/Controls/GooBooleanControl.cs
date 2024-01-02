@@ -27,6 +27,17 @@ internal class GooBooleanControl(Func<GH_Boolean> valueGetter, Func<bool> isNull
         base.Clicked(sender, e);
     }
 
+    protected override void OnLayoutChanged(RectangleF bounds)
+    {
+        base.OnLayoutChanged(bounds);
+        var width = (bounds.Height - bounds.Width) / 2;
+        if (width !=  0)
+        {
+            bounds.Inflate(width, 0);
+            Bounds = bounds;
+        }
+    }
+
     internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)
     {
         graphics.FillEllipse(Data.ControlBackgroundColor.GetBrush(), Bounds);
