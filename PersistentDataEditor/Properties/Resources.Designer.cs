@@ -63,59 +63,9 @@ namespace PersistentDataEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ComponentIcon_24 {
-            get {
-                object obj = ResourceManager.GetObject("ComponentIcon_24", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ComponentToolkitIcon_128 {
-            get {
-                object obj = ResourceManager.GetObject("ComponentToolkitIcon_128", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap ComponentToolkitIcon_24 {
             get {
                 object obj = ResourceManager.GetObject("ComponentToolkitIcon_24", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ParamControlIcon_24 {
-            get {
-                object obj = ResourceManager.GetObject("ParamControlIcon_24", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ParametersIcon_24 {
-            get {
-                object obj = ResourceManager.GetObject("ParametersIcon_24", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ResetIcons_24 {
-            get {
-                object obj = ResourceManager.GetObject("ResetIcons_24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

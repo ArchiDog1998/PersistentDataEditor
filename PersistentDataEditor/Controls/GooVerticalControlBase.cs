@@ -83,8 +83,8 @@ internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where
                 for (int i = 1; i < _controlItems.Length; i++)
                 {
                     BaseControlItem item = _controlItems[i];
-                    item.Width = bounds.Width;
-                    item.Bounds = new RectangleF(bounds.X, y, bounds.Width, item.Height);
+                    item.Width = bounds.Width - _controlItems[0].Width;
+                    item.Bounds = new RectangleF(bounds.X + _controlItems[0].Width, y, item.Width, item.Height);
                     y += item.Height;
                 }
             }
@@ -97,7 +97,7 @@ internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where
                 foreach (BaseControlItem item in _controlItems)
                 {
                     item.Width = bounds.Width;
-                    item.Bounds = new RectangleF(bounds.X, y, bounds.Width, item.Height);
+                    item.Bounds = new RectangleF(bounds.X, y, item.Width, item.Height);
                     y += item.Height;
                 }
             }

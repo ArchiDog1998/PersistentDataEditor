@@ -229,7 +229,7 @@ internal static partial class Data
 
 internal static partial class GumballData
 {
-    [Setting, Config("Geometry Gumball"), ToolButton("")]
+    [Setting, Config("Geometry Gumball", icon: "Gumball_20.png"), ToolButton("Gumball_20.png")]
     private static readonly bool _useGeoParamGumball = true;
 
     [Setting, Config("Use Rotate", icon: "b7798b74-037e-4f0c-8ac7-dc1043d093e0", parent: "Geometry Gumball")]

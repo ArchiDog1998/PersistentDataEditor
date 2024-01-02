@@ -8,7 +8,6 @@
     <TargetExt>.gha</TargetExt>
     <UseWpf>true</UseWpf>
     <UseWindowsForms>true</UseWindowsForms>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<LangVersion>latest</LangVersion>
     <PackageIcon>ComponentToolkitIcon_128.png</PackageIcon>
   </PropertyGroup>
