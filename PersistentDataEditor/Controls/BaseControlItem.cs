@@ -2,7 +2,6 @@
 using Grasshopper.GUI.Canvas;
 using System;
 using System.Drawing;
-using System.Windows;
 
 namespace PersistentDataEditor;
 
@@ -47,7 +46,7 @@ public abstract class BaseControlItem
     protected virtual bool Valid => true;
     internal abstract float MinWidth { get; }
     private float? _width = null;
-    internal float Width 
+    internal float Width
     {
         get
         {

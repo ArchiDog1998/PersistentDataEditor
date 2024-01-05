@@ -29,11 +29,11 @@ internal abstract class GooHorizonalControlBase<T>(Func<T> valueGetter, Func<boo
             float x = bounds.X;
             foreach (BaseControlItem item in _controlItems)
             {
-                if(item is not StringRender)
+                if (item is not StringRender)
                 {
                     item.Width = item.MinWidth * ratio;
                 }
-                item.Bounds = new (x, bounds.Y + (bounds.Height - item.Height) / 2, item.Width, item.Height);
+                item.Bounds = new(x, bounds.Y + (bounds.Height - item.Height) / 2, item.Width, item.Height);
                 x += item.Width;
             }
         }

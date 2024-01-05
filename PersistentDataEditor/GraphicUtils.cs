@@ -8,10 +8,10 @@ namespace PersistentDataEditor;
 
 internal static class GraphicUtils
 {
-    public static RectangleF Inflate(this RectangleF bounds, 
+    public static RectangleF Inflate(this RectangleF bounds,
         float left = 0, float top = 0, float right = 0, float bottom = 0)
     {
-        return new (bounds.X - left, bounds.Y - top, 
+        return new(bounds.X - left, bounds.Y - top,
             bounds.Width + left + right, bounds.Height + top + bottom);
     }
 

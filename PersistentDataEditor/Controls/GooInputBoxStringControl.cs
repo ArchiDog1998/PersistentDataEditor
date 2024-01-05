@@ -30,7 +30,8 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
 
     PointF? clickedPt = null;
     PropertyInfo value = null;
-    double oldValue = 0;
+    double oldValue = 0, changedValueDiff = 0;
+    ModifierKeys _activeKey = ModifierKeys.None;
 
     internal override void MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
@@ -39,10 +40,13 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
             clickedPt = e.CanvasLocation;
             value = ShowValue.GetType().GetRuntimeProperties().FirstOrDefault(p => p.Name == "Value");
             oldValue = Convert.ToDouble(value.GetValue(ShowValue));
+            changedValueDiff = 0;
+            _activeKey = Keyboard.Modifiers;
 
             sender.MouseMove += CanvasMouseMove;
             sender.MouseUp += Canvas_MouseUp;
         }
+        _active = false;
         base.MouseDown(sender, e);
     }
 
@@ -53,8 +57,11 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
         clickedPt = null;
         canvas.MouseUp -= Canvas_MouseUp;
         canvas.MouseMove -= CanvasMouseMove;
+
+        Instances.CursorServer.ResetCursor(canvas);
     }
 
+    bool _active = false;
     private void CanvasMouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
     {
         if (!clickedPt.HasValue || value == null) return;
@@ -64,34 +71,50 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
 
         WrapCursor(canvas, ref clickedPt);
 
-        var pt = clickedPt.Value;
-
         var canvasPt = canvas.Viewport.UnprojectPoint(e.Location);
 
-        double xDifference = double.Round(canvasPt.X - pt.X, 1);
+        double xDifference = double.Round(canvasPt.X - clickedPt.Value.X, 1);
 
-        if (Math.Abs(xDifference) < 5) return;
+        if (!_active && Math.Abs(xDifference) < 5) return;
+        _active = true;
 
         xDifference *= Data.SliderSpeed;
+        xDifference -= changedValueDiff;
 
-        xDifference = Keyboard.Modifiers switch
+        if (_activeKey == Keyboard.Modifiers)
         {
-            ModifierKeys.Shift => xDifference / 10,
-            ModifierKeys.Control => xDifference * 10,
-            _ => xDifference,
-        };
+            ChangeValue(ref xDifference, _activeKey);
+        }
+        else
+        {
+            changedValueDiff += xDifference;
+            ChangeValue(ref xDifference, _activeKey);
+            oldValue += xDifference;
+            xDifference = 0;
+            _activeKey = Keyboard.Modifiers;
+        }
 
         var newValue = oldValue + xDifference;
 
         var newGoo = ShowValue.Duplicate();
         value.SetValue(newGoo, Convert.ChangeType(newValue, value.PropertyType));
         ShowValue = (T)newGoo;
+
+        static void ChangeValue(ref double value, ModifierKeys key)
+        {
+            value = key switch
+            {
+                ModifierKeys.Shift => value / 10,
+                ModifierKeys.Control => value * 10,
+                _ => value,
+            };
+        }
     }
 
     private static bool _preventUpdate = false;
     protected static void WrapCursor(GH_Canvas canvas, ref PointF? pt)
     {
-        if(_preventUpdate || !pt.HasValue) return;
+        if (_preventUpdate || !pt.HasValue) return;
         _preventUpdate = true;
 
         Point point = canvas.PointToScreen(new Point(0, 0));
@@ -105,7 +128,7 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
             if (Cursor.Position.X <= rectangle.Left)
             {
                 Cursor.Position = new Point(rectangle.Right - 5, Cursor.Position.Y);
-                pt = new (pt.Value.X + xChange, pt.Value.Y);
+                pt = new(pt.Value.X + xChange, pt.Value.Y);
             }
             if (Cursor.Position.X >= rectangle.Right - 1)
             {
@@ -130,7 +153,7 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
     {
         if (e.Button == MouseButtons.Left && !IsReadOnly)
         {
-            if (clickedPt == null || Math.Abs(e.CanvasX - clickedPt.Value.X) < 5)
+            if (clickedPt == null || !_active && Math.Abs(e.CanvasX - clickedPt.Value.X) < 5)
             {
                 new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowString, true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
             }

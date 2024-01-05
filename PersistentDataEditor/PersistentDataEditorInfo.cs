@@ -239,7 +239,7 @@ partial class SimpleAssemblyPriority
     {
         if (item is IGH_Param o)
         {
-            if (o.Kind == GH_ParamKind.floating && o.Attributes is GH_FloatingParamAttributes 
+            if (o.Kind == GH_ParamKind.floating && o.Attributes is GH_FloatingParamAttributes
                 && o.Attributes is not GH_AdvancedFloatingParamAttr)
             {
                 PointF point = o.Attributes.Pivot;

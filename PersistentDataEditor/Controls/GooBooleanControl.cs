@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace PersistentDataEditor;
 
-internal class GooBooleanControl(Func<GH_Boolean> valueGetter, Func<bool> isNull) 
+internal class GooBooleanControl(Func<GH_Boolean> valueGetter, Func<bool> isNull)
     : GooControlBase<GH_Boolean>(valueGetter, isNull)
 {
     public override Guid AddCompnentGuid => new("2e78987b-9dfb-42a2-8b76-3923ac8bd91a");
@@ -31,7 +31,7 @@ internal class GooBooleanControl(Func<GH_Boolean> valueGetter, Func<bool> isNull
     {
         base.OnLayoutChanged(bounds);
         var width = (bounds.Height - bounds.Width) / 2;
-        if (width !=  0)
+        if (width != 0)
         {
             bounds.Inflate(width, 0);
             Bounds = bounds;

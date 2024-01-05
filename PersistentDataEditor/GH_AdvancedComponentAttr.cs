@@ -1,5 +1,4 @@
-﻿using GH_IO.Serialization;
-using Grasshopper.GUI;
+﻿using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
@@ -214,7 +213,7 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
                     startX += size + Data.ComponentIconDistance;
                 }
 
-                if(attr.Control != null)
+                if (attr.Control != null)
                 {
                     attr.Control.Bounds = new RectangleF(startX,
                         attr.Bounds.Y, attr.Bounds.Width - Data.ComponentControlNameDistance -
