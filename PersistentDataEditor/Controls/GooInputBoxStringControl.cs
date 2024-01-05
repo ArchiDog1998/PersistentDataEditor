@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Cursor = System.Windows.Forms.Cursor;
 
 namespace PersistentDataEditor;
 
@@ -57,11 +58,17 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
     private void CanvasMouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
     {
         if (!clickedPt.HasValue || value == null) return;
+
+        var canvas = (GH_Canvas)sender;
+        Instances.CursorServer.AttachCursor(canvas, "GH_NumericSlider");
+
+        WrapCursor(canvas, ref clickedPt);
+
         var pt = clickedPt.Value;
 
-        var canvasPt = ((GH_Canvas)sender).Viewport.UnprojectPoint(e.Location);
+        var canvasPt = canvas.Viewport.UnprojectPoint(e.Location);
 
-        double xDifference = (canvasPt.X - pt.X);
+        double xDifference = double.Round(canvasPt.X - pt.X, 1);
 
         if (Math.Abs(xDifference) < 5) return;
 
@@ -79,6 +86,44 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
         var newGoo = ShowValue.Duplicate();
         value.SetValue(newGoo, Convert.ChangeType(newValue, value.PropertyType));
         ShowValue = (T)newGoo;
+    }
+
+    private static bool _preventUpdate = false;
+    protected static void WrapCursor(GH_Canvas canvas, ref PointF? pt)
+    {
+        if(_preventUpdate || !pt.HasValue) return;
+        _preventUpdate = true;
+
+        Point point = canvas.PointToScreen(new Point(0, 0));
+        Rectangle rectangle = new Rectangle(point.X, point.Y, canvas.Width, canvas.Height);
+        Rectangle bounds = Screen.FromPoint(Cursor.Position).Bounds;
+        rectangle = Rectangle.FromLTRB(Math.Max(rectangle.Left, bounds.Left), Math.Max(rectangle.Top, bounds.Top), Math.Min(rectangle.Right, bounds.Right), Math.Min(rectangle.Bottom, bounds.Bottom));
+        checked
+        {
+            var xChange = (rectangle.Width - 5) * canvas.Viewport.ZoomInverse;
+            var yChange = (rectangle.Height - 5) * canvas.Viewport.ZoomInverse;
+            if (Cursor.Position.X <= rectangle.Left)
+            {
+                Cursor.Position = new Point(rectangle.Right - 5, Cursor.Position.Y);
+                pt = new (pt.Value.X + xChange, pt.Value.Y);
+            }
+            if (Cursor.Position.X >= rectangle.Right - 1)
+            {
+                Cursor.Position = new Point(rectangle.Left + 5, Cursor.Position.Y);
+                pt = new(pt.Value.X - xChange, pt.Value.Y);
+            }
+            if (Cursor.Position.Y <= rectangle.Top)
+            {
+                Cursor.Position = new Point(Cursor.Position.X, rectangle.Bottom - 5);
+                pt = new(pt.Value.Y + yChange, pt.Value.Y);
+            }
+            if (Cursor.Position.Y >= rectangle.Bottom - 1)
+            {
+                Cursor.Position = new Point(Cursor.Position.X, rectangle.Top + 5);
+                pt = new(pt.Value.Y - yChange, pt.Value.Y);
+            }
+            _preventUpdate = false;
+        }
     }
 
     internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
