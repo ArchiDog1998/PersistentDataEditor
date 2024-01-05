@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 	
   <PropertyGroup>
-    <TargetFrameworks>net48</TargetFrameworks>
+    <TargetFrameworks>net7.0-windows</TargetFrameworks>
     <Version>1.2.1</Version>
     <Title>PersistentDataEditor</Title>
     <Description>Extra information and control for grasshopper component.</Description>
@@ -13,6 +13,7 @@
   </PropertyGroup>
 	
   <ItemGroup>
+    <PackageReference Include="Grasshopper" Version="8.0.23304.9001" />
     <PackageReference Include="SimpleGrasshopper" Version="1.2.8" />
 	  <EmbeddedResource Include="Resources\*.png" />
   </ItemGroup>

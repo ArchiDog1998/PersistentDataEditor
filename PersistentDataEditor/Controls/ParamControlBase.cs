@@ -108,15 +108,12 @@ internal abstract class ParamControlBase<T> : BaseControlItem where T : class, I
     internal override void MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (!Valid || !ShouldRespond || Owner.Locked || sender.Viewport.Zoom < 0.6) return;
-        if (e.Button == System.Windows.Forms.MouseButtons.Left) _isSaveUndo = true;
         _gooControl.MouseDown(sender, e);
-
     }
 
     internal override void MouseMove(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (!Valid || !ShouldRespond || Owner.Locked || sender.Viewport.Zoom < 0.6) return;
-        if (e.Button == System.Windows.Forms.MouseButtons.Left) _isSaveUndo = true;
         _gooControl.MouseMove(sender, e);
     }
 

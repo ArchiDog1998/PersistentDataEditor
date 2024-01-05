@@ -354,7 +354,6 @@ internal class GumballMouse<T>(GH_PersistentParam<T> owner) : MouseCallback, IGu
 
 public class MoveShowConduit : DisplayConduit
 {
-
     public static IGH_GeometricGoo[] MoveObjects { get; set; }
     public static Transform Trans { get; set; }
     protected override void DrawOverlay(DrawEventArgs e)

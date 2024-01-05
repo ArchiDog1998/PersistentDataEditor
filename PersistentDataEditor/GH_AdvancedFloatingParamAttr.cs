@@ -76,7 +76,7 @@ internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IContr
     {
         if (_expressionInfo != null)
         {
-            _expressionInfo.Invoke(Owner, new object[] { Instances.DocumentEditor, EventArgs.Empty });
+            _expressionInfo.Invoke(Owner, [Instances.DocumentEditor, EventArgs.Empty]);
             return GH_ObjectResponse.Release;
         }
         return base.RespondToMouseDoubleClick(sender, e);
