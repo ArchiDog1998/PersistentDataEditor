@@ -35,7 +35,8 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
 
     internal override void MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
-        if (e.Button == MouseButtons.Left && !IsReadOnly && double.TryParse(ShowString, out _))
+        if (e.Button == MouseButtons.Left && !IsReadOnly 
+            && Data.UseSlider && double.TryParse(ShowString, out _))
         {
             clickedPt = e.CanvasLocation;
             value = ShowValue.GetType().GetRuntimeProperties().FirstOrDefault(p => p.Name == "Value");
