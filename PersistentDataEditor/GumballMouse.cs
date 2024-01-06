@@ -73,7 +73,6 @@ internal class GumballMouse<T>(GH_PersistentParam<T> owner) : MouseCallback, IGu
         if (owner is IGH_PreviewObject previewObject && previewObject.Hidden) return;
         if (owner.Attributes.GetTopLevel.DocObject is IGH_PreviewObject ghPreviewObject && ghPreviewObject.Hidden) return;
 
-
         //Get PersistentData.
         _geometries = owner.PersistentData.NonNulls.Where((goo) => !goo.IsReferencedGeometry).ToArray();
 
@@ -88,7 +87,7 @@ internal class GumballMouse<T>(GH_PersistentParam<T> owner) : MouseCallback, IGu
             GumballObject gumballObject = new GumballObject();
             gumballObject.SetFromBoundingBox(box);
 
-            GumballDisplayConduit gumballDisplayConduit = new GumballDisplayConduit();
+            GumballDisplayConduit gumballDisplayConduit = new (Rhino.DocObjects.ActiveSpace.None);
             gumballDisplayConduit.SetBaseGumball(gumballObject, Settings);
             gumballDisplayConduit.Enabled = true;
             _gumballs = [gumballObject];
@@ -105,14 +104,13 @@ internal class GumballMouse<T>(GH_PersistentParam<T> owner) : MouseCallback, IGu
                 GumballObject gumballObject = new GumballObject();
                 gumballObject.SetFromBoundingBox(geo.Boundingbox);
 
-                GumballDisplayConduit gumballDisplayConduit = new GumballDisplayConduit();
+                GumballDisplayConduit gumballDisplayConduit = new(Rhino.DocObjects.ActiveSpace.None);
                 gumballDisplayConduit.SetBaseGumball(gumballObject, Settings);
                 gumballDisplayConduit.Enabled = true;
                 _gumballs[i] = gumballObject;
                 _conduits[i] = gumballDisplayConduit;
             }
         }
-
 
         RhinoDoc.ActiveDoc?.Views?.Redraw();
         Enabled = true;
@@ -154,7 +152,7 @@ internal class GumballMouse<T>(GH_PersistentParam<T> owner) : MouseCallback, IGu
 
     #endregion
 
-    #region Respound
+    #region Respond
     protected override void OnMouseDown(MouseCallbackEventArgs e)
     {
         _index = -1;
@@ -207,6 +205,7 @@ internal class GumballMouse<T>(GH_PersistentParam<T> owner) : MouseCallback, IGu
         }
         base.OnMouseDown(e);
     }
+
     protected override void OnMouseMove(MouseCallbackEventArgs e)
     {
         if (_index < 0 || _conduits.Length == 0 || Control.MouseButtons != MouseButtons.Left || _index >= _conduits.Length)
@@ -249,7 +248,7 @@ internal class GumballMouse<T>(GH_PersistentParam<T> owner) : MouseCallback, IGu
         };
         TextBox textBox = new TextBox() { Width = 200, Top = 5, Left = 5 };
         Button confirmation = new Button() { Text = "Ok", Left = 5, Top = 30, Width = 100, DialogResult = DialogResult.OK };
-        Button cancel = new Button() { Text = "cancel", Left = 105, Top = 30, Width = 100, DialogResult = DialogResult.Cancel };
+        Button cancel = new Button() { Text = "Cancel", Left = 105, Top = 30, Width = 100, DialogResult = DialogResult.Cancel };
         confirmation.Click += (sender, e) => { prompt.Close(); };
         cancel.Click += (sender, e) => { prompt.Close(); };
         prompt.Controls.Add(textBox);

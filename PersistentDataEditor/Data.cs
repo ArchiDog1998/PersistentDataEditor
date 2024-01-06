@@ -1,12 +1,11 @@
-﻿global using HorizontalAlignment = System.Windows.HorizontalAlignment;
-
-using Grasshopper;
+﻿using Grasshopper;
 using Grasshopper.Kernel;
 using SimpleGrasshopper.Attributes;
 using SimpleGrasshopper.Data;
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Windows;
 
 namespace PersistentDataEditor;
 
@@ -18,13 +17,6 @@ internal static partial class Data
     [ToolButton("ParamControlIcon_24.png")]
     [Setting, Config("Param's Control", icon: "ParamControlIcon_24.png")]
     private static readonly bool _useParamControl = true;
-
-    [Setting, Config("Use Control Slider", parent: "Param's Control")]
-    private static readonly bool _useSlider = true;
-
-    [Range(double.Epsilon, 100)]
-    [Setting, Config("The speed of the slider", parent: "Use Control Slider")]
-    private static readonly double _sliderSpeed = 1;
 
     [Setting, Config("Auto Set Default Value", parent: "Param's Control")]
     private static readonly bool _useDefaultValueToControl = true;
@@ -40,6 +32,13 @@ internal static partial class Data
 
     [Setting, Config("Use on parameters", icon: "ParametersIcon_24.png", parent: "Param's Control", section: 1)]
     private static readonly bool _paramUseControl = true;
+
+    [Setting, Config("Use Control Slider", icon: "{57DA07BD-ECAB-415d-9D86-AF36D7073ABC}", parent: "Param's Control", section: 1)]
+    private static readonly bool _useSlider = true;
+
+    [Range(double.Epsilon, 100)]
+    [Setting, Config("The speed of the slider", parent: "Use Control Slider")]
+    private static readonly double _sliderSpeed = 1;
 
     [Setting, Config("Independent Width", parent: "Param's Control", section: 2)]
     private static readonly bool _seperateCalculateWidthControl = true;

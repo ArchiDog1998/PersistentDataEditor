@@ -57,7 +57,6 @@ partial class SimpleAssemblyPriority
         }
 
         Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
-        Instances.ActiveCanvas.MouseDown += ActiveCanvas_MouseDown;
 
         new MoveShowConduit().Enabled = true;
 
@@ -96,7 +95,7 @@ partial class SimpleAssemblyPriority
                 {
                     if (item.Attributes is GH_AdvancedLinkParamAttr attr)
                     {
-                        attr.Dispose();
+                        attr.DisposeGumball();
                     }
                 }
             }
@@ -105,97 +104,12 @@ partial class SimpleAssemblyPriority
                 if (param.Attributes is GH_AdvancedFloatingParamAttr attr)
                 {
                     GH_AdvancedFloatingParamAttr floating = attr;
-                    floating.Dispose();
+                    floating.DisposeGumballs();
                 }
             }
         }
     }
-    private static IGH_DocumentObject OnGumballComponent;
-    private static void ActiveCanvas_MouseDown(object sender, MouseEventArgs e)
-    {
-        PointF canvasLocation = Instances.ActiveCanvas.Viewport.UnprojectPoint(e.Location);
 
-        if (!Instances.ActiveCanvas.IsDocument) return;
-        OnGumballComponent?.Attributes.ExpireLayout();
-
-        GH_RelevantObjectData obj = Instances.ActiveCanvas.Document.RelevantObjectAtPoint(canvasLocation, GH_RelevantObjectFilter.Attributes);
-        if (obj != null)
-        {
-            if (OnGumballComponent != obj.TopLevelObject)
-            {
-                CloseGumball();
-            }
-
-            if (obj.TopLevelObject is IGH_Component gH_Component)
-            {
-                Task.Run(() =>
-                {
-                    Task.Delay(5);
-
-                    if (!gH_Component.Attributes.Selected) return;
-
-                    OnGumballComponent = gH_Component;
-                    OnGumballComponent.Attributes.ExpireLayout();
-
-                    foreach (var item in gH_Component.Params.Input)
-                    {
-                        if (item.Attributes is GH_AdvancedLinkParamAttr attr && item.SourceCount == 0)
-                        {
-                            attr.ShowAllGumballs();
-                        }
-                    }
-
-                });
-
-                return;
-            }
-            else if (obj.TopLevelObject is IGH_Param gH_Param)
-            {
-                if (gH_Param.SourceCount == 0)
-                {
-                    Task.Run(() =>
-                    {
-                        Task.Delay(5);
-
-                        if (!gH_Param.Attributes.Selected) return;
-
-                        OnGumballComponent = gH_Param;
-                        OnGumballComponent.Attributes.ExpireLayout();
-
-                        if (gH_Param.Attributes is not GH_AdvancedFloatingParamAttr attr) return;
-
-                        attr.RedrawGumballs();
-
-                    });
-                    return;
-                }
-            }
-        }
-
-        CloseGumball();
-    }
-
-    private static void CloseGumball()
-    {
-        if (OnGumballComponent == null) return;
-
-        if (OnGumballComponent is IGH_Component component)
-        {
-            foreach (var item in component.Params.Input)
-            {
-                if (item.Attributes is GH_AdvancedLinkParamAttr attr)
-                {
-                    attr.Dispose();
-                }
-            }
-        }
-        else if (((IGH_Param)OnGumballComponent).Attributes is GH_AdvancedFloatingParamAttr floatParam)
-        {
-            floatParam.Dispose();
-        }
-
-        OnGumballComponent = null;
-    }
     #endregion
 
     private static void Document_ObjectsAdded(object sender, GH_DocObjectEventArgs e)

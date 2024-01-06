@@ -13,7 +13,7 @@ using System.Reflection;
 
 namespace PersistentDataEditor;
 
-internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr, IDisposable
+internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr
 {
     public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
     public float ControlMinWidth => Control?.MinWidth ?? 0;
@@ -61,7 +61,7 @@ internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr
         _gumball?.ShowAllGumballs();
     }
 
-    public void Dispose()
+    public void DisposeGumball()
     {
         _gumball?.Dispose();
     }

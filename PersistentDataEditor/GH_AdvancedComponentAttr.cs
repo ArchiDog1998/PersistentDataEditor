@@ -15,6 +15,39 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
     private bool _isSimplify = false;
     private const float SimplifyHeight = 10;
 
+    public override bool Selected 
+    { 
+        get => base.Selected;
+        set
+        {
+            if (base.Selected == value) return;
+            base.Selected = value;
+
+            foreach (var item in Owner.Params.Input)
+            {
+                if (item.Attributes is GH_AdvancedLinkParamAttr attr)
+                {
+                    if (value)
+                    {
+                        //Open gumball.
+                        attr.ShowAllGumballs();
+                    }
+                    else
+                    {
+                        //Close gumball
+                        attr.DisposeGumball();
+
+                    }
+                }
+            }
+
+            if (Data.OnlyShowSelectedObjectControl)
+            {
+                this.ExpireLayout();
+            }
+        }
+    }
+
     public GH_AdvancedComponentAttr(IGH_Component component)
         : base(component)
     {

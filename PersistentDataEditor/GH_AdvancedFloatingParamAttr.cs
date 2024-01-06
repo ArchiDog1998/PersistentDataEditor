@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace PersistentDataEditor;
 
-internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IControlAttr, IDisposable
+internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IControlAttr
 {
     private static readonly FieldInfo _tagsinfo = typeof(GH_FloatingParamAttributes).FindField("m_stateTags");
 
@@ -21,6 +21,33 @@ internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IContr
     private readonly MethodInfo _expressionInfo;
 
     public BaseControlItem Control { get; private set; }
+
+    public override bool Selected 
+    { 
+        get => base.Selected;
+        set
+        {
+            if (base.Selected == value) return;
+            base.Selected = value;
+
+            if (value)
+            {
+                //Open gumball.
+                this.RedrawGumballs();
+            }
+            else
+            {
+                //Close gumball
+                this.DisposeGumballs();
+            }
+
+            if (Data.OnlyShowSelectedObjectControl)
+            {
+                this.ExpireLayout();
+            }
+        }
+    }
+
     public GH_AdvancedFloatingParamAttr(IGH_Param param) : base(param)
     {
         _gumball = SetGumball(param);
@@ -206,7 +233,7 @@ internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IContr
         }
     }
 
-    public void Dispose()
+    public void DisposeGumballs()
     {
         _gumball?.Dispose();
     }
