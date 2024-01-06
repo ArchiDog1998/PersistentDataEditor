@@ -73,7 +73,7 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
 
         var canvasPt = canvas.Viewport.UnprojectPoint(e.Location);
 
-        double xDifference = double.Round(canvasPt.X - clickedPt.Value.X, 1);
+        double xDifference = Math.Round(canvasPt.X - clickedPt.Value.X, 1);
 
         if (!_active && Math.Abs(xDifference) < 5) return;
         _active = true;
