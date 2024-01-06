@@ -5,6 +5,7 @@ using Grasshopper.Kernel.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Reflection;
 
 namespace PersistentDataEditor;
@@ -26,122 +27,107 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
     {
         Pivot = GH_Convert.ToPoint(Pivot);
         m_innerBounds = LayoutComponentBoxNew(Owner);
-        ParamsLayout(Owner, m_innerBounds, true);
-        ParamsLayout(Owner, m_innerBounds, false);
+        ParamsLayoutNew(Owner, m_innerBounds, true);
+        ParamsLayoutNew(Owner, m_innerBounds, false);
         Bounds = LayoutBounds(Owner, m_innerBounds);
-    }
 
-    public RectangleF LayoutComponentBoxNew(IGH_Component owner)
-    {
-        float inputHeight = GetParamsWholeHeight(owner.Params.Input, owner);
-        float outputHeight = GetParamsWholeHeight(owner.Params.Output, owner);
+        var bound = Bounds;
+        bound.Inflate(Data.ComponentToEdgeDistance - 2, 0);
+        Bounds = bound;
 
-        float val = Math.Max(inputHeight, outputHeight);
-        val = Math.Max(val, 24);
-        int num = 24;
-        if (!IsIconMode(owner.IconDisplayMode))
+        RectangleF LayoutComponentBoxNew(IGH_Component owner)
         {
-            val = Math.Max(val, GH_Convert.ToSize(GH_FontServer.MeasureString(owner.NickName, GH_FontServer.LargeAdjusted)).Width + 6);
-        }
-        return GH_Convert.ToRectangle(new RectangleF(owner.Attributes.Pivot.X - 0.5f * num, owner.Attributes.Pivot.Y - 0.5f * val, num, val));
+            float inputHeight = GetParamsWholeHeight(owner.Params.Input, owner);
+            float outputHeight = GetParamsWholeHeight(owner.Params.Output, owner);
 
-        float GetParamsWholeHeight(List<IGH_Param> gH_Params, IGH_Component owner)
-        {
-            float wholeHeight = 0;
-            foreach (IGH_Param param in gH_Params)
+            float val = Math.Max(inputHeight, outputHeight);
+            val = Math.Max(val, 24);
+            int num = 24;
+            if (!IsIconMode(owner.IconDisplayMode))
             {
-                if (param.Attributes == null || param.Attributes is not GH_AdvancedLinkParamAttr)
-                {
-                    param.Attributes = new GH_AdvancedLinkParamAttr(param, owner.Attributes);
-
-                    //Refresh the attributes.
-                    owner.OnPingDocument()?.DestroyAttributeCache();
-                }
-                GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
-                wholeHeight += _isSimplify ? SimplifyHeight : attr.ParamHeight;
+                val = Math.Max(val, GH_Convert.ToSize(GH_FontServer.MeasureString(owner.NickName, GH_FontServer.LargeAdjusted)).Width + 6);
             }
-            return wholeHeight;
+            return GH_Convert.ToRectangle(new RectangleF(owner.Attributes.Pivot.X - 0.5f * num, owner.Attributes.Pivot.Y - 0.5f * val, num, val));
+
+            float GetParamsWholeHeight(List<IGH_Param> gH_Params, IGH_Component owner)
+            {
+                float wholeHeight = 0;
+                foreach (IGH_Param param in gH_Params)
+                {
+                    if (param.Attributes == null || param.Attributes is not GH_AdvancedLinkParamAttr)
+                    {
+                        param.Attributes = new GH_AdvancedLinkParamAttr(param, owner.Attributes);
+
+                        //Refresh the attributes.
+                        owner.OnPingDocument()?.DestroyAttributeCache();
+                    }
+                    GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
+                    wholeHeight += _isSimplify ? SimplifyHeight : attr.ParamHeight;
+                }
+                return wholeHeight;
+            }
         }
     }
 
-    private void ParamsLayout(IGH_Component owner, RectangleF componentBox, bool isInput)
+    private void ParamsLayoutNew(IGH_Component owner, RectangleF componentBox, bool isInput)
     {
         List<IGH_Param> gH_Params = isInput ? owner.Params.Input : owner.Params.Output;
 
         int count = gH_Params.Count;
         if (count == 0) return;
 
-        //Get width and Init the Attributes.
-        float singleParamBoxMaxWidth = 0;
-        float nameMaxWidth = 0;
-        float controlMaxWidth = 0;
-        float heightCalculate = 0;
-        float iconSpaceWidth = Data.ShowLinkParamIcon ? Data.ComponentParamIconSize + Data.ComponentIconDistance : 0;
-        foreach (IGH_Param param in gH_Params)
+        var attributes = GetOrCreateAdvancedLinkParamAttr(owner, gH_Params);
+        LayoutTextBounds(componentBox, attributes, isInput, _isSimplify);
+
+        if (_isSimplify) return;
+
+        if (isInput)  // Control Bounds.
         {
-            if (param.Attributes is not GH_AdvancedLinkParamAttr)
+            LayoutControl(attributes);
+        }
+
+        //Layout Tags
+        LayoutTags(gH_Params, attributes, isInput);
+
+        if (Data.ShowLinkParamIcon)//Set Icon Rect.
+        {
+            LayoutParamIcon(attributes, isInput);
+        }
+    }
+
+    private static void LayoutParamIcon(IEnumerable<GH_AdvancedLinkParamAttr> attributes, bool isInput)
+    {
+        var width = Data.ComponentParamIconSize;
+        var distance = Data.ComponentIconDistance;
+
+        foreach (var attribute in attributes)
+        {
+            attribute.IconRect = new RectangleF(new PointF(
+                isInput ? attribute.Bounds.Left - width - distance : attribute.Bounds.Right + distance,
+                attribute.Bounds.Location.Y),
+                new SizeF(width, attribute.ParamHeight));
+
+            attribute.Bounds = RectangleF.Union(attribute.Bounds, attribute.IconRect);
+        }
+    }
+
+    private static void LayoutTags(List<IGH_Param> gH_Params, IEnumerable<GH_AdvancedLinkParamAttr> attributes, bool isInput)
+    {
+        CreateLayoutTags();
+        AlignBounds();
+
+        void CreateLayoutTags()
+        {
+            foreach (IGH_Param param in gH_Params) // From GH code source.
             {
-                param.Attributes = new GH_AdvancedLinkParamAttr(param, owner.Attributes);
+                GH_LinkedParamAttributes paramAttr = (GH_LinkedParamAttributes)param.Attributes;
 
-                //Refresh the attributes.
-                owner.OnPingDocument()?.DestroyAttributeCache();
-            }
-            GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
+                GH_StateTagList tags = param.StateTags;
+                if (tags.Count == 0) tags = null;
+                _tagsInfo.SetValue(paramAttr, tags);
 
-            singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth, attr.WholeWidth);
-            nameMaxWidth = Math.Max(nameMaxWidth, attr.StringWidth);
-            controlMaxWidth = Math.Max(controlMaxWidth, attr.ControlMinWidth);
-            heightCalculate += _isSimplify ? SimplifyHeight : attr.ParamHeight;
-        }
+                if (tags == null) continue;
 
-        if (_isSimplify)
-        {
-            singleParamBoxMaxWidth = Data.ComponentToCoreDistance;
-            nameMaxWidth = controlMaxWidth = 0;
-        }
-        else if (Data.SeperateCalculateWidthControl)
-        {
-            float controlAddition = controlMaxWidth == 0 ? 0 : controlMaxWidth + Data.ComponentControlNameDistance;
-            singleParamBoxMaxWidth = Math.Max(nameMaxWidth + controlAddition + Data.AdditionWidth + iconSpaceWidth, Data.AdditionWidth + Data.MiniWidth);
-        }
-        else
-        {
-            singleParamBoxMaxWidth = Math.Max(singleParamBoxMaxWidth + Data.AdditionWidth, Data.AdditionWidth + Data.MiniWidth);
-        }
-
-        //Layout every param.
-        float heightFloat = componentBox.Height / heightCalculate;
-        float movementY = 0;
-        foreach (IGH_Param param in gH_Params)
-        {
-            float singleParamBoxHeight = heightFloat * (_isSimplify ? SimplifyHeight : ((GH_AdvancedLinkParamAttr)param.Attributes).ParamHeight);
-
-            float rectX = isInput ? componentBox.X - singleParamBoxMaxWidth : componentBox.Right + Data.ComponentToCoreDistance;
-            float rectY = componentBox.Y + movementY;
-            float width = singleParamBoxMaxWidth - Data.ComponentToCoreDistance;
-            float height = singleParamBoxHeight;
-            param.Attributes.Pivot = new PointF(rectX + 0.5f * singleParamBoxMaxWidth, rectY + 0.5f * singleParamBoxHeight);
-            param.Attributes.Bounds = GH_Convert.ToRectangle(new RectangleF(rectX, rectY, width, height));
-
-            movementY += singleParamBoxHeight;
-        }
-
-        //Layout tags.
-        bool flag = false;
-        int tagsCount = 0;
-        foreach (IGH_Param param in gH_Params)
-        {
-            GH_LinkedParamAttributes paramAttr = (GH_LinkedParamAttributes)param.Attributes;
-
-            GH_StateTagList tags = param.StateTags;
-            if (tags.Count == 0) tags = null;
-            if (tags != null) tagsCount = Math.Max(tagsCount, tags.Count);
-            _tagsInfo.SetValue(paramAttr, tags);
-
-
-            if (tags != null)
-            {
-                flag = true;
                 Rectangle box = GH_Convert.ToRectangle(paramAttr.Bounds);
                 tags.Layout(box, isInput ? GH_StateTagLayoutDirection.Left : GH_StateTagLayoutDirection.Right);
                 box = tags.BoundingBox;
@@ -152,84 +138,121 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
             }
         }
 
-        if (flag)
+        void AlignBounds()
         {
-            if (isInput)
+            float minX = float.MaxValue, maxX = float.MinValue;
+            foreach (var attribute in attributes)
             {
-                //Find minimum param box width.
-                float minParamBoxX = float.MaxValue;
-                foreach (IGH_Param param in gH_Params)
-                {
-                    minParamBoxX = Math.Min(minParamBoxX, param.Attributes.Bounds.X);
-                }
-
-                //Align all param box.
-                foreach (IGH_Param param in gH_Params)
-                {
-                    IGH_Attributes attributes2 = param.Attributes;
-
-                    RectangleF bounds = attributes2.Bounds;
-                    bounds.Width = bounds.Right - minParamBoxX;
-                    bounds.X = minParamBoxX;
-                    attributes2.Bounds = bounds;
-                }
+                minX = Math.Min(minX, attribute.Bounds.Left);
+                maxX = Math.Max(maxX, attribute.Bounds.Right);
             }
-            else
+            foreach (var attribute in attributes)
             {
-                float maxParamBoxRight = float.MinValue;
-                foreach (IGH_Param param in gH_Params)
-                {
-                    maxParamBoxRight = Math.Max(maxParamBoxRight, param.Attributes.Bounds.Right);
-                }
-                foreach (IGH_Param param in gH_Params)
-                {
-                    IGH_Attributes attributes2 = param.Attributes;
+                attribute.Bounds = RectangleF.FromLTRB(minX, attribute.Bounds.Top, maxX, attribute.Bounds.Bottom);
+            }
+        }
+    }
 
-                    RectangleF bounds = attributes2.Bounds;
-                    bounds.Width = maxParamBoxRight - bounds.X;
-                    attributes2.Bounds = bounds;
-                }
+    private static void LayoutControl(IEnumerable<GH_AdvancedLinkParamAttr> attributes)
+    {
+        CreateControlBounds();
+        if (Data.SeperateCalculateWidthControl)
+        {
+            MoveControlRight();
+        }
+        AlignControlLeft();
+        UnionLayoutBounds();
+
+        void CreateControlBounds()
+        {
+            foreach (var attribute in attributes)
+            {
+                if (attribute.Control is null) continue;
+                attribute.Control.Bounds = new RectangleF(new PointF(attribute.Bounds.X - attribute.ControlMinWidth - Data.ComponentControlNameDistance, attribute.Bounds.Y), new SizeF(attribute.ControlMinWidth, attribute.ParamHeight));
             }
         }
 
-        int additionforTag = tagsCount == 0 ? 0 : tagsCount * 20 - 4;
-
-        //LayoutForRender
-        if (_isSimplify) return;
-        foreach (IGH_Param param in gH_Params)
+        void MoveControlRight()
         {
-            GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
-
-            int stringwidth = attr.StringWidth;
-
-            if (isInput)
+            var minX = float.MaxValue;
+            foreach (var attribute in attributes)
             {
-                float startX = attr.Bounds.X + additionforTag + Data.ComponentToEdgeDistance;
-
-                if (Data.ShowLinkParamIcon)
-                {
-                    float size = Data.ComponentParamIconSize;
-                    attr.IconRect = new RectangleF(startX, attr.Bounds.Y + attr.Bounds.Height / 2 - size / 2, size, size);
-                    startX += size + Data.ComponentIconDistance;
-                }
-
-                if (attr.Control != null)
-                {
-                    attr.Control.Bounds = new RectangleF(startX,
-                        attr.Bounds.Y, attr.Bounds.Width - Data.ComponentControlNameDistance -
-                        (Data.SeperateCalculateWidthControl ? nameMaxWidth : stringwidth), attr.Bounds.Height);
-                }
+                if (attribute.Control is null || attribute.Control.Bounds.Width < 1f) continue;
+                minX = Math.Min(minX, attribute.Control.Bounds.Right);
             }
-            else
+            foreach (var attribute in attributes)
             {
-                if (Data.ShowLinkParamIcon)
-                {
-                    float size = Data.ComponentParamIconSize;
-                    attr.IconRect = new RectangleF(attr.Bounds.Right - Data.ComponentParamIconSize - additionforTag - Data.ComponentToEdgeDistance,
-                        attr.Bounds.Y + attr.Bounds.Height / 2 - size / 2, size, size);
-                }
+                if (attribute.Control is null) continue;
+
+                var moveX = minX - attribute.Control.Bounds.Right;
+
+                attribute.Control.Bounds = new RectangleF(
+                    new PointF(attribute.Control.Bounds.Location.X + moveX,
+                    attribute.Control.Bounds.Location.Y),
+                    attribute.Control.Bounds.Size);
             }
         }
+
+        void AlignControlLeft()
+        {
+            float minX = float.MaxValue;
+            foreach (var attribute in attributes)
+            {
+                if (attribute.Control is null || attribute.Control.Bounds.Width < 1f) continue;
+                minX = Math.Min(minX, attribute.Control.Bounds.Left);
+            }
+            foreach (var attribute in attributes)
+            {
+                if (attribute.Control is null) continue;
+                attribute.Control.Bounds = RectangleF.FromLTRB(minX, attribute.Control.Bounds.Top,
+                    attribute.Control.Bounds.Right, attribute.Control.Bounds.Bottom);
+            }
+        }
+
+        void UnionLayoutBounds()
+        {
+            foreach (var attribute in attributes)
+            {
+                if (attribute.Control is null || attribute.Control.Bounds.Width < 1f) continue;
+                attribute.Bounds = RectangleF.Union(attribute.Bounds, attribute.Control.Bounds);
+            }
+        }
+    }
+
+    private static void LayoutTextBounds(RectangleF componentBox, IEnumerable<GH_AdvancedLinkParamAttr> attributes, bool isInput, bool isSimplify)
+    {
+        var heightRatio = componentBox.Height / attributes.Sum(a => isSimplify ? 10 : a.ParamHeight);
+
+        var startX = componentBox.Location.X;
+        var startY = componentBox.Location.Y;
+        if (!isInput)
+        {
+            startX += componentBox.Width;
+        }
+        foreach (var attribute in attributes)
+        {
+            var height = heightRatio * (isSimplify ? 10 : attribute.ParamHeight);
+
+            attribute.Bounds = new RectangleF(new PointF(isInput ? startX - (isSimplify ? 0 : attribute.StringWidth): startX, startY),
+                new SizeF(isSimplify ? 0 : attribute.StringWidth, height));
+
+            startY += height;
+        }
+    }
+
+    private static IEnumerable<GH_AdvancedLinkParamAttr> GetOrCreateAdvancedLinkParamAttr(IGH_Component owner, IEnumerable<IGH_Param> parameters)
+    {
+        return parameters.Select(param =>
+        {
+            if (param.Attributes is not GH_AdvancedLinkParamAttr)
+            {
+                param.Attributes = new GH_AdvancedLinkParamAttr(param, owner.Attributes);
+
+                //Refresh the attributes.
+                owner.OnPingDocument()?.DestroyAttributeCache();
+            }
+            return (GH_AdvancedLinkParamAttr)param.Attributes;
+        });
     }
     #endregion
 
@@ -265,7 +288,7 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
         foreach (IGH_Param item in owner.Params)
         {
             RectangleF bounds = item.Attributes.Bounds;
-            if (!(bounds.Width < 1f))
+            if (bounds.Width >= 1f)
             {
                 if (item.Attributes is GH_AdvancedLinkParamAttr attr)
                 {

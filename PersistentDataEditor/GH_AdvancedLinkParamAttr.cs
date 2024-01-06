@@ -17,13 +17,21 @@ internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr
 {
     public int StringWidth => GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.StandardAdjusted);
     public float ControlMinWidth => Control?.MinWidth ?? 0;
-    public float WholeWidth => StringWidth + (ControlMinWidth == 0 ? 0 : ControlMinWidth + Data.ComponentControlNameDistance) +
-        (Data.ShowLinkParamIcon ? Data.ComponentParamIconSize + Data.ComponentIconDistance : 0);
     public float ParamHeight => Math.Max(20, (Control?.Height ?? 0) + 3);
 
     public BaseControlItem Control { get; private set; }
 
-    public RectangleF IconRect { get; set; }
+    private RectangleF _IconRect;
+    public RectangleF IconRect 
+    {
+        get => _IconRect;
+        set
+        {
+            var shrinkHeight = -(value.Height - value.Width) / 2;
+            value.Inflate(0, shrinkHeight);
+            _IconRect = value;
+        }
+    }
 
     public static SortedList<Guid, Bitmap> IconSet = [];
 

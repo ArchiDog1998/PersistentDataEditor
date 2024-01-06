@@ -15,8 +15,6 @@ internal static partial class Data
     public static readonly int MiniWidth = 6;
     public static bool IsCurrectObjectLock { private get; set; } = false;
 
-    public static int AdditionWidth => ComponentToEdgeDistance + ComponentToCoreDistance;
-
     [ToolButton("ParamControlIcon_24.png")]
     [Setting, Config("Param's Control", icon: "ParamControlIcon_24.png")]
     private static readonly bool _useParamControl = true;
@@ -46,6 +44,7 @@ internal static partial class Data
     [Setting, Config("Control Alignment", parent: "Param's Control", section: 2)]
     private static readonly HorizontalAlignment _controlAlignment = HorizontalAlignment.Stretch;
 
+    [Range(0, 20)]
     [Setting, Config("Components' Params to Control", parent: "Param's Control", section: 3)]
     private static readonly int _componentControlNameDistance = 2;
 
@@ -185,10 +184,6 @@ internal static partial class Data
     [Range(0, 20, 0)]
     [Setting, Config("Component's Params to Edge", section: 2)]
     private static readonly int _componentToEdgeDistance = 3;
-
-    [Range(0, 20, 0)]
-    [Setting, Config("Component's Params to Icon", section: 2)]
-    private static readonly int _componentToCoreDistance = 3;
 
     [Range(0, 20, 0)]
     [Setting, Config("Params' Icon to Edge", section: 2)]

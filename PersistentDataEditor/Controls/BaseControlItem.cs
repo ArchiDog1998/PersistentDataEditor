@@ -23,7 +23,7 @@ public abstract class BaseControlItem
             var shrinkHeight = -(value.Height - Height) / 2;
             value = value.Inflate(0, shrinkHeight, 0, shrinkHeight);
 
-            var shrinkWidth = -(value.Width - Width) / 2;
+            var shrinkWidth = -(value.Width - MinWidth) / 2;
             switch (Data.ControlAlignment)
             {
                 case HorizontalAlignment.Left:
@@ -45,20 +45,6 @@ public abstract class BaseControlItem
     }
     protected virtual bool Valid => true;
     internal abstract float MinWidth { get; }
-    private float? _width = null;
-    internal float Width
-    {
-        get
-        {
-            var width = MinWidth;
-            if (_width.HasValue)
-            {
-                width = Math.Max(width, _width.Value);
-            }
-            return width;
-        }
-        set => _width = value;
-    }
     internal abstract float Height { get; }
     protected virtual void OnLayoutChanged(RectangleF bounds) { }
     internal virtual void ChangeControlItems() { }
