@@ -87,7 +87,7 @@ internal class GumballMouse<T>(GH_PersistentParam<T> owner) : MouseCallback, IGu
             GumballObject gumballObject = new GumballObject();
             gumballObject.SetFromBoundingBox(box);
 
-            GumballDisplayConduit gumballDisplayConduit = new (Rhino.DocObjects.ActiveSpace.None);
+            GumballDisplayConduit gumballDisplayConduit = new ();
             gumballDisplayConduit.SetBaseGumball(gumballObject, Settings);
             gumballDisplayConduit.Enabled = true;
             _gumballs = [gumballObject];
@@ -104,7 +104,7 @@ internal class GumballMouse<T>(GH_PersistentParam<T> owner) : MouseCallback, IGu
                 GumballObject gumballObject = new GumballObject();
                 gumballObject.SetFromBoundingBox(geo.Boundingbox);
 
-                GumballDisplayConduit gumballDisplayConduit = new(Rhino.DocObjects.ActiveSpace.None);
+                GumballDisplayConduit gumballDisplayConduit = new();
                 gumballDisplayConduit.SetBaseGumball(gumballObject, Settings);
                 gumballDisplayConduit.Enabled = true;
                 _gumballs[i] = gumballObject;
