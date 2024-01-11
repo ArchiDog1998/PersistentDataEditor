@@ -149,12 +149,15 @@ partial class SimpleAssemblyPriority
         e.Document?.DestroyAttributeCache();
     }
 
+    static readonly string[] _paramException = ["Telepathy.RemoteParamAttributes"],
+        _componentAddition = [];
     private static void ChangeDocumentObject(IGH_DocumentObject item)
     {
         if (item is IGH_Param o)
         {
             if (o.Kind == GH_ParamKind.floating && o.Attributes is GH_FloatingParamAttributes
-                && o.Attributes is not GH_AdvancedFloatingParamAttr)
+                && o.Attributes is not GH_AdvancedFloatingParamAttr
+                && !_paramException.Contains(o.Attributes.GetType().FullName))
             {
                 PointF point = o.Attributes.Pivot;
                 bool isSelected = o.Attributes.Selected;
@@ -177,7 +180,9 @@ partial class SimpleAssemblyPriority
                 o.Attributes.ExpireLayout();
             }
         }
-        else if (item is IGH_Component component && component.Attributes.GetType() == typeof(GH_ComponentAttributes))
+        else if (item is IGH_Component component 
+            && (component.Attributes.GetType() == typeof(GH_ComponentAttributes) 
+            || _componentAddition.Contains(component.Attributes.GetType().FullName)))
         {
             PointF point = component.Attributes.Pivot;
             bool isSelected = component.Attributes.Selected;
