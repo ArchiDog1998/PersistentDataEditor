@@ -30,15 +30,18 @@ internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IContr
             if (base.Selected == value) return;
             base.Selected = value;
 
-            if (value)
+            if (!Data.ShowedGumball && value && Owner.SourceCount == 0
+                && (Owner is not IGH_PreviewObject obj || !obj.Hidden)) 
             {
+                Data.ShowedGumball = true;
                 //Open gumball.
                 this.RedrawGumballs();
             }
             else
             {
-                //Close gumball
-                this.DisposeGumballs();
+                Data.ShowedGumball = false;
+               //Close gumball
+               this.DisposeGumballs();
             }
 
             if (Data.OnlyShowSelectedObjectControl)

@@ -27,16 +27,18 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
             {
                 if (item.Attributes is GH_AdvancedLinkParamAttr attr)
                 {
-                    if (value)
+                    if (!Data.ShowedGumball && value 
+                        && item.SourceCount == 0 && !Owner.Hidden)
                     {
+                        Data.ShowedGumball = true;
                         //Open gumball.
                         attr.ShowAllGumballs();
                     }
                     else
                     {
+                        Data.ShowedGumball = false;
                         //Close gumball
                         attr.DisposeGumball();
-
                     }
                 }
             }

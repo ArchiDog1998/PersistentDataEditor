@@ -11,6 +11,7 @@ namespace PersistentDataEditor;
 
 internal static partial class Data
 {
+    public static bool ShowedGumball = false;
     public static readonly int MiniWidth = 6;
     public static bool IsCurrectObjectLock { private get; set; } = false;
 
