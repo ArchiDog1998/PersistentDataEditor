@@ -1,8 +1,11 @@
 ﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
+using SimpleGrasshopper.Util;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace PersistentDataEditor;
@@ -175,12 +178,20 @@ internal class ParamGeneralControl<T>(GH_PersistentParam<T> owner) : ParamContro
     }
 }
 
-internal class ParamVariableControl(Param_ScriptVariable owner) : ParamGeneralControl<IGH_Goo>(owner)
+internal class ParamVariableControl(Param_GenericObject owner) : ParamGeneralControl<IGH_Goo>(owner)
 {
     protected override bool Valid => base.Valid && Owner.Access == GH_ParamAccess.item;
 
     protected override GooControlBase<IGH_Goo> SetUpControl(IGH_Param param)
     {
-        return new GooVariableControl(() => OwnerGooData, () => IsNull, (Param_ScriptVariable)param);
+        return new GooVariableControl(() => OwnerGooData, () => IsNull, param, p =>
+        {
+            var id = ((Param_ScriptVariable)p)?.TypeHint?.HintID;
+            if (id.HasValue) return id.Value;
+
+            var converter = p.GetType().GetAllRuntimeFields().First(f => f.Name == "_converter").GetValue(p);
+            var mcId = converter.GetType().GetAllRuntimeProperties().First(p => p.Name == "Id").GetValue(converter);
+            return (Guid)mcId.GetType().GetAllRuntimeProperties().First(p => p.Name == "Id").GetValue(mcId);
+        });
     }
 }

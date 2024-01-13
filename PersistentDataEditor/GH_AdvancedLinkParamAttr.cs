@@ -135,9 +135,10 @@ internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr
 
     internal static BaseControlItem GetControl(IGH_Param param)
     {
-        if (param is Param_ScriptVariable variable)
+        if (param is Param_ScriptVariable
+            || param.GetType().FullName == "RhinoCodePluginGH.Parameters.ScriptVariableParam")
         {
-            return Data.UseParamScriptControl ? new ParamVariableControl(variable) : null;
+            return Data.UseParamScriptControl ? new ParamVariableControl((Param_GenericObject)param) : null;
         }
         if (Data.OnlyItemAccessControl && param.Access != GH_ParamAccess.item) return null;
 
