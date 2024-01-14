@@ -186,7 +186,7 @@ internal static partial class Data
 
     [Range(0, 20, 0)]
     [Setting, Config("Component's Params to Edge", section: 2)]
-    private static readonly int _componentToEdgeDistance = 3;
+    private static readonly int _componentToEdgeDistance = 5;
 
     [Range(0, 20, 0)]
     [Setting, Config("Params' Icon to Edge", section: 2)]
