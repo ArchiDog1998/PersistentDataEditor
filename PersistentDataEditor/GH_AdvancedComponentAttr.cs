@@ -203,7 +203,7 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
             foreach (var attribute in attributes)
             {
                 if (attribute.Control is null) continue;
-                attribute.Control.Bounds = new RectangleF(new PointF(attribute.Bounds.X - attribute.ControlMinWidth - Data.ComponentControlNameDistance, attribute.Bounds.Y), new SizeF(attribute.ControlMinWidth, attribute.ParamHeight));
+                attribute.Control.Bounds = new RectangleF(new PointF(attribute.Bounds.X - attribute.ControlMinWidth - Data.ComponentControlNameDistance, attribute.Bounds.Y), new SizeF(attribute.ControlMinWidth, attribute.Bounds.Height));
             }
         }
 
