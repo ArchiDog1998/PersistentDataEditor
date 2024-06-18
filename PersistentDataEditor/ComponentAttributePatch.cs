@@ -1,110 +1,98 @@
-﻿using Grasshopper.GUI;
+﻿using Grasshopper;
+using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
 
 namespace PersistentDataEditor;
 
-internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
+[HarmonyPatch]
+internal class ComponentAttributePatch
 {
-    private bool _isSimplify = false;
     private const float SimplifyHeight = 10;
 
-    public override bool Selected 
-    { 
-        get => base.Selected;
-        set
-        {
-            if (base.Selected == value) return;
-            base.Selected = value;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsSimplify(IGH_Component owner) => owner.OnPingDocument()?.ValueTable.GetValue(nameof(IsSimplify) + owner.InstanceGuid, false) ?? false;
 
-            foreach (var item in Owner.Params.Input)
-            {
-                if (item.Attributes is GH_AdvancedLinkParamAttr attr)
-                {
-                    if (!Data.ShowedGumball && value 
-                        && item.SourceCount == 0 && !Owner.Hidden)
-                    {
-                        Data.ShowedGumball = true;
-                        //Open gumball.
-                        attr.ShowAllGumballs();
-                    }
-                    else
-                    {
-                        Data.ShowedGumball = false;
-                        //Close gumball
-                        attr.DisposeGumball();
-                    }
-                }
-            }
-
-            if (Data.OnlyShowSelectedObjectControl)
-            {
-                this.ExpireLayout();
-            }
-        }
-    }
-
-    public GH_AdvancedComponentAttr(IGH_Component component)
-        : base(component)
-    {
-        _isSimplify = Owner.OnPingDocument().ValueTable.GetValue(nameof(_isSimplify) + Owner.InstanceGuid, false);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void SetSimplify(IGH_Component owner, bool value) => owner.OnPingDocument()?.ValueTable.SetValue(nameof(IsSimplify) + owner.InstanceGuid, value);
 
     #region Layout
-    private static readonly FieldInfo _tagsInfo = typeof(GH_LinkedParamAttributes).FindField("m_renderTags");
-    protected override void Layout()
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsIconMode(GH_IconDisplayMode mode)
     {
-        Pivot = GH_Convert.ToPoint(Pivot);
-        m_innerBounds = LayoutComponentBoxNew(Owner);
-        ParamsLayoutNew(Owner, m_innerBounds, true);
-        ParamsLayoutNew(Owner, m_innerBounds, false);
-        Bounds = LayoutBounds(Owner, m_innerBounds);
-
-        var bound = Bounds;
-        bound.Inflate(Data.ComponentToEdgeDistance - 2, 0);
-        Bounds = bound;
-
-        RectangleF LayoutComponentBoxNew(IGH_Component owner)
+        if (mode == GH_IconDisplayMode.application)
         {
-            float inputHeight = GetParamsWholeHeight(owner.Params.Input, owner);
-            float outputHeight = GetParamsWholeHeight(owner.Params.Output, owner);
+            return CentralSettings.CanvasObjectIcons;
+        }
+        return mode == GH_IconDisplayMode.icon;
+    }
 
-            float val = Math.Max(inputHeight, outputHeight);
-            val = Math.Max(val, 24);
-            int num = 24;
-            if (!IsIconMode(owner.IconDisplayMode))
-            {
-                val = Math.Max(val, GH_Convert.ToSize(GH_FontServer.MeasureString(owner.NickName, GH_FontServer.LargeAdjusted)).Width + 6);
-            }
-            return GH_Convert.ToRectangle(new RectangleF(owner.Attributes.Pivot.X - 0.5f * num, owner.Attributes.Pivot.Y - 0.5f * val, num, val));
+    [HarmonyPatch(typeof(GH_ComponentAttributes), nameof(GH_ComponentAttributes.LayoutComponentBox))]
+    static bool Prefix(out RectangleF __result, IGH_Component owner)
+    {
+        float inputHeight = GetParamsWholeHeight(owner.Params.Input, owner);
+        float outputHeight = GetParamsWholeHeight(owner.Params.Output, owner);
 
-            float GetParamsWholeHeight(List<IGH_Param> gH_Params, IGH_Component owner)
+        float val = Math.Max(inputHeight, outputHeight);
+        val = Math.Max(val, 24);
+        int num = 24;
+
+        if (!IsIconMode(owner.IconDisplayMode))
+        {
+            val = Math.Max(val, GH_Convert.ToSize(GH_FontServer.MeasureString(owner.NickName, GH_FontServer.LargeAdjusted)).Width + 6);
+        }
+        __result = GH_Convert.ToRectangle(new RectangleF(owner.Attributes.Pivot.X - 0.5f * num, owner.Attributes.Pivot.Y - 0.5f * val, num, val));
+
+        return false;
+
+        static float GetParamsWholeHeight(List<IGH_Param> gH_Params, IGH_Component owner)
+        {
+            var isSimplify = IsSimplify(owner);
+
+            float wholeHeight = 0;
+            foreach (IGH_Param param in gH_Params)
             {
-                float wholeHeight = 0;
-                foreach (IGH_Param param in gH_Params)
+                if (param.Attributes == null || param.Attributes is not GH_AdvancedLinkParamAttr)
                 {
-                    if (param.Attributes == null || param.Attributes is not GH_AdvancedLinkParamAttr)
-                    {
-                        param.Attributes = new GH_AdvancedLinkParamAttr(param, owner.Attributes);
+                    param.Attributes = new GH_AdvancedLinkParamAttr(param, owner.Attributes);
 
-                        //Refresh the attributes.
-                        owner.OnPingDocument()?.DestroyAttributeCache();
-                    }
-                    GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
-                    wholeHeight += _isSimplify ? SimplifyHeight : attr.ParamHeight;
+                    //Refresh the attributes.
+                    owner.OnPingDocument()?.DestroyAttributeCache();
                 }
-                return wholeHeight;
+                GH_AdvancedLinkParamAttr attr = (GH_AdvancedLinkParamAttr)param.Attributes;
+                wholeHeight += isSimplify ? SimplifyHeight : attr.ParamHeight;
             }
+            return wholeHeight;
         }
     }
 
-    private void ParamsLayoutNew(IGH_Component owner, RectangleF componentBox, bool isInput)
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(GH_ComponentAttributes), nameof(GH_ComponentAttributes.LayoutInputParams))]
+    static bool InputPrefix(GH_ComponentAttributes __instance, IGH_Component owner, RectangleF componentBox)
+    {
+        ParamsLayoutNew(owner, componentBox, true, IsSimplify(owner));
+        return false;
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(GH_ComponentAttributes), nameof(GH_ComponentAttributes.LayoutOutputParams))]
+    static bool OutputPrefix(GH_ComponentAttributes __instance, IGH_Component owner, RectangleF componentBox)
+    {
+        ParamsLayoutNew(owner, componentBox, false, IsSimplify(owner));
+        return false;
+    }
+
+    private static void ParamsLayoutNew(IGH_Component owner, RectangleF componentBox, bool isInput, bool _isSimplify)
     {
         List<IGH_Param> gH_Params = isInput ? owner.Params.Input : owner.Params.Output;
 
@@ -146,6 +134,7 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
         }
     }
 
+    private static readonly FieldInfo _tagsInfo = typeof(GH_LinkedParamAttributes).FindField("m_renderTags");
     private static void LayoutTags(List<IGH_Param> gH_Params, IEnumerable<GH_AdvancedLinkParamAttr> attributes, bool isInput)
     {
         CreateLayoutTags();
@@ -256,7 +245,7 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
 
     private static void LayoutTextBounds(RectangleF componentBox, IEnumerable<GH_AdvancedLinkParamAttr> attributes, bool isInput, bool isSimplify)
     {
-        var heightRatio = componentBox.Height / attributes.Sum(a => isSimplify ? 10 : a.ParamHeight);
+        var heightRatio = componentBox.Height / attributes.Sum(a => isSimplify ? SimplifyHeight : a.ParamHeight);
 
         var startX = componentBox.Location.X;
         var startY = componentBox.Location.Y;
@@ -266,9 +255,9 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
         }
         foreach (var attribute in attributes)
         {
-            var height = heightRatio * (isSimplify ? 10 : attribute.ParamHeight);
+            var height = heightRatio * (isSimplify ? SimplifyHeight : attribute.ParamHeight);
 
-            attribute.Bounds = new RectangleF(new PointF(isInput ? startX - (isSimplify ? 0 : attribute.StringWidth): startX, startY),
+            attribute.Bounds = new RectangleF(new PointF(isInput ? startX - (isSimplify ? 0 : attribute.StringWidth) : startX, startY),
                 new SizeF(isSimplify ? 0 : attribute.StringWidth, height));
 
             startY += height;
@@ -292,22 +281,11 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
     #endregion
 
     #region Render
-    protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
+    [HarmonyPatch(typeof(GH_ComponentAttributes), nameof(GH_ComponentAttributes.RenderComponentParameters))]
+    static bool Prefix(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
     {
-        base.Render(canvas, graphics, channel);
-        if (channel != GH_CanvasChannel.Objects || _isSimplify) return;
-
-        GH_Palette gH_Palette = GH_CapsuleRenderEngine.GetImpliedPalette(base.Owner);
-        if (gH_Palette == GH_Palette.Normal && !base.Owner.IsPreviewCapable)
-        {
-            gH_Palette = GH_Palette.Hidden;
-        }
-        GH_Capsule gH_Capsule = GH_Capsule.CreateCapsule(Bounds, gH_Palette);
-        bool left = base.Owner.Params.Input.Count == 0;
-        bool right = base.Owner.Params.Output.Count == 0;
-        gH_Capsule.SetJaggedEdges(left, right);
-        GH_PaletteStyle impliedStyle = GH_CapsuleRenderEngine.GetImpliedStyle(gH_Palette, Selected, base.Owner.Locked, base.Owner.Hidden);
-        RenderComponentParametersNew(canvas, graphics, Owner, impliedStyle);
+        RenderComponentParametersNew(canvas, graphics, owner, style);
+        return false;
     }
 
     private static void RenderComponentParametersNew(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
@@ -318,8 +296,8 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
             return;
         }
         canvas.SetSmartTextRenderingHint();
-        Color color = Color.FromArgb(zoomFadeLow, style.Text);
-        SolidBrush solidBrush = new SolidBrush(color);
+        var color = Color.FromArgb(zoomFadeLow, style.Text);
+        using var solidBrush = new SolidBrush(color);
         foreach (IGH_Param item in owner.Params)
         {
             RectangleF bounds = item.Attributes.Bounds;
@@ -327,6 +305,10 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
             {
                 if (item.Attributes is GH_AdvancedLinkParamAttr attr)
                 {
+                    
+                    //Render names.
+                    graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, attr.Bounds, attr.Owner.Kind == GH_ParamKind.input ? GH_TextRenderingConstants.FarCenter : GH_TextRenderingConstants.NearCenter);
+
                     //Render Icon;
                     if (Data.ShowLinkParamIcon)
                     {
@@ -362,20 +344,42 @@ internal class GH_AdvancedComponentAttr : GH_ComponentAttributes
                 }
             }
         }
-        solidBrush.Dispose();
     }
     #endregion
 
-    public override GH_ObjectResponse RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)
+    #region Respond
+
+    private static readonly FieldInfo _innerBox = typeof(GH_ComponentAttributes).GetRuntimeFields().FirstOrDefault(f => f.Name == "m_innerBounds");
+
+    [HarmonyPatch(typeof(GH_Canvas), "DoubleClick_InactiveObject")]
+    static bool Prefix(GH_Canvas __instance, ref bool __result, GH_CanvasMouseEvent e)
     {
-        if (m_innerBounds.Contains(e.CanvasLocation))
+        if (!__instance.ModifiersEnabled)
         {
-            _isSimplify = !_isSimplify;
-            this.ExpireLayout();
-            sender.Refresh();
-            Owner.OnPingDocument().ValueTable.SetValue(nameof(_isSimplify) + Owner.InstanceGuid, _isSimplify);
-            return GH_ObjectResponse.Release;
+            return __result = false;
         }
-        return base.RespondToMouseDoubleClick(sender, e);
+        if (!__instance.IsDocument)
+        {
+            return __result = false;
+        }
+        IGH_Attributes iGH_Attributes = __instance.Document.FindAttribute(e.CanvasLocation, topLevelOnly: false);
+        if (iGH_Attributes == null)
+        {
+            return __result = false;
+        }
+
+        if (iGH_Attributes is GH_ComponentAttributes attr
+            && ((RectangleF)_innerBox.GetValue(attr)).Contains(e.CanvasLocation))
+        {
+            SetSimplify(attr.Owner, !IsSimplify(attr.Owner));
+            attr.ExpireLayout();
+            __instance.Refresh();
+
+            __result = true;
+            return false;
+        }
+
+        return false;
     }
+    #endregion
 }

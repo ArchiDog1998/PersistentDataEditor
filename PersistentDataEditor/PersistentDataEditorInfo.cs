@@ -6,12 +6,12 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Special;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PersistentDataEditor;
@@ -59,6 +59,9 @@ partial class SimpleAssemblyPriority
         Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
 
         new MoveShowConduit().Enabled = true;
+
+        var harmony = new Harmony("Grasshopper.PersistentDataEditor");
+        harmony.PatchAll();
 
         CentralSettings.PreviewGumballs = false;
         base.DoWithEditor(editor);
@@ -179,19 +182,6 @@ partial class SimpleAssemblyPriority
                 };
                 o.Attributes.ExpireLayout();
             }
-        }
-        else if (item is IGH_Component component 
-            && (component.Attributes.GetType() == typeof(GH_ComponentAttributes) 
-            || _componentAddition.Contains(component.Attributes.GetType().FullName)))
-        {
-            PointF point = component.Attributes.Pivot;
-            bool isSelected = component.Attributes.Selected;
-            component.Attributes = new GH_AdvancedComponentAttr(component)
-            {
-                Pivot = point,
-                Selected = isSelected,
-            };
-            component.Attributes.ExpireLayout();
         }
     }
 }

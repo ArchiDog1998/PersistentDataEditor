@@ -13,8 +13,9 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <PackageReference Include="Grasshopper" Version="8.0.23304.9001" />
-    <PackageReference Include="SimpleGrasshopper" Version="1.4.5" />
+    <PackageReference Include="Grasshopper" Version="8.8.24163.12481" />
+    <PackageReference Include="Lib.Harmony" Version="2.3.3" />
+    <PackageReference Include="SimpleGrasshopper" Version="1.8.2" />
 	  <EmbeddedResource Include="Resources\*.png" />
   </ItemGroup>
   
