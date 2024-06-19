@@ -26,20 +26,21 @@ internal class AttributeSelectedPatch
     }
 
     [HarmonyPatch("DoubleClick_InactiveObject")]
-    static bool Prefix(GH_Canvas __instance, ref bool __result, GH_CanvasMouseEvent e)
+    static void Postfix(GH_Canvas __instance, ref bool __result, GH_CanvasMouseEvent e)
     {
+        if (__result) return;
         if (!__instance.ModifiersEnabled)
         {
-            return __result = false;
+            return;
         }
         if (!__instance.IsDocument)
         {
-            return __result = false;
+            return;
         }
         IGH_Attributes iGH_Attributes = __instance.Document.FindAttribute(e.CanvasLocation, topLevelOnly: false);
         if (iGH_Attributes == null)
         {
-            return __result = false;
+            return;
         }
 
         if (iGH_Attributes is GH_ComponentAttributes attr
@@ -50,9 +51,6 @@ internal class AttributeSelectedPatch
             __instance.Refresh();
 
             __result = true;
-            return false;
         }
-
-        return true;
     }
 }
