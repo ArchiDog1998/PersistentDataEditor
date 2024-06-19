@@ -6,7 +6,6 @@ using HarmonyLib;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 
 namespace PersistentDataEditor;
 
@@ -57,5 +56,4 @@ internal class AttributeSelectedPatch
 
         return false;
     }
-
 }

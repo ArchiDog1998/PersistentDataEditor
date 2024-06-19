@@ -165,7 +165,6 @@ internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IContr
 
         if (Bounds.Width + 2 * edgeDistance < minWidth) edgeDistance = (minWidth - (int)Bounds.Width) / 2;
         Bounds = new Rectangle((int)Bounds.X - edgeDistance, (int)Bounds.Y, (int)Bounds.Width + edgeDistance * 2, (int)Bounds.Height);
-
     }
 
     protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
