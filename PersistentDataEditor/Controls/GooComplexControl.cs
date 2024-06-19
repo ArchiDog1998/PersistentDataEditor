@@ -9,7 +9,7 @@ namespace PersistentDataEditor;
 internal class GooComplexControl(Func<GH_ComplexNumber> valueGetter, Func<bool> isNull, string name)
     : GooHorizonalControlBase<GH_ComplexNumber>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => new("63d12974-2915-4ccf-ac26-5d566c3bac92");
+    public override Guid AddComponentGuid => new("63d12974-2915-4ccf-ac26-5d566c3bac92");
 
     protected override BaseControlItem[] SetControlItems()
     {
@@ -38,7 +38,7 @@ internal class GooComplexControl(Func<GH_ComplexNumber> valueGetter, Func<bool> 
         };
     }
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;

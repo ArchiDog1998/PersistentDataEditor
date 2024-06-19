@@ -3,22 +3,21 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Parameters.Hints;
 using Grasshopper.Kernel.Types;
+using HarmonyLib;
 using System;
 
 namespace PersistentDataEditor;
 
 internal class GooVariableControl : GooHorizonalControlBase<IGH_Goo>
 {
-    public override Guid AddCompnentGuid => _values[0].AddCompnentGuid;
+    public override Guid AddComponentGuid => _values[0].AddComponentGuid;
 
     private readonly IGH_Param _owner;
-    private readonly Func<IGH_Param, Guid> _getId;
-    public GooVariableControl(Func<IGH_Goo> valueGetter, Func<bool> isNull, IGH_Param owner, Func<IGH_Param, Guid> getId)
+    public GooVariableControl(Func<IGH_Goo> valueGetter, Func<bool> isNull, IGH_Param owner)
         : base(valueGetter, isNull, null)
     {
         owner.ObjectChanged += Owner_ObjectChanged;
         _owner = owner;
-        _getId = getId;
         ChangeControlItems();
     }
 
@@ -141,14 +140,18 @@ internal class GooVariableControl : GooHorizonalControlBase<IGH_Goo>
 
     protected override BaseControlItem[] SetControlItems()
     {
-        var id = _getId?.Invoke(_owner) ?? default;
-        return ChangeParamId(id);
+        return ChangeParamId(GetHintId());
     }
 
-    private static bool ShouldUse<T>() where T : class, IGH_Goo
+    private Guid GetHintId()
     {
-        string saveBooleanKey = "UseParam" + typeof(T).Name;
-        return Instances.Settings.GetValue(saveBooleanKey, true);
+        if (_owner == null) return default;
+        var id = ((Param_ScriptVariable)_owner)?.TypeHint?.HintID;
+        if (id.HasValue) return id.Value;
+
+        var converter = AccessTools.Field(_owner.GetType(), "_converter").GetValue(_owner);
+        var mcId = AccessTools.Field(converter.GetType(), "Id").GetValue(converter);
+        return (Guid)AccessTools.Field(mcId.GetType(), "Id").GetValue(mcId);
     }
 
     protected override IGH_Goo SetValue(IGH_Goo[] values)
@@ -156,8 +159,8 @@ internal class GooVariableControl : GooHorizonalControlBase<IGH_Goo>
         return values[0];
     }
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
-        _values[0].DosomethingWhenCreate(obj);
+        _values[0].DoSomethingWhenCreate(obj);
     }
 }

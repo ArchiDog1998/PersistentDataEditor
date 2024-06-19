@@ -9,7 +9,7 @@ namespace PersistentDataEditor;
 internal class GooCircleControl(Func<GH_Circle> valueGetter, Func<bool> isNull, string name) : GooVerticalControlBase<GH_Circle>(valueGetter, isNull, name)
 {
 
-    public override Guid AddCompnentGuid => Data.CircleType == Circle_Control.CNR
+    public override Guid AddComponentGuid => Data.CircleType == Circle_Control.CNR
         ? new Guid("d114323a-e6ee-4164-946b-e4ca0ce15efa")
         : new Guid("807b86e3-be8d-4970-92b5-f8cdcb45b06b");
 
@@ -49,7 +49,7 @@ internal class GooCircleControl(Func<GH_Circle> valueGetter, Func<bool> isNull, 
         };
     }
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;

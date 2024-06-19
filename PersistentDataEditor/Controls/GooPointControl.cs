@@ -9,7 +9,7 @@ namespace PersistentDataEditor;
 internal class GooPointControl(Func<GH_Point> valueGetter, Func<bool> isNull, string name)
     : GooHorizonalControlBase<GH_Point>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => new("3581f42a-9592-4549-bd6b-1c0fc39d067b");
+    public override Guid AddComponentGuid => new("3581f42a-9592-4549-bd6b-1c0fc39d067b");
 
     protected override BaseControlItem[] SetControlItems()
     {
@@ -43,7 +43,7 @@ internal class GooPointControl(Func<GH_Point> valueGetter, Func<bool> isNull, st
         };
     }
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;

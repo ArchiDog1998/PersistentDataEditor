@@ -35,7 +35,7 @@ internal class DocumentPatch
         if (obj is IGH_Component component
             && ComponentAttributePatch.IsSimplify(component))
         {
-            __result = null;
+            __result  = null;
         }
     }
 }

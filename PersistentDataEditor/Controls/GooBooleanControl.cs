@@ -10,7 +10,7 @@ namespace PersistentDataEditor;
 internal class GooBooleanControl(Func<GH_Boolean> valueGetter, Func<bool> isNull)
     : GooControlBase<GH_Boolean>(valueGetter, isNull)
 {
-    public override Guid AddCompnentGuid => new("2e78987b-9dfb-42a2-8b76-3923ac8bd91a");
+    public override Guid AddComponentGuid => new("2e78987b-9dfb-42a2-8b76-3923ac8bd91a");
 
     internal override float MinWidth => 10;
 

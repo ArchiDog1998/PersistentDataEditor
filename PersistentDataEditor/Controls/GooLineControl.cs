@@ -9,7 +9,7 @@ namespace PersistentDataEditor;
 internal class GooLineControl(Func<GH_Line> valueGetter, Func<bool> isNull, string name)
     : GooVerticalControlBase<GH_Line>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => Data.LineType == Line_Control.From_To
+    public override Guid AddComponentGuid => Data.LineType == Line_Control.From_To
         ? new("4c4e56eb-2f04-43f9-95a3-cc46a14f495a")
         : new("4c619bc9-39fd-4717-82a6-1e07ea237bbe");
 
@@ -55,7 +55,7 @@ internal class GooLineControl(Func<GH_Line> valueGetter, Func<bool> isNull, stri
         };
     }
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;

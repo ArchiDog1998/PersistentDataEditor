@@ -14,7 +14,7 @@ internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T :
 {
     private static readonly MethodInfo _function = typeof(GH_Canvas).GetRuntimeMethods().First(m => m.Name.Contains("InstantiateNewObject") && !m.IsPublic);
 
-    public abstract Guid AddCompnentGuid { get; }
+    public abstract Guid AddComponentGuid { get; }
     protected virtual ushort AddCompnentIndex => 0;
     protected virtual string AddCompnentInit => ShowValue?.ToString();
     internal IGH_Param Owner { private get; set; } = null;
@@ -47,12 +47,12 @@ internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T :
         _isNull = isNull;
     }
 
-    public virtual void DosomethingWhenCreate(IGH_DocumentObject obj) { }
+    public virtual void DoSomethingWhenCreate(IGH_DocumentObject obj) { }
 
     internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
-        if (e.Button == MouseButtons.Right && AddCompnentGuid != default && Owner != null)
-            CreateObject(Owner, AddCompnentGuid, AddCompnentIndex, AddCompnentInit, true, DosomethingWhenCreate);
+        if (e.Button == MouseButtons.Right && AddComponentGuid != default && Owner != null)
+            CreateObject(Owner, AddComponentGuid, AddCompnentIndex, AddCompnentInit, true, DoSomethingWhenCreate);
     }
 
     private static IGH_DocumentObject CreateObject(IGH_Param param, Guid componentGuid, ushort index, string init, bool isinput, Action<IGH_DocumentObject> action = null)
@@ -126,7 +126,7 @@ public interface IGooValue
 {
     IGH_Goo SaveValue { get; }
     Action ValueChange { set; }
-    Guid AddCompnentGuid { get; }
-    void DosomethingWhenCreate(IGH_DocumentObject obj);
+    Guid AddComponentGuid { get; }
+    void DoSomethingWhenCreate(IGH_DocumentObject obj);
     IGH_Goo GetDefaultValue();
 }

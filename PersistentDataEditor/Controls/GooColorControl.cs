@@ -18,7 +18,7 @@ internal class GooColorControl(Func<GH_Colour> valueGetter, Func<bool> isNull) :
     private readonly Brush _background = new HatchBrush(HatchStyle.LargeCheckerBoard, Color.White, Color.LightGray);
     private GraphicsPath _path;
 
-    public override Guid AddCompnentGuid => new("9c53bac0-ba66-40bd-8154-ce9829b9db1a");
+    public override Guid AddComponentGuid => new("9c53bac0-ba66-40bd-8154-ce9829b9db1a");
 
     internal override float MinWidth => 12;
 
@@ -58,7 +58,7 @@ internal class GooColorControl(Func<GH_Colour> valueGetter, Func<bool> isNull) :
         graphics.DrawPath(new Pen(new SolidBrush(Data.ControlBorderColor)), _path);
     }
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         GH_ColourSwatch swatch = (GH_ColourSwatch)obj;
         if (swatch == null) return;

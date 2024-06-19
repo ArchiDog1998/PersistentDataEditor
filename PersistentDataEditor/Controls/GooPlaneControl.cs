@@ -10,7 +10,7 @@ namespace PersistentDataEditor;
 internal class GooPlaneControl(Func<GH_Plane> valueGetter, Func<bool> isNull, string name)
     : GooVerticalControlBase<GH_Plane>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => Data.PlaneType == Plane_Control.OZ
+    public override Guid AddComponentGuid => Data.PlaneType == Plane_Control.OZ
         ? new Guid("cfb6b17f-ca82-4f5d-b604-d4f69f569de3")
         : new Guid("bc3e379e-7206-4e7b-b63a-ff61f4b38a3e");
 
@@ -51,7 +51,7 @@ internal class GooPlaneControl(Func<GH_Plane> valueGetter, Func<bool> isNull, st
         };
     }
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;

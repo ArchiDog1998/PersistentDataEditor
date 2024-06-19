@@ -8,7 +8,7 @@ namespace PersistentDataEditor;
 
 internal class GooBoxControl(Func<GH_Box> valueGetter, Func<bool> isNull, string name) : GooVerticalControlBase<GH_Box>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => Data.BoxType switch
+    public override Guid AddComponentGuid => Data.BoxType switch
     {
         Box_Control.Center_Box => new Guid("28061aae-04fb-4cb5-ac45-16f3b66bc0a4"),
         Box_Control.Box_Rectangle => new Guid("d0a56c9e-2483-45e7-ab98-a450b97f1bc0"),
@@ -72,7 +72,7 @@ internal class GooBoxControl(Func<GH_Box> valueGetter, Func<bool> isNull, string
         }
     }
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;

@@ -17,7 +17,7 @@ internal class GooInterval2DControl(Func<GH_Interval2D> valueGetter, Func<bool> 
     internal class GooInterval2DControlHor(Func<GH_Interval2D> valueGetter, Func<bool> isNull)
         : GooHorizonalControlBase<GH_Interval2D>(valueGetter, isNull, null)
     {
-        public override Guid AddCompnentGuid => default;
+        public override Guid AddComponentGuid => default;
 
         private protected override GH_Interval2D CreateDefaultValue()
         {
@@ -43,7 +43,7 @@ internal class GooInterval2DControl(Func<GH_Interval2D> valueGetter, Func<bool> 
         }
     }
 
-    public override Guid AddCompnentGuid => Data.Domain2Type == Domain2D_Control.U0_U1_V0_V1
+    public override Guid AddComponentGuid => Data.Domain2Type == Domain2D_Control.U0_U1_V0_V1
         ? new("9083b87f-a98c-4e41-9591-077ae4220b19")
         : new("8555a743-36c1-42b8-abcc-06d9cb94519f");
 
@@ -72,7 +72,7 @@ internal class GooInterval2DControl(Func<GH_Interval2D> valueGetter, Func<bool> 
         return new GH_Interval2D(new UVInterval(((GH_Interval)values[0]).Value, ((GH_Interval)values[1]).Value));
     }
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;

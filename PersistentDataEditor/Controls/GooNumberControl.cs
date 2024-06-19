@@ -8,11 +8,11 @@ namespace PersistentDataEditor;
 internal class GooNumberControl(Func<GH_Number> valueGetter, Func<bool> isNull, string name)
     : GooHorizonalControlBase<GH_Number>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => new("57da07bd-ecab-415d-9d86-af36d7073abc");
+    public override Guid AddComponentGuid => new("57da07bd-ecab-415d-9d86-af36d7073abc");
 
     protected override string AddCompnentInit => base.AddCompnentInit ?? "0..100.00";
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         GH_NumberSlider slider = (GH_NumberSlider)obj;
         if (slider == null) return;

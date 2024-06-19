@@ -5,7 +5,7 @@ namespace PersistentDataEditor;
 
 internal class GooIntegerControl(Func<GH_Integer> valueGetter, Func<bool> isNull, string name) : GooHorizonalControlBase<GH_Integer>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => new("57da07bd-ecab-415d-9d86-af36d7073abc");
+    public override Guid AddComponentGuid => new("57da07bd-ecab-415d-9d86-af36d7073abc");
 
     protected override string AddCompnentInit => base.AddCompnentInit ?? "0..100";
 

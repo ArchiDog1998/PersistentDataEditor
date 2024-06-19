@@ -8,7 +8,7 @@ namespace PersistentDataEditor;
 
 internal class GooArcControl(Func<GH_Arc> valueGetter, Func<bool> isNull, string name) : GooVerticalControlBase<GH_Arc>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => Data.ArcType == Arc_Control.SED
+    public override Guid AddComponentGuid => Data.ArcType == Arc_Control.SED
         ? new("9d2583dd-6cf5-497c-8c40-c9a290598396")
         : new("bb59bffc-f54c-4682-9778-f6c3fe74fce3");
 
@@ -51,7 +51,7 @@ internal class GooArcControl(Func<GH_Arc> valueGetter, Func<bool> isNull, string
         };
     }
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;

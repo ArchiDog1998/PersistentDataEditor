@@ -13,7 +13,7 @@ namespace PersistentDataEditor;
 
 internal class GooEnumControl(Func<GH_Integer> valueGetter, Func<bool> isNull, SortedList<int, string> namedValues) : GooControlBase<GH_Integer>(valueGetter, isNull)
 {
-    public override Guid AddCompnentGuid => new("00027467-0D24-4fa7-B178-8DC0AC5F42EC");
+    public override Guid AddComponentGuid => new("00027467-0D24-4fa7-B178-8DC0AC5F42EC");
 
     private string ShowString
     {
@@ -82,7 +82,7 @@ internal class GooEnumControl(Func<GH_Integer> valueGetter, Func<bool> isNull, S
         graphics.FillPath(Data.ControlForegroundColor.GetBrush(), _triangle);
     }
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         if (_namedValues == null) return;
 

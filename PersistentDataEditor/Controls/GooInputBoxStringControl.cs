@@ -18,7 +18,7 @@ namespace PersistentDataEditor;
 internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNull, bool readOnly = false)
     : GooControlBase<T>(valueGetter, isNull) where T : class, IGH_Goo
 {
-    public override Guid AddCompnentGuid => new("59e0b89a-e487-49f8-bab8-b5bab16be14c");
+    public override Guid AddComponentGuid => new("59e0b89a-e487-49f8-bab8-b5bab16be14c");
 
     private string ShowString => ShowValue?.ToString();
     internal override float Height => 14;

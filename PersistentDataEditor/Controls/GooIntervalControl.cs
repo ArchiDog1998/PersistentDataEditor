@@ -9,7 +9,7 @@ namespace PersistentDataEditor;
 internal class GooIntervalControl(Func<GH_Interval> valueGetter, Func<bool> isNull, string name)
     : GooHorizonalControlBase<GH_Interval>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => new("d1a28e95-cf96-4936-bf34-8bf142d731bf");
+    public override Guid AddComponentGuid => new("d1a28e95-cf96-4936-bf34-8bf142d731bf");
 
     protected override BaseControlItem[] SetControlItems()
     {
@@ -42,7 +42,7 @@ internal class GooIntervalControl(Func<GH_Interval> valueGetter, Func<bool> isNu
         };
     }
 
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;

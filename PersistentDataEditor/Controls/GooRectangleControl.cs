@@ -9,7 +9,7 @@ namespace PersistentDataEditor;
 internal class GooRectangleControl(Func<GH_Rectangle> valueGetter, Func<bool> isNull, string name)
     : GooVerticalControlBase<GH_Rectangle>(valueGetter, isNull, name)
 {
-    public override Guid AddCompnentGuid => new("d93100b6-d50b-40b2-831a-814659dc38e3");
+    public override Guid AddComponentGuid => new("d93100b6-d50b-40b2-831a-814659dc38e3");
 
     private protected override GH_Rectangle CreateDefaultValue()
     {
@@ -60,7 +60,7 @@ internal class GooRectangleControl(Func<GH_Rectangle> valueGetter, Func<bool> is
                 return new GH_Rectangle(new Rectangle3d(((GH_Plane)values[0]).Value, new Interval(-x, x), new Interval(-y, y)));
         }
     }
-    public override void DosomethingWhenCreate(IGH_DocumentObject obj)
+    public override void DoSomethingWhenCreate(IGH_DocumentObject obj)
     {
         if (obj == null) return;
         GH_Component com = (GH_Component)obj;

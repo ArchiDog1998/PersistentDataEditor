@@ -1,6 +1,8 @@
 ﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
+using HarmonyLib;
+using PersistentDataEditor.Controls;
 using SimpleGrasshopper.Util;
 using System;
 using System.Collections;
@@ -184,14 +186,8 @@ internal class ParamVariableControl(Param_GenericObject owner) : ParamGeneralCon
 
     protected override GooControlBase<IGH_Goo> SetUpControl(IGH_Param param)
     {
-        return new GooVariableControl(() => OwnerGooData, () => IsNull, param, p =>
-        {
-            var id = ((Param_ScriptVariable)p)?.TypeHint?.HintID;
-            if (id.HasValue) return id.Value;
-
-            var converter = p.GetType().GetAllRuntimeFields().First(f => f.Name == "_converter").GetValue(p);
-            var mcId = converter.GetType().GetAllRuntimeProperties().First(p => p.Name == "Id").GetValue(converter);
-            return (Guid)mcId.GetType().GetAllRuntimeProperties().First(p => p.Name == "Id").GetValue(mcId);
-        });
+        return param is Param_ScriptVariable oldScript 
+            ? new GooVariableControl(() => OwnerGooData, () => IsNull, param)
+            : new GooVariableControl3(() => OwnerGooData, () => IsNull, param);
     }
 }
