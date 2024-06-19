@@ -4,7 +4,6 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
 using HarmonyLib;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
 
 namespace PersistentDataEditor;
@@ -12,7 +11,7 @@ namespace PersistentDataEditor;
 [HarmonyPatch(typeof(GH_Canvas))]
 internal class AttributeSelectedPatch
 {
-    private static readonly FieldInfo _innerBox = typeof(GH_ComponentAttributes).GetRuntimeFields().FirstOrDefault(f => f.Name == "m_innerBounds");
+    private static readonly FieldInfo _innerBox = AccessTools.Field(typeof(GH_ComponentAttributes), "m_innerBounds");
 
     private static IGH_Attributes _activeAttribute = null;
 
@@ -54,6 +53,6 @@ internal class AttributeSelectedPatch
             return false;
         }
 
-        return false;
+        return true;
     }
 }
