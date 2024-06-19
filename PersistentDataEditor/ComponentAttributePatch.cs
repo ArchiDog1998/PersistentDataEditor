@@ -13,16 +13,16 @@ using System.Runtime.CompilerServices;
 
 namespace PersistentDataEditor;
 
-[HarmonyPatch]
+[HarmonyPatch(typeof(GH_ComponentAttributes))]
 internal class ComponentAttributePatch
 {
     private const float SimplifyHeight = 10;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool IsSimplify(IGH_Component owner) => owner.OnPingDocument()?.ValueTable.GetValue(nameof(IsSimplify) + owner.InstanceGuid, false) ?? false;
+    internal static bool IsSimplify(IGH_Component owner) => owner.OnPingDocument()?.ValueTable.GetValue(nameof(IsSimplify) + owner.InstanceGuid, false) ?? false;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void SetSimplify(IGH_Component owner, bool value) => owner.OnPingDocument()?.ValueTable.SetValue(nameof(IsSimplify) + owner.InstanceGuid, value);
+    internal static void SetSimplify(IGH_Component owner, bool value) => owner.OnPingDocument()?.ValueTable.SetValue(nameof(IsSimplify) + owner.InstanceGuid, value);
 
     #region Layout
 
@@ -36,7 +36,7 @@ internal class ComponentAttributePatch
         return mode == GH_IconDisplayMode.icon;
     }
 
-    [HarmonyPatch(typeof(GH_ComponentAttributes), nameof(GH_ComponentAttributes.LayoutComponentBox))]
+    [HarmonyPatch(nameof(GH_ComponentAttributes.LayoutComponentBox))]
     static bool Prefix(out RectangleF __result, IGH_Component owner)
     {
         float inputHeight = GetParamsWholeHeight(owner.Params.Input, owner);
@@ -76,7 +76,7 @@ internal class ComponentAttributePatch
     }
 
     [HarmonyPrefix]
-    [HarmonyPatch(typeof(GH_ComponentAttributes), nameof(GH_ComponentAttributes.LayoutInputParams))]
+    [HarmonyPatch(nameof(GH_ComponentAttributes.LayoutInputParams))]
     static bool InputPrefix(GH_ComponentAttributes __instance, IGH_Component owner, RectangleF componentBox)
     {
         ParamsLayoutNew(owner, componentBox, true, IsSimplify(owner));
@@ -84,7 +84,7 @@ internal class ComponentAttributePatch
     }
 
     [HarmonyPrefix]
-    [HarmonyPatch(typeof(GH_ComponentAttributes), nameof(GH_ComponentAttributes.LayoutOutputParams))]
+    [HarmonyPatch( nameof(GH_ComponentAttributes.LayoutOutputParams))]
     static bool OutputPrefix(GH_ComponentAttributes __instance, IGH_Component owner, RectangleF componentBox)
     {
         ParamsLayoutNew(owner, componentBox, false, IsSimplify(owner));
@@ -103,7 +103,7 @@ internal class ComponentAttributePatch
 
         if (_isSimplify) return;
 
-        if (isInput)  // Control Bounds.
+        if (isInput && (!Data.OnlyShowSelectedObjectControl || owner.Attributes.Selected))  // Control Bounds.
         {
             LayoutControl(attributes);
         }
@@ -114,6 +114,24 @@ internal class ComponentAttributePatch
         if (Data.ShowLinkParamIcon)//Set Icon Rect.
         {
             LayoutParamIcon(attributes, isInput);
+        }
+
+        LayoutEdge(attributes, isInput);
+    }
+
+    private static void LayoutEdge(IEnumerable<GH_AdvancedLinkParamAttr> attributes, bool isInput)
+    {
+        var distance = Data.ComponentToEdgeDistance;
+        foreach (var attr in attributes)
+        {
+            if (isInput)
+            {
+                attr.Bounds = RectangleF.FromLTRB(attr.Bounds.Left - distance, attr.Bounds.Top, attr.Bounds.Right, attr.Bounds.Bottom);
+            }
+            else
+            {
+                attr.Bounds = RectangleF.FromLTRB(attr.Bounds.Left, attr.Bounds.Top, attr.Bounds.Right + distance, attr.Bounds.Bottom);
+            }
         }
     }
 
@@ -280,7 +298,7 @@ internal class ComponentAttributePatch
     #endregion
 
     #region Render
-    [HarmonyPatch(typeof(GH_ComponentAttributes), nameof(GH_ComponentAttributes.RenderComponentParameters))]
+    [HarmonyPatch(nameof(GH_ComponentAttributes.RenderComponentParameters))]
     static bool Prefix(GH_Canvas canvas, Graphics graphics, IGH_Component owner, GH_PaletteStyle style)
     {
         RenderComponentParametersNew(canvas, graphics, owner, style);
@@ -343,42 +361,6 @@ internal class ComponentAttributePatch
                 }
             }
         }
-    }
-    #endregion
-
-    #region Respond
-
-    private static readonly FieldInfo _innerBox = typeof(GH_ComponentAttributes).GetRuntimeFields().FirstOrDefault(f => f.Name == "m_innerBounds");
-
-    [HarmonyPatch(typeof(GH_Canvas), "DoubleClick_InactiveObject")]
-    static bool Prefix(GH_Canvas __instance, ref bool __result, GH_CanvasMouseEvent e)
-    {
-        if (!__instance.ModifiersEnabled)
-        {
-            return __result = false;
-        }
-        if (!__instance.IsDocument)
-        {
-            return __result = false;
-        }
-        IGH_Attributes iGH_Attributes = __instance.Document.FindAttribute(e.CanvasLocation, topLevelOnly: false);
-        if (iGH_Attributes == null)
-        {
-            return __result = false;
-        }
-
-        if (iGH_Attributes is GH_ComponentAttributes attr
-            && ((RectangleF)_innerBox.GetValue(attr)).Contains(e.CanvasLocation))
-        {
-            SetSimplify(attr.Owner, !IsSimplify(attr.Owner));
-            attr.ExpireLayout();
-            __instance.Refresh();
-
-            __result = true;
-            return false;
-        }
-
-        return false;
     }
     #endregion
 }
