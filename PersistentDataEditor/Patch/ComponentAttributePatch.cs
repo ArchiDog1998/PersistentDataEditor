@@ -159,7 +159,7 @@ internal class ComponentAttributePatch
             attribute.IconRect = new RectangleF(new PointF(
                 isInput ? attribute.Bounds.Left - width - distance : attribute.Bounds.Right + distance,
                 attribute.Bounds.Location.Y),
-                new SizeF(width, attribute.ParamHeight));
+                new SizeF(width, attribute.Bounds.Height));
 
             attribute.Bounds = RectangleF.Union(attribute.Bounds, attribute.IconRect);
         }

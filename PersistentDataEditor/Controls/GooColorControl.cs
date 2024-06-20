@@ -25,7 +25,7 @@ internal class GooColorControl(Func<GH_Colour> valueGetter, Func<bool> isNull) :
 
     internal override float Height => 12;
 
-    internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal override GH_ObjectResponse Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Left)
         {
@@ -34,8 +34,9 @@ internal class GooColorControl(Func<GH_Colour> valueGetter, Func<bool> isNull) :
             Color color = ShowValue?.Value ?? Color.Transparent;
             GH_DocumentObject.Menu_AppendColourPicker(menu, color, ColourChanged);
             menu.Show(sender, e.ControlLocation);
+            return GH_ObjectResponse.Release;
         }
-        base.Clicked(sender, e);
+        return base.Clicked(sender, e);
 
         void ColourChanged(GH_ColourPicker sender1, GH_ColourPickerEventArgs e1)
         {

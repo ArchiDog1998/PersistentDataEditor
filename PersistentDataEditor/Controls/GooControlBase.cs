@@ -49,10 +49,14 @@ internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T :
 
     public virtual void DoSomethingWhenCreate(IGH_DocumentObject obj) { }
 
-    internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal override GH_ObjectResponse Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Right && AddComponentGuid != default && Owner != null)
+        {
             CreateObject(Owner, AddComponentGuid, AddCompnentIndex, AddCompnentInit, true, DoSomethingWhenCreate);
+            return GH_ObjectResponse.Release;
+        }
+        return GH_ObjectResponse.Ignore;
     }
 
     private static IGH_DocumentObject CreateObject(IGH_Param param, Guid componentGuid, ushort index, string init, bool isinput, Action<IGH_DocumentObject> action = null)

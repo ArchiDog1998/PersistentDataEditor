@@ -13,8 +13,9 @@ internal class StringRender(string showString) : BaseControlItem
 
     internal override float Height => 17;
 
-    internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal override GH_ObjectResponse Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
+        return GH_ObjectResponse.Ignore;
     }
 
     internal override void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style)

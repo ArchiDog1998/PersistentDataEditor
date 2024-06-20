@@ -90,27 +90,26 @@ internal class GH_AdvancedFloatingParamAttr : GH_FloatingParamAttributes, IContr
 
     public override GH_ObjectResponse RespondToMouseMove(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
-        return Control?.Respond(Control.MouseMove, sender, e) ?? base.RespondToMouseMove(sender, e);
+        var result = Control?.Respond(Control.MouseMove, sender, e);
+        return (result == null || result == GH_ObjectResponse.Ignore) ? base.RespondToMouseMove(sender, e) : result.Value;
     }
 
     public override GH_ObjectResponse RespondToMouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
-        return Control?.Respond(Control.MouseDown, sender, e) ?? base.RespondToMouseDown(sender, e);
+        var result = Control?.Respond(Control.MouseDown, sender, e);
+        return (result == null || result == GH_ObjectResponse.Ignore) ? base.RespondToMouseDown(sender, e) : result.Value;
     }
 
     public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
-        return Control?.Respond(Control.Clicked, sender, e) ?? base.RespondToMouseUp(sender, e);
+        var result = Control?.Respond(Control.Clicked, sender, e);
+        return (result == null || result == GH_ObjectResponse.Ignore) ? base.RespondToMouseUp(sender, e) : result.Value;
     }
 
     public override GH_ObjectResponse RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
-        if (_expressionInfo != null)
-        {
-            _expressionInfo.Invoke(Owner, [Instances.DocumentEditor, EventArgs.Empty]);
-            return GH_ObjectResponse.Release;
-        }
-        return base.RespondToMouseDoubleClick(sender, e);
+        _expressionInfo?.Invoke(Owner, [Instances.DocumentEditor, EventArgs.Empty]);
+        return GH_ObjectResponse.Release;
     }
 
     protected override void Layout()

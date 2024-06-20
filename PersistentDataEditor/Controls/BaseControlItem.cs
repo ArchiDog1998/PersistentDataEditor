@@ -50,7 +50,7 @@ public abstract class BaseControlItem
     protected virtual void OnLayoutChanged(RectangleF bounds) { }
     internal virtual void ChangeControlItems() { }
     internal abstract void RenderObject(GH_Canvas canvas, Graphics graphics, GH_PaletteStyle style);
-    internal abstract void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e);
-    internal virtual void MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e) { }
-    internal virtual void MouseMove(GH_Canvas sender, GH_CanvasMouseEvent e) { }
+    internal abstract GH_ObjectResponse Clicked(GH_Canvas sender, GH_CanvasMouseEvent e);
+    internal virtual GH_ObjectResponse MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e) => GH_ObjectResponse.Ignore;
+    internal virtual GH_ObjectResponse MouseMove(GH_Canvas sender, GH_CanvasMouseEvent e) => GH_ObjectResponse.Ignore;
 }

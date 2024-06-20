@@ -98,24 +98,24 @@ internal abstract class ParamControlBase<T> : BaseControlItem where T : class, I
         _gooControl.RenderObject(canvas, graphics, style);
     }
 
-    internal sealed override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal sealed override GH_ObjectResponse Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
-        if (!Valid || !ShouldRespond || Owner.Locked || sender.Viewport.Zoom < 0.6) return;
+        if (!Valid || !ShouldRespond || Owner.Locked || sender.Viewport.Zoom < 0.6) return GH_ObjectResponse.Ignore;
         if (e.Button == System.Windows.Forms.MouseButtons.Left) _isSaveUndo = true;
-        _gooControl.Clicked(sender, e);
+        return _gooControl.Clicked(sender, e);
     }
 
-    internal override void MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal override GH_ObjectResponse MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
-        if (!Valid || !ShouldRespond || Owner.Locked || sender.Viewport.Zoom < 0.6) return;
+        if (!Valid || !ShouldRespond || Owner.Locked || sender.Viewport.Zoom < 0.6) return GH_ObjectResponse.Ignore;
         if (e.Button == System.Windows.Forms.MouseButtons.Left) _isSaveUndo = true;
-        _gooControl.MouseDown(sender, e);
+        return _gooControl.MouseDown(sender, e);
     }
 
-    internal override void MouseMove(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal override GH_ObjectResponse MouseMove(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
-        if (!Valid || !ShouldRespond || Owner.Locked || sender.Viewport.Zoom < 0.6) return;
-        _gooControl.MouseMove(sender, e);
+        if (!Valid || !ShouldRespond || Owner.Locked || sender.Viewport.Zoom < 0.6) return GH_ObjectResponse.Ignore;
+        return _gooControl.MouseMove(sender, e);
     }
 
     internal sealed override void ChangeControlItems()

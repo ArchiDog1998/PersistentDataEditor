@@ -93,7 +93,7 @@ internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : cla
         }
     }
 
-    internal override void MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal override GH_ObjectResponse MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Left)
         {
@@ -102,15 +102,14 @@ internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : cla
                 if (control is StringRender) continue;
                 if (control.Bounds.Contains(e.CanvasLocation))
                 {
-                    control.MouseDown(sender, e);
-                    return;
+                    return control.MouseDown(sender, e);
                 }
             }
         }
-        base.MouseDown(sender, e);
+        return base.MouseDown(sender, e);
     }
 
-    internal override void MouseMove(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal override GH_ObjectResponse MouseMove(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Left)
         {
@@ -119,15 +118,14 @@ internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : cla
                 if (control is StringRender) continue;
                 if (control.Bounds.Contains(e.CanvasLocation))
                 {
-                    control.MouseMove(sender, e);
-                    return;
+                    return control.MouseMove(sender, e);
                 }
             }
         }
-        base.MouseMove(sender, e);
+        return base.MouseMove(sender, e);
     }
 
-    internal sealed override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal sealed override GH_ObjectResponse Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Left)
         {
@@ -136,12 +134,11 @@ internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : cla
                 if (control is StringRender) continue;
                 if (control.Bounds.Contains(e.CanvasLocation))
                 {
-                    control.Clicked(sender, e);
-                    return;
+                    return control.Clicked(sender, e);
                 }
             }
 
-            if (!_RespondBase) return;
+            if (!_RespondBase) return base.Clicked(sender, e);
 
             new InputBoxBalloon(Bounds, SaveString).ShowTextInputBox(sender, ShowValue?.ToString(), true, true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
 
@@ -157,8 +154,8 @@ internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : cla
                     MessageBox.Show($"Can't cast a {typeof(T).Name} from \"{str}\".");
                 }
             }
-            return;
+            return GH_ObjectResponse.Release;
         }
-        base.Clicked(sender, e);
+        return base.Clicked(sender, e);
     }
 }

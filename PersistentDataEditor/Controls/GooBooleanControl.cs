@@ -16,15 +16,15 @@ internal class GooBooleanControl(Func<GH_Boolean> valueGetter, Func<bool> isNull
 
     internal override float Height => 10;
 
-    internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal override GH_ObjectResponse Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Left)
         {
             bool lastBool = ShowValue?.Value ?? false;
             ShowValue = new GH_Boolean(!lastBool);
-            return;
+            return GH_ObjectResponse.Release;
         }
-        base.Clicked(sender, e);
+        return base.Clicked(sender, e);
     }
 
     protected override void OnLayoutChanged(RectangleF bounds)

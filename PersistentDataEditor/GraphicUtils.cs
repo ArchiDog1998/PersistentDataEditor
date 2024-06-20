@@ -59,12 +59,12 @@ internal static class GraphicUtils
 
         const float width = 12;
         float height = width / 2 * (float)Math.Sqrt(3);
-        PointF center = new PointF(rect.X + width / 2, rect.Y + rect.Height / 2);
+        PointF center = new (rect.X + width / 2, rect.Y + rect.Height / 2);
 
         float up = height / 2;
-        PointF pt1 = new PointF(center.X - width / 2, center.Y - up + radius / 2);
-        PointF pt2 = new PointF(center.X + width / 2, center.Y - up + radius / 2);
-        PointF pt3 = new PointF(center.X, center.Y + up + radius / 2);
+        PointF pt1 = new (center.X - width / 2, center.Y - up + radius / 2);
+        PointF pt2 = new (center.X + width / 2, center.Y - up + radius / 2);
+        PointF pt3 = new (center.X, center.Y + up + radius / 2);
 
         float horiThick = radius * (float)(Math.Sqrt(3) - 1);
 
@@ -82,15 +82,13 @@ internal static class GraphicUtils
         return new SolidBrush(Color.FromArgb((byte)(GH_Canvas.ZoomFadeLow * (color.A / 255f)), color));
     }
 
-    public static GH_ObjectResponse? Respond(this BaseControlItem control, Action<GH_Canvas, GH_CanvasMouseEvent> action, GH_Canvas sender, GH_CanvasMouseEvent e)
+    public static GH_ObjectResponse Respond(this BaseControlItem control, Func<GH_Canvas, GH_CanvasMouseEvent, GH_ObjectResponse> action, GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (control != null && control.Bounds.Contains(e.CanvasLocation)
             && sender.Viewport.Zoom >= 0.6)
         {
-            action(sender, e);
-
-            return GH_ObjectResponse.Release;
+            return action(sender, e);
         }
-        return null;
+        return GH_ObjectResponse.Ignore;
     }
 }

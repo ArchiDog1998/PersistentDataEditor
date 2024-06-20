@@ -32,7 +32,7 @@ internal class GooTimeControl(Func<GH_Time> valueGetter, Func<bool> isNull) : Go
         graphics.DrawString(ShowString, GH_FontServer.StandardAdjusted, color.GetBrush(), Bounds, GH_TextRenderingConstants.CenterCenter);
     }
 
-    internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal override GH_ObjectResponse Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Left)
         {
@@ -69,8 +69,10 @@ internal class GooTimeControl(Func<GH_Time> valueGetter, Func<bool> isNull) : Go
 
             GH_DocumentObject.Menu_AppendCustomItem(menu, ctrl);
             menu.Show(sender, e.ControlLocation);
+
+            return GH_ObjectResponse.Release;
         }
-        base.Clicked(sender, e);
+        return base.Clicked(sender, e);
     }
 
     public override void DoSomethingWhenCreate(IGH_DocumentObject obj)

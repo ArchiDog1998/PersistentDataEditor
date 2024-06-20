@@ -33,7 +33,7 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
     double oldValue = 0, changedValueDiff = 0;
     ModifierKeys _activeKey = ModifierKeys.None;
 
-    internal override void MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal override GH_ObjectResponse MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Left && !IsReadOnly
             && Data.UseSlider && double.TryParse(ShowString, out _))
@@ -46,9 +46,11 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
 
             sender.MouseMove += CanvasMouseMove;
             sender.MouseUp += Canvas_MouseUp;
+
+            return GH_ObjectResponse.Release;
         }
         _active = false;
-        base.MouseDown(sender, e);
+        return base.MouseDown(sender, e);
     }
 
     private void Canvas_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -150,7 +152,7 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
         }
     }
 
-    internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal override GH_ObjectResponse Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Left && !IsReadOnly)
         {
@@ -161,8 +163,9 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
 
             clickedPt = null;
             sender.MouseMove -= CanvasMouseMove;
+            return GH_ObjectResponse.Release;
         }
-        base.Clicked(sender, e);
+        return base.Clicked(sender, e);
     }
 
     private void SaveString(string str)

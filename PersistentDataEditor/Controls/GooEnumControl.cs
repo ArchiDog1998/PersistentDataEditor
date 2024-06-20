@@ -39,19 +39,21 @@ internal class GooEnumControl(Func<GH_Integer> valueGetter, Func<bool> isNull, S
     private RectangleF _stringBounds;
     private GraphicsPath _triangle;
 
-    internal override void Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
+    internal override GH_ObjectResponse Clicked(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
         if (e.Button == MouseButtons.Left)
         {
-            ToolStripDropDownMenu menu = new ToolStripDropDownMenu();
+            ToolStripDropDownMenu menu = new ();
             int? num = ShowValue?.Value;
             foreach (var namedValue in _namedValues)
             {
                 GH_DocumentObject.Menu_AppendItem(menu, namedValue.Value, Menu_NamedValueClicked, true, namedValue.Key == num).Tag = namedValue.Key;
             }
             menu.Show(sender, e.ControlLocation);
+
+            return GH_ObjectResponse.Release;
         }
-        base.Clicked(sender, e);
+        return base.Clicked(sender, e);
     }
 
     private void Menu_NamedValueClicked(object sender, EventArgs e)
@@ -67,7 +69,7 @@ internal class GooEnumControl(Func<GH_Integer> valueGetter, Func<bool> isNull, S
         _roundBounds = GH_Convert.ToRectangle(bounds).RoundCorner(2);
         _stringBounds = new RectangleF(bounds.X, bounds.Y, bounds.Width - _triangleWidth, bounds.Height);
 
-        RectangleF triBounds = new RectangleF(bounds.Right - _triangleWidth, bounds.Y, _triangleWidth, bounds.Height);
+        RectangleF triBounds = new (bounds.Right - _triangleWidth, bounds.Y, _triangleWidth, bounds.Height);
         _triangle = triBounds.Triangle();
 
         base.OnLayoutChanged(bounds);
