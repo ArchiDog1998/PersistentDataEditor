@@ -3,6 +3,7 @@ using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
+using PersistentDataEditor.Controls;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;

@@ -4,7 +4,7 @@ using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooIntervalControl(Func<GH_Interval> valueGetter, Func<bool> isNull, string name)
     : GooHorizonalControlBase<GH_Interval>(valueGetter, isNull, name)

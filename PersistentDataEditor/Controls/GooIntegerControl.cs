@@ -1,7 +1,7 @@
 ﻿using Grasshopper.Kernel.Types;
 using System;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooIntegerControl(Func<GH_Integer> valueGetter, Func<bool> isNull, string name) : GooHorizonalControlBase<GH_Integer>(valueGetter, isNull, name)
 {

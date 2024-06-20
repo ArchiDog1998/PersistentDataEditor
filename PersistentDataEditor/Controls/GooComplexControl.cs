@@ -4,7 +4,7 @@ using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using System;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooComplexControl(Func<GH_ComplexNumber> valueGetter, Func<bool> isNull, string name)
     : GooHorizonalControlBase<GH_ComplexNumber>(valueGetter, isNull, name)

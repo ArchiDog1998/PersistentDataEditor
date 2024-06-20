@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal abstract class GooMultiControlBase<T> : GooControlBase<T> where T : class, IGH_Goo
 {

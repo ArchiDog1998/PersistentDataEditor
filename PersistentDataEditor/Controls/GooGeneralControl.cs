@@ -1,7 +1,7 @@
 ﻿using Grasshopper.Kernel.Types;
 using System;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooGeneralControl<T>(Func<T> valueGetter, Func<bool> isNull)
     : GooInputBoxStringControl<T>(valueGetter, isNull) where T : class, IGH_Goo

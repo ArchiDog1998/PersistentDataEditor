@@ -45,14 +45,13 @@ partial class SimpleAssemblyPriority
         ToolStripMenuItem displayItem = (ToolStripMenuItem)editor.MainMenuStrip.Items[3];
         ToolStripItem[] gumballs = displayItem.DropDownItems.Find("mnuGumballs", false);
 
-        ToolStripMenuItem gumball = null;
         if (gumballs.Length == 0)
         {
             MessageBox.Show("Persistent Data Editor can't find the Gumballs Item!");
         }
         else
         {
-            gumball = (ToolStripMenuItem)gumballs[0];
+            var gumball = (ToolStripMenuItem)gumballs[0];
             displayItem.DropDownItems.Remove(gumball);
         }
 
@@ -130,7 +129,7 @@ partial class SimpleAssemblyPriority
                 {
                     if (pathMapper.Lexers.Count > 0) return;
 
-                    List<string> inputMapping = (List<string>)_pathMapperCreate.Invoke(pathMapper, new object[] { true });
+                    List<string> inputMapping = (List<string>)_pathMapperCreate.Invoke(pathMapper, [true]);
                     if (inputMapping.Count != 0)
                     {
                         foreach (string str in inputMapping)

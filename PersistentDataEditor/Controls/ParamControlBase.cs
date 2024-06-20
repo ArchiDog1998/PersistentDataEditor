@@ -6,7 +6,7 @@ using Grasshopper.Kernel.Types;
 using System.Drawing;
 using System.Linq;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal abstract class ParamControlBase<T> : BaseControlItem where T : class, IGH_Goo
 {

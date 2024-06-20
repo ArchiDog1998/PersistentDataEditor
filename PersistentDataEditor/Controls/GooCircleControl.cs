@@ -4,7 +4,7 @@ using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooCircleControl(Func<GH_Circle> valueGetter, Func<bool> isNull, string name) : GooVerticalControlBase<GH_Circle>(valueGetter, isNull, name)
 {

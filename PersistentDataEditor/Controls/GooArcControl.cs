@@ -4,7 +4,7 @@ using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooArcControl(Func<GH_Arc> valueGetter, Func<bool> isNull, string name) : GooVerticalControlBase<GH_Arc>(valueGetter, isNull, name)
 {

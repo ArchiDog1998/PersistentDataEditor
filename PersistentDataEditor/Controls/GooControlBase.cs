@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T : class, IGH_Goo
 {
@@ -68,7 +68,7 @@ internal abstract class GooControlBase<T> : BaseControlItem, IGooValue where T :
         RectangleF outBound = param.Attributes.GetTopLevel.Bounds;
         RectangleF thisBound = param.Attributes.Bounds;
 
-        PointF objCenter = new PointF(outBound.Left + (isinput ? -width : (width + outBound.Width)),
+        PointF objCenter = new PointF(outBound.Left + (isinput ? -width : width + outBound.Width),
                thisBound.Top + thisBound.Height / 2);
 
         AddAnObjectToCanvas(obj, objCenter, init);

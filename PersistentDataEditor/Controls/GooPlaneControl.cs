@@ -5,7 +5,7 @@ using Rhino.Geometry;
 using System;
 using System.Linq;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooPlaneControl(Func<GH_Plane> valueGetter, Func<bool> isNull, string name)
     : GooVerticalControlBase<GH_Plane>(valueGetter, isNull, name)

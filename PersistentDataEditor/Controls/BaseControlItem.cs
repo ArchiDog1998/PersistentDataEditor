@@ -4,7 +4,7 @@ using System;
 using System.Drawing;
 using System.Windows;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 public abstract class BaseControlItem
 {

@@ -13,7 +13,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using Cursor = System.Windows.Forms.Cursor;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNull, bool readOnly = false)
     : GooControlBase<T>(valueGetter, isNull) where T : class, IGH_Goo
@@ -35,7 +35,7 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
 
     internal override void MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
-        if (e.Button == MouseButtons.Left && !IsReadOnly 
+        if (e.Button == MouseButtons.Left && !IsReadOnly
             && Data.UseSlider && double.TryParse(ShowString, out _))
         {
             clickedPt = e.CanvasLocation;

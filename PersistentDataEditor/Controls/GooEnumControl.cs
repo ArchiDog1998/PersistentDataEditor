@@ -9,7 +9,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooEnumControl(Func<GH_Integer> valueGetter, Func<bool> isNull, SortedList<int, string> namedValues) : GooControlBase<GH_Integer>(valueGetter, isNull)
 {

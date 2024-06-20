@@ -6,7 +6,7 @@ using Grasshopper.Kernel.Types;
 using HarmonyLib;
 using System;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooVariableControl : GooHorizonalControlBase<IGH_Goo>
 {

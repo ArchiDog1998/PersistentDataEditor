@@ -4,6 +4,7 @@ using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
 using HarmonyLib;
+using PersistentDataEditor.Controls;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -117,6 +118,7 @@ internal class ComponentAttributePatch
         }
 
         LayoutEdge(attributes, isInput);
+        LayoutPivot(attributes);
     }
 
     private static void LayoutEdge(IEnumerable<GH_AdvancedLinkParamAttr> attributes, bool isInput)
@@ -132,6 +134,18 @@ internal class ComponentAttributePatch
             {
                 attr.Bounds = RectangleF.FromLTRB(attr.Bounds.Left, attr.Bounds.Top, attr.Bounds.Right + distance, attr.Bounds.Bottom);
             }
+        }
+    }
+    
+    private static void LayoutPivot(IEnumerable<GH_AdvancedLinkParamAttr> attributes)
+    {
+        foreach (var attr in attributes)
+        {
+            var bound = attr.Bounds;
+            var x = (bound.Left + bound.Right) / 2;
+            var y = (bound.Top + bound.Bottom) / 2;
+
+            attr.Pivot = new(x, y);
         }
     }
 

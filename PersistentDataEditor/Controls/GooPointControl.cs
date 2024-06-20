@@ -4,7 +4,7 @@ using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooPointControl(Func<GH_Point> valueGetter, Func<bool> isNull, string name)
     : GooHorizonalControlBase<GH_Point>(valueGetter, isNull, name)

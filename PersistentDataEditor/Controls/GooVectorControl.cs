@@ -4,7 +4,7 @@ using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooVectorControl(Func<GH_Vector> valueGetter, Func<bool> isNull, string name)
     : GooHorizonalControlBase<GH_Vector>(valueGetter, isNull, name)

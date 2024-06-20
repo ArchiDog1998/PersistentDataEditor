@@ -3,7 +3,7 @@ using Grasshopper.Kernel.Types;
 using System;
 using System.Drawing;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal abstract class GooVerticalControlBase<T> : GooMultiControlBase<T> where T : class, IGH_Goo
 {

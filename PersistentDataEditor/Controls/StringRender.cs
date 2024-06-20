@@ -3,7 +3,7 @@ using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using System.Drawing;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class StringRender(string showString) : BaseControlItem
 {

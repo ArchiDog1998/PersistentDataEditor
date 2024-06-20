@@ -4,7 +4,7 @@ using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooBoxControl(Func<GH_Box> valueGetter, Func<bool> isNull, string name) : GooVerticalControlBase<GH_Box>(valueGetter, isNull, name)
 {

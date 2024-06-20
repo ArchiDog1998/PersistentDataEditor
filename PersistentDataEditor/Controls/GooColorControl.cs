@@ -11,11 +11,11 @@ using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooColorControl(Func<GH_Colour> valueGetter, Func<bool> isNull) : GooControlBase<GH_Colour>(valueGetter, isNull)
 {
-    internal static readonly FieldInfo SwatchColorInfo = AccessTools.Field( typeof(GH_ColourSwatch),"m_SwatchColour");
+    internal static readonly FieldInfo SwatchColorInfo = AccessTools.Field(typeof(GH_ColourSwatch), "m_SwatchColour");
     private readonly Brush _background = new HatchBrush(HatchStyle.LargeCheckerBoard, Color.White, Color.LightGray);
     private GraphicsPath _path;
 

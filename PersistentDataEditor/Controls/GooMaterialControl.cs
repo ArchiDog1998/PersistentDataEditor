@@ -3,7 +3,7 @@ using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
 using System;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooMaterialControl(Func<GH_Material> valueGetter, Func<bool> isNull)
     : GooHorizonalControlBase<GH_Material>(valueGetter, isNull, null)

@@ -3,7 +3,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal abstract class GooHorizonalControlBase<T>(Func<T> valueGetter, Func<bool> isNull, string name)
     : GooMultiControlBase<T>(valueGetter, isNull, name) where T : class, IGH_Goo

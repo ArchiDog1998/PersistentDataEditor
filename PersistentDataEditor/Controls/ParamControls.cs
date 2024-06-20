@@ -2,7 +2,6 @@
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using HarmonyLib;
-using PersistentDataEditor.Controls;
 using SimpleGrasshopper.Util;
 using System;
 using System.Collections;
@@ -10,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class ParamStringControl(GH_PersistentParam<GH_String> owner) : ParamControlBase<GH_String>(owner)
 {
@@ -194,7 +193,7 @@ internal class ParamVariableControl(Param_GenericObject owner) : ParamGeneralCon
 
     protected override GooControlBase<IGH_Goo> SetUpControl(IGH_Param param)
     {
-        return param is Param_ScriptVariable oldScript 
+        return param is Param_ScriptVariable oldScript
             ? new GooVariableControl(() => OwnerGooData, () => IsNull, param)
             : new GooVariableControl3(() => OwnerGooData, () => IsNull, param);
     }

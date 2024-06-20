@@ -4,7 +4,7 @@ using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooRectangleControl(Func<GH_Rectangle> valueGetter, Func<bool> isNull, string name)
     : GooVerticalControlBase<GH_Rectangle>(valueGetter, isNull, name)

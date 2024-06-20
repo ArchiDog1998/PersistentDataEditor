@@ -5,7 +5,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Controls;
 
 internal class GooBooleanControl(Func<GH_Boolean> valueGetter, Func<bool> isNull)
     : GooControlBase<GH_Boolean>(valueGetter, isNull)
