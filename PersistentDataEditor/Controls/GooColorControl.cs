@@ -4,6 +4,7 @@ using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
+using HarmonyLib;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -14,7 +15,7 @@ namespace PersistentDataEditor;
 
 internal class GooColorControl(Func<GH_Colour> valueGetter, Func<bool> isNull) : GooControlBase<GH_Colour>(valueGetter, isNull)
 {
-    internal static readonly FieldInfo SwatchColorInfo = typeof(GH_ColourSwatch).FindField("m_SwatchColour");
+    internal static readonly FieldInfo SwatchColorInfo = AccessTools.Field( typeof(GH_ColourSwatch),"m_SwatchColour");
     private readonly Brush _background = new HatchBrush(HatchStyle.LargeCheckerBoard, Color.White, Color.LightGray);
     private GraphicsPath _path;
 
@@ -28,7 +29,7 @@ internal class GooColorControl(Func<GH_Colour> valueGetter, Func<bool> isNull) :
     {
         if (e.Button == MouseButtons.Left)
         {
-            ToolStripDropDownMenu menu = new ToolStripDropDownMenu() { ShowImageMargin = false };
+            var menu = new ToolStripDropDownMenu() { ShowImageMargin = false };
 
             Color color = ShowValue?.Value ?? Color.Transparent;
             GH_DocumentObject.Menu_AppendColourPicker(menu, color, ColourChanged);

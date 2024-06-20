@@ -141,6 +141,10 @@ internal class GooVariableControl3 : GooHorizonalControlBase<IGH_Goo>
         {
             return [new GooRectangleControl(() => (GH_Rectangle)ShowValue, _isNull, null)];
         }
+        else if (type == typeof(DateTime) && Data.UseParamTimeControl)
+        {
+            return [new GooTimeControl(() => (GH_Time)ShowValue, _isNull)];
+        }
         return [new GooGeneralControl<IGH_Goo>(() => ShowValue, _isNull)];
     }
 

@@ -172,6 +172,14 @@ internal class ParamArcControl(GH_PersistentParam<GH_Arc> owner) : ParamControlB
     }
 }
 
+internal class ParamTimeControl(GH_PersistentParam<GH_Time> owner) : ParamControlBase<GH_Time>(owner)
+{
+    protected override GooControlBase<GH_Time> SetUpControl(IGH_Param param)
+    {
+        return new GooTimeControl(() => OwnerGooData, () => IsNull);
+    }
+}
+
 internal class ParamGeneralControl<T>(GH_PersistentParam<T> owner) : ParamControlBase<T>(owner) where T : class, IGH_Goo
 {
     protected override GooControlBase<T> SetUpControl(IGH_Param param)

@@ -91,6 +91,9 @@ internal static partial class Data
     [Setting, Config("Material", icon: ParamGuids.OGLShader, parent: "Choose Controls")]
     private static readonly bool _useParamMaterialControl = true;
 
+    [Setting, Config("Time", icon: ParamGuids.DateTimeFormat, parent: "Choose Controls")]
+    private static readonly bool _useParamTimeControl = true;
+
     [Setting, Config("Domain", icon: ParamGuids.Interval, parent: "Choose Controls", section: 1)]
     private static readonly bool _useParamDomainControl = true;
 

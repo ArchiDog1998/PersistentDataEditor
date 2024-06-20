@@ -214,6 +214,10 @@ internal class GH_AdvancedLinkParamAttr : GH_LinkedParamAttributes, IControlAttr
             {
                 return Data.UseParamBoxControl ? new ParamBoxControl((GH_PersistentParam<GH_Box>)param) : null;
             }
+            else if (storeType == typeof(GH_Time))
+            {
+                return Data.UseParamTimeControl ? new ParamTimeControl((GH_PersistentParam<GH_Time>)param) : null;
+            }
             else if (storeType == typeof(GH_Arc))
             {
                 return Data.UseParamArcControl ? new ParamArcControl((GH_PersistentParam<GH_Arc>)param) : null;
