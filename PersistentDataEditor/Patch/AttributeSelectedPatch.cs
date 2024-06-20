@@ -16,7 +16,7 @@ internal class AttributeSelectedPatch
     private static IGH_Attributes _activeAttribute = null;
 
     [HarmonyPatch("MouseDown_InactiveObject")]
-    private static void Prefix(GH_Canvas __instance, GH_CanvasMouseEvent e)
+    private static void Postfix(GH_Canvas __instance, GH_CanvasMouseEvent e)
     {
         if (!Data.OnlyShowSelectedObjectControl) return;
 
