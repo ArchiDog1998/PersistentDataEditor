@@ -2,7 +2,7 @@
 	
   <PropertyGroup>
     <TargetFrameworks>net7.0-windows</TargetFrameworks>
-    <Version>1.2.7</Version>
+    <Version>1.2.8</Version>
     <Title>PersistentDataEditor</Title>
     <Description>Extra information and control for grasshopper component.</Description>
     <TargetExt>.gha</TargetExt>
