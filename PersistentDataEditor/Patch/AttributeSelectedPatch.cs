@@ -6,7 +6,7 @@ using HarmonyLib;
 using System.Drawing;
 using System.Reflection;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Patch;
 
 [HarmonyPatch(typeof(GH_Canvas))]
 internal class AttributeSelectedPatch

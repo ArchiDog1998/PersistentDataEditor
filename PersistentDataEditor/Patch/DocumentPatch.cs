@@ -3,7 +3,7 @@ using HarmonyLib;
 using System.Drawing;
 using System.Reflection;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Patch;
 
 [HarmonyPatch(typeof(GH_Document))]
 internal class DocumentPatch
@@ -20,7 +20,7 @@ internal class DocumentPatch
         if (obj is IGH_Component component
             && ComponentAttributePatch.IsSimplify(component))
         {
-            if(__result.ObjectType is GH_ObjectSpecies.grip_out or GH_ObjectSpecies.grip or GH_ObjectSpecies.grip_in)
+            if (__result.ObjectType is GH_ObjectSpecies.grip_out or GH_ObjectSpecies.grip or GH_ObjectSpecies.grip_in)
             {
                 _objectType.SetValue(__result, GH_ObjectSpecies.doc_object);
             }
@@ -30,12 +30,12 @@ internal class DocumentPatch
     [HarmonyPatch(nameof(GH_Document.FindAttributeByGrip), typeof(PointF), typeof(bool), typeof(bool), typeof(bool), typeof(int))]
     private static void Postfix(ref IGH_Attributes __result)
     {
-        if( __result == null) return;
+        if (__result == null) return;
         var obj = __result.GetTopLevel.DocObject;
         if (obj is IGH_Component component
             && ComponentAttributePatch.IsSimplify(component))
         {
-            __result  = null;
+            __result = null;
         }
     }
 }

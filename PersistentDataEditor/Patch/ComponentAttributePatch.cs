@@ -11,7 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace PersistentDataEditor;
+namespace PersistentDataEditor.Patch;
 
 [HarmonyPatch(typeof(GH_ComponentAttributes))]
 internal class ComponentAttributePatch
@@ -84,7 +84,7 @@ internal class ComponentAttributePatch
     }
 
     [HarmonyPrefix]
-    [HarmonyPatch( nameof(GH_ComponentAttributes.LayoutOutputParams))]
+    [HarmonyPatch(nameof(GH_ComponentAttributes.LayoutOutputParams))]
     static bool OutputPrefix(GH_ComponentAttributes __instance, IGH_Component owner, RectangleF componentBox)
     {
         ParamsLayoutNew(owner, componentBox, false, IsSimplify(owner));
@@ -322,7 +322,7 @@ internal class ComponentAttributePatch
             {
                 if (item.Attributes is GH_AdvancedLinkParamAttr attr)
                 {
-                    
+
                     //Render names.
                     graphics.DrawString(item.NickName, GH_FontServer.StandardAdjusted, solidBrush, attr.Bounds, attr.Owner.Kind == GH_ParamKind.input ? GH_TextRenderingConstants.FarCenter : GH_TextRenderingConstants.NearCenter);
 
