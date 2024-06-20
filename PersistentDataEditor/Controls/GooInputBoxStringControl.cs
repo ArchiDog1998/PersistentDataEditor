@@ -35,6 +35,7 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
 
     internal override GH_ObjectResponse MouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
     {
+        _active = false;
         if (e.Button == MouseButtons.Left && !IsReadOnly
             && Data.UseSlider && double.TryParse(ShowString, out _))
         {
@@ -49,7 +50,6 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
 
             return GH_ObjectResponse.Release;
         }
-        _active = false;
         return base.MouseDown(sender, e);
     }
 
@@ -121,7 +121,7 @@ internal class GooInputBoxStringControl<T>(Func<T> valueGetter, Func<bool> isNul
         _preventUpdate = true;
 
         Point point = canvas.PointToScreen(new Point(0, 0));
-        Rectangle rectangle = new Rectangle(point.X, point.Y, canvas.Width, canvas.Height);
+        Rectangle rectangle = new (point.X, point.Y, canvas.Width, canvas.Height);
         Rectangle bounds = Screen.FromPoint(Cursor.Position).Bounds;
         rectangle = Rectangle.FromLTRB(Math.Max(rectangle.Left, bounds.Left), Math.Max(rectangle.Top, bounds.Top), Math.Min(rectangle.Right, bounds.Right), Math.Min(rectangle.Bottom, bounds.Bottom));
         checked
