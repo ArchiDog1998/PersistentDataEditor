@@ -1,0 +1,34 @@
+---
+name: PersistentDataEditor
+version: 1.2.9
+authors:
+- 秋水
+description: >
+  Make persistent data much easier to set. Settings are under Display Menu.
+  
+  
+  It contains three features, Component/Parameter's layout changes, Parameter's Persistent data Control and Advanced Gumball. The latter two are the most important.
+  
+  
+  Layout Change can change your component's style, also can add an icon on each param of component.
+  
+  
+  Param's Control can make you quick set persistent data. Left click on text box can change the value, also can undo it. Right click on control can add a Component to set the params. You can also change control's type on settings.
+  
+  
+  Advanced Gumball can be use in any geometry persistent param.
+  
+  
+  Special thanks to linluz for improving the efficiency of this program.
+  
+  
+url: https://github.com/ArchiDog1998/PersistentDataEditor
+keywords:
+- editor
+- param
+- parameter
+- parameters
+- persistent
+- layout
+- qiushui
+icon_url: https://raw.githubusercontent.com/ArchiDog1998/PersistentDataEditor/master/PersistentDataEditor.png
