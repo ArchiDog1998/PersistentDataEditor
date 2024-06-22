@@ -32,33 +32,33 @@ internal class GooVariableControl : GooHorizonalControlBase<IGH_Goo>
         }
     }
 
-    private BaseControlItem[] ChangeParamId(Guid hintid)
+    private BaseControlItem[] ChangeParamId(Guid hintId)
     {
-        if (hintid == new GH_ArcHint().HintID && Data.UseParamArcControl)
+        if (hintId == new GH_ArcHint().HintID && Data.UseParamArcControl)
             return [
                 new GooArcControl (() => (GH_Arc)ShowValue, _isNull, null),
             ];
-        else if ((hintid == new GH_BooleanHint_CS().HintID || hintid == new GH_BooleanHint_VB().HintID) && Data.UseParamBooleanControl)
+        else if ((hintId == new GH_BooleanHint_CS().HintID || hintId == new GH_BooleanHint_VB().HintID) && Data.UseParamBooleanControl)
             return [
                 new GooBooleanControl(() => (GH_Boolean)ShowValue, _isNull),
             ];
-        else if (hintid == new GH_BoxHint().HintID && Data.UseParamBoxControl)
+        else if (hintId == new GH_BoxHint().HintID && Data.UseParamBoxControl)
             return [
                 new GooBoxControl(() => (GH_Box)ShowValue, _isNull, null),
             ];
-        else if (hintid == new GH_CircleHint().HintID && Data.UseParamCircleControl)
+        else if (hintId == new GH_CircleHint().HintID && Data.UseParamCircleControl)
             return [
                 new GooCircleControl(() => (GH_Circle)ShowValue, _isNull, null),
             ];
-        else if (hintid == new GH_ColorHint().HintID && Data.UseParamColourControl)
+        else if (hintId == new GH_ColorHint().HintID && Data.UseParamColourControl)
             return [
                 new GooColorControl(() => (GH_Colour)ShowValue, _isNull),
             ];
-        else if (hintid == new GH_ComplexHint().HintID && Data.UseParamComplexControl)
+        else if (hintId == new GH_ComplexHint().HintID && Data.UseParamComplexControl)
             return [
                 new GooComplexControl(() => (GH_ComplexNumber)ShowValue, _isNull, null),
             ];
-        else if ((hintid == new GH_DoubleHint_CS().HintID || hintid == new GH_DoubleHint_VB().HintID) && Data.UseParamNumberControl)
+        else if ((hintId == new GH_DoubleHint_CS().HintID || hintId == new GH_DoubleHint_VB().HintID) && Data.UseParamNumberControl)
             return [
                 new GooNumberControl(() =>
                 {
@@ -80,7 +80,7 @@ internal class GooVariableControl : GooHorizonalControlBase<IGH_Goo>
                     }
                 }, _isNull, null),
             ];
-        else if ((hintid == new GH_IntegerHint_CS().HintID || hintid == new GH_IntegerHint_VB().HintID) && Data.UseParamIntegerControl)
+        else if ((hintId == new GH_IntegerHint_CS().HintID || hintId == new GH_IntegerHint_VB().HintID) && Data.UseParamIntegerControl)
             return [
                 new GooIntegerControl(() =>
                 {
@@ -102,35 +102,35 @@ internal class GooVariableControl : GooHorizonalControlBase<IGH_Goo>
                     }
                 }, _isNull, null),
             ];
-        else if (hintid == new GH_IntervalHint().HintID && Data.UseParamDomainControl)
+        else if (hintId == new GH_IntervalHint().HintID && Data.UseParamDomainControl)
             return [
                 new GooIntervalControl(() => (GH_Interval)ShowValue, _isNull, null),
             ];
-        else if (hintid == new GH_LineHint().HintID && Data.UseParamLineControl)
+        else if (hintId == new GH_LineHint().HintID && Data.UseParamLineControl)
             return [
                 new GooLineControl(() => (GH_Line)ShowValue, _isNull, null),
             ];
-        else if (hintid == new GH_PlaneHint().HintID && Data.UseParamPlaneControl)
+        else if (hintId == new GH_PlaneHint().HintID && Data.UseParamPlaneControl)
             return [
                 new GooPlaneControl(() => (GH_Plane)ShowValue, _isNull, null),
             ];
-        else if (hintid == new GH_Point3dHint().HintID && Data.UseParamPointControl)
+        else if (hintId == new GH_Point3dHint().HintID && Data.UseParamPointControl)
             return [
                 new GooPointControl(() => (GH_Point)ShowValue, _isNull, null),
             ];
-        else if (hintid == new GH_Rectangle3dHint().HintID && Data.UseParamRectangleControl)
+        else if (hintId == new GH_Rectangle3dHint().HintID && Data.UseParamRectangleControl)
             return [
                 new GooRectangleControl(() => (GH_Rectangle)ShowValue, _isNull, null),
             ];
-        else if ((hintid == new GH_StringHint_CS().HintID || hintid == new GH_StringHint_VB().HintID) && Data.UseParamStringControl)
+        else if ((hintId == new GH_StringHint_CS().HintID || hintId == new GH_StringHint_VB().HintID) && Data.UseParamStringControl)
             return [
                 new GooInputBoxStringControl<GH_String>(() => (GH_String)ShowValue, _isNull),
             ];
-        else if (hintid == new GH_UVIntervalHint().HintID && Data.UseParamDomain2Control)
+        else if (hintId == new GH_UVIntervalHint().HintID && Data.UseParamDomain2Control)
             return [
                 new GooInterval2DControl(() => (GH_Interval2D)ShowValue, _isNull, null),
             ];
-        else if (hintid == new GH_Vector3dHint().HintID && Data.UseParamVectorControl)
+        else if (hintId == new GH_Vector3dHint().HintID && Data.UseParamVectorControl)
             return [
                 new GooVectorControl(() => (GH_Vector)ShowValue, _isNull, null),
             ];
@@ -149,9 +149,7 @@ internal class GooVariableControl : GooHorizonalControlBase<IGH_Goo>
         var id = ((Param_ScriptVariable)_owner)?.TypeHint?.HintID;
         if (id.HasValue) return id.Value;
 
-        var converter = AccessTools.Field(_owner.GetType(), "_converter").GetValue(_owner);
-        var mcId = AccessTools.Field(converter.GetType(), "Id").GetValue(converter);
-        return (Guid)AccessTools.Field(mcId.GetType(), "Id").GetValue(mcId);
+        return Guid.Empty;
     }
 
     protected override IGH_Goo SetValue(IGH_Goo[] values)
