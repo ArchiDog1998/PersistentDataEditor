@@ -34,7 +34,7 @@ public class PersistentDataEditorInfo : GH_AssemblyInfo
     //Return a string representing your preferred contact details.
     public override string AuthorContact => "1123993881@qq.com";
 
-    public override string Version => "1.2.12";
+    public override string Version => "1.2.13";
 }
 
 partial class SimpleAssemblyPriority
